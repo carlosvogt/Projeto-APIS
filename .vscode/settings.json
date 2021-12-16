@@ -1,0 +1,45 @@
+{
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "workbench.colorTheme": "Dracula",
+    "editor.formatOnSave": false,
+    "editor.rulers": [80,120],
+    "editor.tabSize": 2,
+    "editor.renderLineHighlight": "gutter",
+    "emmet.syntaxProfiles": {
+        "javascript": "jsx",
+    },
+    "eslint.workingDirectories": [
+      "./backend",
+      "./frontend"
+  ],
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact"
+    },
+    "javascript.updateImportsOnFileMove.enabled": "never",
+    "breadcrumbs.enabled": true,
+    "editor.parameterHints.enabled": true,
+    "eslint.autoFixOnSave": true,
+    "eslint.validate": [
+      {
+          "language": "javascript",
+          "autoFix": true,
+      },
+      {
+          "language": "javascriptreact",
+          "autoFix": true,
+      },
+      {
+          "language": "typescript",
+          "autoFix": true,
+      },
+      {
+          "language": "typescriptreact",
+          "autoFix": true,
+      },
+  ],
+  "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+  }
+  }
