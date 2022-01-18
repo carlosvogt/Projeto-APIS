@@ -3,7 +3,14 @@ const ModuleResolverPlugin = [
   {
     root: ['./src'],
     extensions: ['.js', '.jsx', '.ios.js', '.android.js', '.json'],
-    alias: {},
+    alias: {
+      '@components': './src/components',
+      '@i18n': './src/i18n',
+      '@screens': './src/screens',
+      '@services': './src/services',
+      '@theme': './src/theme',
+      '@utils': './src/utils',
+    },
   },
 ];
 

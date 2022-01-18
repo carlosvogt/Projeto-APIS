@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "jsx": "react",
+    "paths": {
+      "@components": [
+        "src/components/index",
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@i18n": [
+        "src/i18n/index"
+      ],
+      "@i18n/*": [
+        "src/i18n/*"
+      ],
+      "@screens": [
+        "src/screens/index",
+      ],
+      "@screens/*": [
+        "src/screens/*"
+      ],
+      "@services": [
+        "./src/services/index",
+      ],
+      "@services/*": [
+        "./src/services/*"
+      ],
+      "@theme": [
+        "src/theme/index",
+      ],
+      "@theme/*": [
+        "src/theme/index",
+        "src/theme/*"
+      ],
+      "@utils": [
+        "src/utils/index"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
