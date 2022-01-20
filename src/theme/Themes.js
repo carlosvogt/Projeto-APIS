@@ -13,6 +13,7 @@ const GenericThemeColors = {
   warning: '#FF9800',
   success: '#38A843',
   error: '#E54343',
+  black: '#000000',
 };
 
 const GenericTheme = merge(BaseTheme, {
