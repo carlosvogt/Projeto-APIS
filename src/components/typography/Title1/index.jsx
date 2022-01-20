@@ -1,28 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
+import { useTheme } from '@theme';
 import StyledText from '../StyledText';
 
 function Title1({ color, children, ...rest }) {
+  const { colors } = useTheme();
+
   return (
     <StyledText
       {...rest}
       lineHeight={26}
       letterSpacing={0.31}
       fontSize={26}
-      color={color}
+      color={color || colors.text}
     >
       {children}
     </StyledText>
   );
 }
 
-Title1.propTypes = {
-  children: PropTypes.node.isRequired,
-  color: PropTypes.string,
-};
-
-Title1.defaultProps = {
-  color: '#E66C00',
-};
 export default Title1;
