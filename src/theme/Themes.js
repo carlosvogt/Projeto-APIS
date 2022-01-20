@@ -9,6 +9,7 @@ const GenericThemeColors = {
   primary: '#E66C00',
   secondary: '#FFF',
   background: darkMode ? '#000000' : '#FFF',
+  reverseBackground: darkMode ? '#FFF' : '#000000',
   text: darkMode ? '#FFF' : '#E66C00',
   warning: '#FF9800',
   success: '#38A843',
