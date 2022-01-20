@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { Container, ToggleButton } from '@components';
+import { Container, ToggleButton, Steps } from '@components';
 
 function SignIn() {
   const { t } = useTranslation();
@@ -14,8 +14,9 @@ function SignIn() {
       <ToggleButton
         isEnabled={isEnabled}
         setIsEnabled={() => setIsEnabled(!isEnabled)}
-        title="Dark"
+        title={isEnabled ? 'White' : 'Dark'}
       />
+      <Steps total={3} active={0} />
     </Container>
   );
 }
