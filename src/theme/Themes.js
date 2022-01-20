@@ -11,7 +11,6 @@ const GenericThemeColors = {
   background: darkMode ? '#000000' : '#FFF',
   reverseBackground: darkMode ? '#FFF' : '#000000',
   text: darkMode ? '#FFF' : '#E66C00',
-  warning: '#FF9800',
   success: '#38A843',
   error: '#E54343',
   black: '#000000',
