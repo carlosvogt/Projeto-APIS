@@ -10,6 +10,7 @@ const ModuleResolverPlugin = [
       '@services': './src/services',
       '@theme': './src/theme',
       '@utils': './src/utils',
+      '@icons': './src/assets',
     },
   },
 ];
