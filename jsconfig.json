@@ -9,6 +9,12 @@
       "@components/*": [
         "src/components/*"
       ],
+      "@icons": [
+        "src/assets/index",
+      ],
+      "@icons/*": [
+        "src/assets/*"
+      ],
       "@i18n": [
         "src/i18n/index"
       ],
@@ -40,6 +46,7 @@
       "@utils/*": [
         "src/utils/*"
       ],
+
     }
   },
   "exclude": [
