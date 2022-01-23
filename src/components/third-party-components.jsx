@@ -1,1 +1,1 @@
-export { Provider as PaperProvider, Text } from 'react-native-paper';
+export { Provider as PaperProvider, Text, Button } from 'react-native-paper';
