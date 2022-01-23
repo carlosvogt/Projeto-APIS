@@ -16,6 +16,7 @@ function StyledText({
   color,
   centered,
   disabled,
+  underlined,
   ...rest
 }) {
   const { colors, fonts } = useTheme();
@@ -31,6 +32,7 @@ function StyledText({
       letterSpacing,
       textTransform,
       color: color ?? colors.text,
+      textDecorationLine: underlined ? 'underline' : null,
     },
   ];
 
@@ -69,6 +71,7 @@ StyledText.propTypes = {
   color: PropTypes.string,
   centered: PropTypes.bool,
   disabled: PropTypes.bool,
+  underlined: PropTypes.bool,
 };
 
 StyledText.defaultProps = {
@@ -81,6 +84,7 @@ StyledText.defaultProps = {
   color: undefined,
   centered: false,
   disabled: false,
+  underlined: false,
 };
 
 export default StyledText;

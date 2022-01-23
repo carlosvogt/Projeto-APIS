@@ -18,7 +18,6 @@ export { default as Map } from './Map';
 export { default as More } from './More';
 export { default as Password } from './Password';
 export { default as Person } from './Person';
-export { default as Reload } from './Reload';
 export { default as Send } from './Send';
 export { default as Share } from './Share';
 export { default as Trash } from './Trash';
