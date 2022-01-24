@@ -12,10 +12,8 @@ function StyledText({
   letterSpacing,
   lineHeight,
   textTransform,
-  secondary,
   color,
   centered,
-  disabled,
   underlined,
   ...rest
 }) {
@@ -36,16 +34,8 @@ function StyledText({
     },
   ];
 
-  if (secondary) {
-    textStyles.push({ color: colors.custom.text.secondary });
-  }
-
   if (centered) {
     textStyles.push({ textAlign: 'center' });
-  }
-
-  if (disabled) {
-    textStyles.push({ color: colors.disabled });
   }
 
   return (
@@ -67,10 +57,8 @@ StyledText.propTypes = {
     'uppercase',
     'lowercase',
   ]),
-  secondary: PropTypes.bool,
   color: PropTypes.string,
   centered: PropTypes.bool,
-  disabled: PropTypes.bool,
   underlined: PropTypes.bool,
 };
 
@@ -80,10 +68,8 @@ StyledText.defaultProps = {
   letterSpacing: 0,
   lineHeight: 26,
   textTransform: 'none',
-  secondary: false,
   color: undefined,
   centered: false,
-  disabled: false,
   underlined: false,
 };
 
