@@ -9,10 +9,10 @@
       "@components/*": [
         "src/components/*"
       ],
-      "@icons": [
+      "@assets": [
         "src/assets/index",
       ],
-      "@icons/*": [
+      "@assets/*": [
         "src/assets/*"
       ],
       "@i18n": [
@@ -45,6 +45,12 @@
       ],
       "@utils/*": [
         "src/utils/*"
+      ],
+      "@hooks": [
+        "src/hooks/index",
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
       ],
 
     }

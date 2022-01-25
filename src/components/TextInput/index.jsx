@@ -117,7 +117,7 @@ const TextInput = forwardRef(
           style={[styles.textInput, style]}
           underlineColor="transparent"
           theme={{
-            roundness: 10,
+            roundness: 20,
             colors: {
               primary: colors.primary,
               text: colors.primary,
