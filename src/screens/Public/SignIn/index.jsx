@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { Container, ToggleButton, Steps, Button, useToast } from '@components';
+import { Container, ToggleButton, Steps, Button } from '@components';
 import {
   Add,
   ArrowBack,
@@ -30,11 +30,12 @@ import {
   VisibilityOn,
 } from '@assets';
 import { View, ScrollView, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import SignInForm from './SignInForm';
 
 function SignIn() {
   const { t } = useTranslation();
-  const toast = useToast();
+  const navigation = useNavigation();
 
   const [isEnabled, setIsEnabled] = useState(false);
   const loading = true;
@@ -45,15 +46,6 @@ function SignIn() {
       justifyContent: 'center',
     },
   });
-
-  function toastFunction() {
-    toast.error('Ocorreu um erro!');
-    toast.success('Conta criada!');
-  }
-
-  useEffect(() => {
-    toastFunction();
-  }, []);
 
   return (
     <Container>
@@ -108,7 +100,7 @@ function SignIn() {
         <Button
           title="Logar"
           margin={16}
-          onPress={() => console.log('teste')}
+          onPress={() => navigation.navigate('CreateAccount')}
         />
 
         <Button

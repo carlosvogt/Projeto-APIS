@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
 
 function BaseAlert({ bgColor, message, textColor, visible, autoHide, onHide }) {
   const { done } = useTimeout({
-    timeout: 14000,
+    timeout: 4000,
   });
 
   const shouldHide = (autoHide && done) || !visible;

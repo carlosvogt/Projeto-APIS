@@ -7,6 +7,8 @@ export { default as TextInput } from './TextInput';
 export { default as Form } from './Form';
 export { ToastProvider, useToast } from './Toast';
 export { default as Alert } from './Alert';
+export { default as NavBackButton } from './NavBackButton';
+export { default as TouchableDebounce } from './TouchableDebounce';
 
 export {
   HelperText,
