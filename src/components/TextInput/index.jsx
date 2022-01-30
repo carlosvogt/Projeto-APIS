@@ -40,14 +40,16 @@ const TextInput = forwardRef(
     const mounted = useRef(false);
     const hasError = Boolean(errorMessage);
     const [isFocused, setIsFocused] = useState(false);
-    const darkMode = false;
+    const darkMode = true;
     const styles = StyleSheet.create({
       container: {
         width: '100%',
         marginBottom: 16,
       },
       textInput: {
+        borderRadius: 20,
         backgroundColor: colors.secondary,
+        overflow: 'hidden',
       },
     });
 
@@ -116,6 +118,7 @@ const TextInput = forwardRef(
           onFocus={() => setIsFocused(true)}
           style={[styles.textInput, style]}
           underlineColor="transparent"
+          activeUnderlineColor={colors.error}
           theme={{
             roundness: 20,
             colors: {
@@ -140,6 +143,7 @@ const TextInput = forwardRef(
             )
           }
         />
+
         {hasError && (
           <HelperText type="error" style={{ color: colors.error }}>
             {errorMessage}

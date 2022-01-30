@@ -3,7 +3,7 @@ import { DefaultTheme as PaperDefaultTheme } from 'react-native-paper';
 import { DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native';
 
 const BaseTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
-const darkMode = false;
+const darkMode = true;
 
 const GenericThemeColors = {
   primary: '#E66C00',
