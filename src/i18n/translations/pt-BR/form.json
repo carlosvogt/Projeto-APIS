@@ -1,0 +1,17 @@
+{
+  "label": {
+    "title" : "Título",
+    "description" : "Descrição *",
+    "addNote" : "Adicionar nota",
+    "cancel" : "Cancelar",
+    "save" : "Salvar",
+    "addProduction" : "Adicionar produção",
+    "harvest" : "Safra *",
+    "harvestDate" : "Dia da colheita *",
+    "amount" : "Quantidade colhida (Kg) *",
+    "payed" : "Pago ao proprietário? ",
+    "payedOwner" : "Quantidade do proprietário (Kg)",
+    "date" : "Data inválida",
+    "select" : "Selecionar"
+  }
+}

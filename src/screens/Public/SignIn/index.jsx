@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { Container, ToggleButton, Steps, Button } from '@components';
+import { Container, ToggleButton, Steps, Button, Dropdown } from '@components';
 import {
   Add,
   ArrowBack,
@@ -46,9 +46,43 @@ function SignIn() {
       justifyContent: 'center',
     },
   });
+  const options = [
+    {
+      label: 'Sim',
+      value: 'Sim',
+    },
+    {
+      label: 'Não',
+      value: 'Não',
+    },
+    {
+      label: 'Nãzo',
+      value: 'Nzão',
+    },
+    {
+      label: 'Nzãao',
+      value: 'Nzaão',
+    },
+    {
+      label: 'Nãoaa',
+      value: 'Nãaao',
+    },
+    {
+      label: 'sNãoaa',
+      value: 'Nãsaao',
+    },
+  ];
+
+  const [selectedOption, setSelectedOption] = useState(false);
 
   return (
     <Container>
+      <Dropdown
+        label={t('form:label.payed')}
+        value={selectedOption}
+        setValue={setSelectedOption}
+        data={options}
+      />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
