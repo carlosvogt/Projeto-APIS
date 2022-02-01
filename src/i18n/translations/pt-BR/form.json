@@ -13,5 +13,10 @@
     "payedOwner" : "Quantidade do proprietário (Kg)",
     "date" : "Data inválida",
     "select" : "Selecionar"
+  },
+  "modal" : {
+    "takePicture" : "Tirar foto",
+    "selectPicture" : "Selecionar foto",
+    "deletePicture" : "Apagar foto"
   }
 }
