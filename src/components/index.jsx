@@ -14,6 +14,7 @@ export { default as CreateNoteForm } from './CreateNoteForm';
 export { default as CreateProductionForm } from './CreateProductionForm';
 export { default as CalendarDialog } from './CalendarDialog';
 export { default as Dropdown } from './Dropdown';
+export { default as ModalBottom } from './ModalBottom';
 
 export {
   HelperText,
