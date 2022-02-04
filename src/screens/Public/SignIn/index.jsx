@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { Container, ToggleButton, Steps, Button, Dropdown } from '@components';
+import {
+  Container,
+  ToggleButton,
+  Steps,
+  Button,
+  Dropdown,
+  ExpensiveNote,
+} from '@components';
 import {
   Add,
   ArrowBack,
@@ -36,8 +43,9 @@ import SignInForm from './SignInForm';
 function SignIn() {
   const { t } = useTranslation();
   const navigation = useNavigation();
-
+  const [selectedCode, setSelectedCode] = useState(0);
   const [isEnabled, setIsEnabled] = useState(false);
+
   const loading = true;
 
   const styles = StyleSheet.create({
@@ -75,6 +83,102 @@ function SignIn() {
 
   const [selectedOption, setSelectedOption] = useState(false);
 
+  const apiaries = [
+    {
+      code: 1,
+      nome: 'Apiário número 1',
+      qtdOcupada: 50,
+      qtdLivre: 10,
+      notes: [
+        {
+          code: 1,
+          nome: 'Anotação 1',
+          note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+        },
+        {
+          code: 2,
+          nome: 'Anotação 2',
+          note: 'Aqui o texto será escrito de forma integral',
+        },
+        {
+          code: 3,
+          nome: '',
+          note: 'Aqui o texto será escrito de forma integral aaa',
+        },
+      ],
+    },
+    {
+      code: 2,
+      nome: 'Apiário número 2',
+      qtdOcupada: 50,
+      qtdLivre: 10,
+      notes: [
+        {
+          code: 1,
+          nome: 'Anotação 1',
+          note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+        },
+      ],
+    },
+    {
+      code: 3,
+      nome: 'Apiário número 3',
+      qtdOcupada: 50,
+      qtdLivre: 10,
+      notes: [],
+    },
+  ];
+
+  const notes = [
+    {
+      code: 1,
+      nome: 'Anotação 1',
+      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+    },
+    {
+      code: 2,
+      nome: 'Anotação 2',
+      note: 'Aqui o texto será escrito de forma integral',
+    },
+    {
+      code: 3,
+      nome: '',
+      note: 'Aqui o texto será escrito de forma integral aaa',
+    },
+
+    {
+      code: 4,
+      nome: 'Anotação 1',
+      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+    },
+  ];
+
+  const handleNote = () => {
+    console.log('Nova nota');
+  };
+
+  const handleApiari = () => {
+    console.log('Ir para apiários', selectedCode);
+  };
+
+  const handleEdit = () => {
+    console.log('Editar Nota', selectedCode);
+  };
+
+  const handleDelete = () => {
+    console.log('Deletar nota', selectedCode);
+  };
+
+  const modalOptions = [
+    { option: 'Nota', onClick: handleNote },
+    { option: 'Visualizar', onClick: handleApiari },
+  ];
+
+  const modalNoteOptions = [
+    { option: 'Editar', onClick: handleEdit },
+    { option: 'Apagar', onClick: handleDelete },
+  ];
+
   return (
     <Container>
       <Dropdown
@@ -87,6 +191,46 @@ function SignIn() {
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
+        {apiaries.length > 0 ? (
+          apiaries.map((apiarie) => {
+            return (
+              <ExpensiveNote
+                key={apiarie.code}
+                name={apiarie.nome}
+                qtdEmpty={apiarie.qtdLivre}
+                qtdOccupy={apiarie.qtdOcupada}
+                notes={apiarie.notes}
+                hasData
+                modalOptions={modalOptions}
+                mode="apiary"
+                selectedCode={apiarie.code}
+                setSelectedCode={() => setSelectedCode(apiarie.code)}
+              />
+            );
+          })
+        ) : (
+          <ExpensiveNote hasData={false} mode="apiary" />
+        )}
+
+        {notes.length > 0 ? (
+          notes.map((note) => {
+            return (
+              <ExpensiveNote
+                mode="note"
+                key={note.code}
+                name={note.nome}
+                notes={note.note}
+                hasData
+                modalOptions={modalNoteOptions}
+                selectedCode={note.code}
+                setSelectedCode={() => setSelectedCode(note.code)}
+              />
+            );
+          })
+        ) : (
+          <ExpensiveNote hasData={false} mode="note" />
+        )}
+
         <SignInForm
           onSubmit={(values) => console.log(values)}
           isSubmitting={false}

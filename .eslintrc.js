@@ -59,7 +59,7 @@ module.exports = {
     ],
     'no-underscore-dangle': ['error', { allow: ['_id'] }],
     'sonarjs/no-duplicate-string': ['off'],
-    'react/jsx-max-depth': ['error', { max: 4 }],
+    'react/jsx-max-depth': ['error', { max: 6 }],
     'react/no-multi-comp': ['error', { ignoreStateless: true }],
     'max-len': [
       'error',

@@ -14,7 +14,7 @@ function DropdownComponent({
   searchPlaceholder,
 }) {
   const { colors } = useTheme();
-  const darkMode = true;
+  const darkMode = false;
   const [isFocus, setIsFocus] = useState(false);
 
   const styles = StyleSheet.create({

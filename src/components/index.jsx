@@ -15,6 +15,7 @@ export { default as CreateProductionForm } from './CreateProductionForm';
 export { default as CalendarDialog } from './CalendarDialog';
 export { default as Dropdown } from './Dropdown';
 export { default as ModalBottom } from './ModalBottom';
+export { default as ExpensiveNote } from './ExpensiveNote';
 
 export {
   HelperText,

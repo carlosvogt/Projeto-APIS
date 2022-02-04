@@ -18,5 +18,14 @@
     "takePicture" : "Tirar foto",
     "selectPicture" : "Selecionar foto",
     "deletePicture" : "Apagar foto"
+  },
+  "expensiveNote" : {
+    "hive" : "Colmeias: ",
+    "emptyPlaces" : "Vagas livres: ",
+    "noTitle" : "Sem título",
+    "noNoteTitle" : "Você não possui anotações!",
+    "noNoteBody" : "Criei a sua primeira anotação para este apiário.",
+    "noApiari" : "Você não possui apiários cadastrados!",
+    "noApiariBody" : "Para adicionar, basta clicar no botão acima."
   }
 }

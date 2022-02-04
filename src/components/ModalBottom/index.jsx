@@ -12,7 +12,7 @@ import { useTheme } from '@theme';
 
 const ModalBottom = ({ onPressOut, showModal, children }) => {
   const { colors } = useTheme();
-  const darkMode = true;
+  const darkMode = false;
   const styles = StyleSheet.create({
     modalContainer: {
       flex: 1,

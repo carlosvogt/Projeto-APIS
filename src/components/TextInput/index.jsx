@@ -40,7 +40,7 @@ const TextInput = forwardRef(
     const mounted = useRef(false);
     const hasError = Boolean(errorMessage);
     const [isFocused, setIsFocused] = useState(false);
-    const darkMode = true;
+    const darkMode = false;
     const styles = StyleSheet.create({
       container: {
         width: '100%',
