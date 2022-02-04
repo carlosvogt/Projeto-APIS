@@ -29,7 +29,7 @@ const ModalCenter = ({
 }) => {
   const { colors } = useTheme();
   const deviceWidth = Dimensions.get('window').width;
-  const darkMode = true;
+  const darkMode = false;
 
   const styles = StyleSheet.create({
     modalContainer: {
@@ -47,13 +47,6 @@ const ModalCenter = ({
       alignItems: 'flex-end',
       padding: 16,
       borderRadius: 20,
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
     },
     question: {
       width: '100%',

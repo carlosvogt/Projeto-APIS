@@ -24,7 +24,7 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
   const [year, setYear] = useState(inicialValues[2]);
   const [month, setMonth] = useState(`${inicialValues[1]} ${inicialValues[2]}`);
   const [selectedDay, setSelectedDay] = useState(inicialDay);
-  const darkMode = true;
+  const darkMode = false;
   const deviceWidth = Dimensions.get('window').width;
   const styles = StyleSheet.create({
     header: {
