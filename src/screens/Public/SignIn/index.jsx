@@ -1,332 +1,112 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import {
-  Container,
-  ToggleButton,
-  Steps,
-  Button,
-  Dropdown,
-  ExpensiveNote,
-} from '@components';
-import {
-  Add,
-  ArrowBack,
-  ArrowDown,
-  ArrowMore,
-  Bee,
-  CheckOutline,
-  ConfigIcon,
-  DarkMode,
-  Done,
-  Download,
-  Gps,
-  Home,
-  Info,
-  LightMode,
-  Location,
-  Logout,
-  Map,
-  More,
-  Password,
-  Person,
-  Send,
-  Share,
-  Trash,
-  VisibilityOff,
-  VisibilityOn,
-} from '@assets';
+import { Container, ToggleButton, Button } from '@components';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+// import { useNavigation } from '@react-navigation/native';
+import { Footer } from '@components/layout';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux';
 import SignInForm from './SignInForm';
 
 function SignIn() {
   const { t } = useTranslation();
-  const navigation = useNavigation();
-  const [selectedCode, setSelectedCode] = useState(0);
-  const [isEnabled, setIsEnabled] = useState(false);
-
-  const loading = true;
+  // const navigation = useNavigation();
+  const darkMode = useSelector((state) => state.mode.darkMode);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const styles = StyleSheet.create({
     scrollView: {
       flexGrow: 1,
       justifyContent: 'center',
     },
+    viewTitle: {
+      marginTop: 48,
+      marginBottom: 48,
+    },
+    viewInstruction: {
+      marginBottom: 16,
+    },
+    forgotPassword: {
+      paddingVertical: 16,
+    },
+    createAccount: {
+      marginHorizontal: 32,
+      marginBottom: 16,
+    },
   });
-  const options = [
-    {
-      label: 'Sim',
-      value: 'Sim',
-    },
-    {
-      label: 'Não',
-      value: 'Não',
-    },
-    {
-      label: 'Nãzo',
-      value: 'Nzão',
-    },
-    {
-      label: 'Nzãao',
-      value: 'Nzaão',
-    },
-    {
-      label: 'Nãoaa',
-      value: 'Nãaao',
-    },
-    {
-      label: 'sNãoaa',
-      value: 'Nãsaao',
-    },
-  ];
 
-  const [selectedOption, setSelectedOption] = useState(false);
-
-  const apiaries = [
-    {
-      code: 1,
-      nome: 'Apiário número 1',
-      qtdOcupada: 50,
-      qtdLivre: 10,
-      notes: [
-        {
-          code: 1,
-          nome: 'Anotação 1',
-          note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-        },
-        {
-          code: 2,
-          nome: 'Anotação 2',
-          note: 'Aqui o texto será escrito de forma integral',
-        },
-        {
-          code: 3,
-          nome: '',
-          note: 'Aqui o texto será escrito de forma integral aaa',
-        },
-      ],
-    },
-    {
-      code: 2,
-      nome: 'Apiário número 2',
-      qtdOcupada: 50,
-      qtdLivre: 10,
-      notes: [
-        {
-          code: 1,
-          nome: 'Anotação 1',
-          note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-        },
-      ],
-    },
-    {
-      code: 3,
-      nome: 'Apiário número 3',
-      qtdOcupada: 50,
-      qtdLivre: 10,
-      notes: [],
-    },
-  ];
-
-  const notes = [
-    {
-      code: 1,
-      nome: 'Anotação 1',
-      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-    },
-    {
-      code: 2,
-      nome: 'Anotação 2',
-      note: 'Aqui o texto será escrito de forma integral',
-    },
-    {
-      code: 3,
-      nome: '',
-      note: 'Aqui o texto será escrito de forma integral aaa',
-    },
-
-    {
-      code: 4,
-      nome: 'Anotação 1',
-      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-    },
-  ];
-
-  const handleNote = () => {
-    console.log('Nova nota');
+  // Dado mocado
+  const handleForgotPassword = () => {
+    console.log('Ir para tela de recuperação de senha');
+    // navigation.navigate('forgotPassword');
   };
 
-  const handleApiari = () => {
-    console.log('Ir para apiários', selectedCode);
+  // Dado mocado
+  const handleCreateAccount = () => {
+    console.log('Ir para tela de criar conta');
+    // navigation.navigate('createAccount');
   };
 
-  const handleEdit = () => {
-    console.log('Editar Nota', selectedCode);
+  // Dado mocado
+  const handleLogin = (login) => {
+    setLoading(true);
+    console.log('Fazer login', login);
+    // navigation.navigate('home');
+    setLoading(false);
   };
 
-  const handleDelete = () => {
-    console.log('Deletar nota', selectedCode);
+  const setSelectedMode = async (value) => {
+    await AsyncStorage.setItem('darkMode', JSON.stringify(value));
+    dispatch({
+      type: 'SET_MODE',
+      payload: value,
+    });
   };
-
-  const modalOptions = [
-    { option: 'Nota', onClick: handleNote },
-    { option: 'Visualizar', onClick: handleApiari },
-  ];
-
-  const modalNoteOptions = [
-    { option: 'Editar', onClick: handleEdit },
-    { option: 'Apagar', onClick: handleDelete },
-  ];
 
   return (
-    <Container>
-      <Dropdown
-        label={t('form:label.payed')}
-        value={selectedOption}
-        setValue={setSelectedOption}
-        data={options}
-      />
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        {apiaries.length > 0 ? (
-          apiaries.map((apiarie) => {
-            return (
-              <ExpensiveNote
-                key={apiarie.code}
-                name={apiarie.nome}
-                qtdEmpty={apiarie.qtdLivre}
-                qtdOccupy={apiarie.qtdOcupada}
-                notes={apiarie.notes}
-                hasData
-                modalOptions={modalOptions}
-                mode="apiary"
-                selectedCode={apiarie.code}
-                setSelectedCode={() => setSelectedCode(apiarie.code)}
-              />
-            );
-          })
-        ) : (
-          <ExpensiveNote hasData={false} mode="apiary" />
-        )}
-
-        {notes.length > 0 ? (
-          notes.map((note) => {
-            return (
-              <ExpensiveNote
-                mode="note"
-                key={note.code}
-                name={note.nome}
-                notes={note.note}
-                hasData
-                modalOptions={modalNoteOptions}
-                selectedCode={note.code}
-                setSelectedCode={() => setSelectedCode(note.code)}
-              />
-            );
-          })
-        ) : (
-          <ExpensiveNote hasData={false} mode="note" />
-        )}
+    <ScrollView
+      contentContainerStyle={styles.scrollView}
+      showsVerticalScrollIndicator={false}
+    >
+      <Container style={{ flex: 1 }}>
+        <View style={styles.viewTitle}>
+          <Title1 centered family="medium">
+            {t('login:welcome')}
+          </Title1>
+        </View>
+        <View style={styles.viewInstruction}>
+          <Title2>{t('login:instruction')}</Title2>
+        </View>
 
         <SignInForm
-          onSubmit={(values) => console.log(values)}
-          isSubmitting={false}
-        />
-
-        <Title2>{t('formErrors:required')}</Title2>
-        <Title1 family="medium">{t('formErrors:required')}</Title1>
-
-        <ToggleButton
-          isEnabled={isEnabled}
-          setIsEnabled={() => setIsEnabled(!isEnabled)}
-          title={isEnabled ? 'White' : 'Dark'}
-        />
-        <Steps total={3} active={0} />
-        <View style={{ flexDirection: 'row' }}>
-          <Add />
-          <ArrowBack />
-          <ArrowDown />
-          <ArrowMore />
-          <Bee />
-          <CheckOutline />
-          <ConfigIcon />
-          <DarkMode />
-          <Done />
-          <Download />
-          <Gps />
-          <Home />
-          <Info />
-          <LightMode />
-        </View>
-        <View style={{ flexDirection: 'row' }}>
-          <Location />
-          <Logout />
-          <Map />
-          <More />
-          <Password />
-          <Person />
-          <Send />
-          <Share />
-          <Trash />
-          <VisibilityOff />
-          <VisibilityOn />
-        </View>
-
-        <Button
-          title="Logar"
-          margin={16}
-          onPress={() => navigation.navigate('CreateAccount')}
+          onSubmit={(values) => handleLogin(values)}
+          isSubmitting={loading}
         />
 
         <Button
-          loading={loading}
-          loadingBlock={!!loading}
-          title="Logando"
-          onPress={() => console.log('teste')}
-        />
-
-        <Button
-          disabled
-          title="Bloqueado"
-          onPress={() => console.log('teste')}
-        />
-
-        <Button
-          title="Esqueceu sua senha?"
-          onPress={() => console.log('teste')}
+          title={t('login:forgotPassword')}
+          onPress={() => handleForgotPassword()}
           mode="outlined"
+          style={styles.forgotPassword}
           titleFamily="light"
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'yellow',
-          }}
-        >
-          <Button
-            title="Cancelar"
-            onPress={() => console.log('teste')}
-            mode="outlined"
-            textColor="red"
-            titleFamily="medium"
-            viewStyle={{ paddingHorizontal: 20 }}
+
+        <Button
+          title={t('login:createAccount')}
+          style={styles.createAccount}
+          onPress={() => handleCreateAccount()}
+        />
+
+        <Footer withBorder={false}>
+          <ToggleButton
+            isEnabled={darkMode}
+            setIsEnabled={(value) => setSelectedMode(value)}
           />
-          <Button
-            title="Salvar"
-            onPress={() => console.log('teste')}
-            viewStyle={{ paddingHorizontal: 20 }}
-            style={{
-              width: 200,
-            }}
-          />
-        </View>
-      </ScrollView>
-    </Container>
+        </Footer>
+      </Container>
+    </ScrollView>
   );
 }
 export default SignIn;

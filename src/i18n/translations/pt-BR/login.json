@@ -1,0 +1,10 @@
+{
+  "welcome" : "Bem vindo ao APIS!",
+  "instruction" : "Faça login para continuar",
+  "email" : "E-mail",
+  "password" : "Senha",
+  "login" : "Logar",
+  "logging" : "Logando",
+  "forgotPassword" : "Esqueceu sua senha?",
+  "createAccount" : "Criar conta"
+}

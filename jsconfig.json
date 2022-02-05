@@ -52,6 +52,12 @@
       "@hooks/*": [
         "src/hooks/*"
       ],
+      "@store": [
+        "src/store/index",
+      ],
+      "@store/*": [
+        "src/store/*"
+      ],
 
     }
   },

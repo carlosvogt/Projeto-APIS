@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import masks from '@utils/masks';
 import { useTheme } from '@theme';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import {
   HelperText,
   TextInput as PaperTextInput,
@@ -40,7 +41,8 @@ const TextInput = forwardRef(
     const mounted = useRef(false);
     const hasError = Boolean(errorMessage);
     const [isFocused, setIsFocused] = useState(false);
-    const darkMode = false;
+    const darkMode = useSelector((state) => state.mode.darkMode);
+
     const styles = StyleSheet.create({
       container: {
         width: '100%',

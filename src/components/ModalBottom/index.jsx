@@ -9,10 +9,12 @@ import {
   Keyboard,
 } from 'react-native';
 import { useTheme } from '@theme';
+import { useSelector } from 'react-redux';
 
 const ModalBottom = ({ onPressOut, showModal, children }) => {
   const { colors } = useTheme();
-  const darkMode = false;
+  const darkMode = useSelector((state) => state.mode.darkMode);
+
   const styles = StyleSheet.create({
     modalContainer: {
       flex: 1,

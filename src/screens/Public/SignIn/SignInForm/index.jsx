@@ -5,10 +5,17 @@ import { Button, Form } from '@components';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import { StyleSheet, View } from 'react-native';
 
 function SignInForm({ onSubmit, isSubmitting }) {
   const { t } = useTranslation();
   const password = useRef();
+
+  const styles = StyleSheet.create({
+    button: {
+      paddingTop: 16,
+    },
+  });
 
   const schema = Yup.object().shape({
     login: Yup.string().required(t('formErrors:required')),
@@ -22,10 +29,10 @@ function SignInForm({ onSubmit, isSubmitting }) {
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange' });
 
   return (
-    <Form.Container>
+    <>
       <Form.TextInput
         name="login"
-        label="Login"
+        label={t('login:email')}
         errorMessage={errors.login?.message}
         control={control}
         returnKeyType="next"
@@ -37,17 +44,19 @@ function SignInForm({ onSubmit, isSubmitting }) {
       <Form.PasswordInput
         inputRef={password}
         name="password"
-        label="Senha"
+        label={t('login:password')}
         error={errors.password?.message}
         control={control}
       />
 
-      <Button
-        title="Enviar"
-        loading={isSubmitting}
-        onPress={handleSubmit(onSubmit)}
-      />
-    </Form.Container>
+      <View style={styles.button}>
+        <Button
+          title={isSubmitting ? t('login:logging') : t('login:login')}
+          loading={isSubmitting}
+          onPress={handleSubmit(onSubmit)}
+        />
+      </View>
+    </>
   );
 }
 

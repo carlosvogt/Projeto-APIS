@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useTheme } from '@theme';
 import { Dropdown } from 'react-native-element-dropdown';
 import { StyleSheet, View, Text } from 'react-native';
+import { useSelector } from 'react-redux';
 
 function DropdownComponent({
   value,
@@ -14,7 +15,8 @@ function DropdownComponent({
   searchPlaceholder,
 }) {
   const { colors } = useTheme();
-  const darkMode = false;
+  const darkMode = useSelector((state) => state.mode.darkMode);
+
   const [isFocus, setIsFocus] = useState(false);
 
   const styles = StyleSheet.create({

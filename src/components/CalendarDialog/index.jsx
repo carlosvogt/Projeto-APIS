@@ -13,6 +13,7 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { useTheme } from '@theme';
 import { useTranslation } from 'react-i18next';
 import DataHelper from '@utils/date-helper';
+import { useSelector } from 'react-redux';
 import { TitleHeader, Title2 } from '../typography';
 import Button from '../Button';
 
@@ -24,7 +25,8 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
   const [year, setYear] = useState(inicialValues[2]);
   const [month, setMonth] = useState(`${inicialValues[1]} ${inicialValues[2]}`);
   const [selectedDay, setSelectedDay] = useState(inicialDay);
-  const darkMode = false;
+  const darkMode = useSelector((state) => state.mode.darkMode);
+
   const deviceWidth = Dimensions.get('window').width;
   const styles = StyleSheet.create({
     header: {

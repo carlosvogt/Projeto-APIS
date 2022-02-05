@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@theme';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import Button from '../Button';
 import CreateNoteForm from '../CreateNoteForm';
 import CreateProductionForm from '../CreateProductionForm';
@@ -29,7 +30,7 @@ const ModalCenter = ({
 }) => {
   const { colors } = useTheme();
   const deviceWidth = Dimensions.get('window').width;
-  const darkMode = false;
+  const darkMode = useSelector((state) => state.mode.darkMode);
 
   const styles = StyleSheet.create({
     modalContainer: {
