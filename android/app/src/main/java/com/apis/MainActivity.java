@@ -1,6 +1,10 @@
 package com.apis;
 
+import android.os.Bundle;
 import com.facebook.react.ReactActivity;
+import org.devio.rn.splashscreen.SplashScreen;
+import android.content.Intent;
+import android.content.res.Configuration;
 
 public class MainActivity extends ReactActivity {
 
@@ -12,4 +16,10 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "apis";
   }
+   @Override
+  protected void onCreate(Bundle savedInstanceState) {
+      SplashScreen.show(this);
+      super.onCreate(savedInstanceState);
+  }
+
 }
