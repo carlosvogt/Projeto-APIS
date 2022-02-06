@@ -1,7 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import SignIn from './SignIn';
-import CreateAccount from './CreateAccount';
+import CreateAccountPersonalInfo from './CreateAccount/PersonalInfo';
+import CreateAccountAddress from './CreateAccount/Address';
 
 const Stack = createStackNavigator();
 
@@ -13,7 +14,14 @@ function PublicNavigator() {
       }}
     >
       <Stack.Screen name="SignIn" component={SignIn} />
-      <Stack.Screen name="CreateAccount" component={CreateAccount} />
+      <Stack.Screen
+        name="CreateAccountPersonalInfo"
+        component={CreateAccountPersonalInfo}
+      />
+      <Stack.Screen
+        name="CreateAccountAddress"
+        component={CreateAccountAddress}
+      />
     </Stack.Navigator>
   );
 }

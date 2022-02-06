@@ -1,0 +1,19 @@
+{
+  "header" : "Criar conta",
+  "personalInfo" : "Dados pessoais",
+  "requiredInfo" : "* Dados obrigatórios",
+  "name" : "Nome *",
+  "email" : "E-mail *",
+  "password" : "Senha *",
+  "confirmPassword" : "Confirme sua senha *",
+  "buttonContinue" : "Continuar",
+  "phone" : "Telefone *",
+  "address" : "Endereço",
+  "zipCode" : "CEP",
+  "coordinates" : "Coordenadas da casa do mel",
+  "research" : "Buscar",
+  "city" : "Cidade *",
+  "state" : "Estado *",
+  "createAccount" : "Criar conta",
+  "search" : "Pesquisar"
+}

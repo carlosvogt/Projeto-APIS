@@ -1,3 +1,8 @@
 {
-  "required": "Este campo é obrigatório"
+  "required": "Este campo é obrigatório",
+  "email" : "Favor informe um e-mail válido",
+  "phone" : "Favor informe um telefone válido",
+  "password" : "Atenção, as senhas devem ser iguais",
+  "passwordLength" : "A senha deve ter no mínimo 6 números",
+  "zipCode" : "Favor informe um CEP válido"
 }

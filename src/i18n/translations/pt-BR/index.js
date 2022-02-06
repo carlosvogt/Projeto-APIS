@@ -3,6 +3,7 @@ import signIn from './signIn.json';
 import form from './form.json';
 import calendar from './calendar.json';
 import login from './login.json';
+import createAccount from './createAccount.json';
 
 export default {
   formErrors,
@@ -10,4 +11,5 @@ export default {
   form,
   calendar,
   login,
+  createAccount,
 };

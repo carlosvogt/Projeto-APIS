@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { Container, ToggleButton, Button } from '@components';
 import { View, ScrollView, StyleSheet } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { Footer } from '@components/layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ import SignInForm from './SignInForm';
 
 function SignIn() {
   const { t } = useTranslation();
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
   const darkMode = useSelector((state) => state.mode.darkMode);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -43,10 +43,8 @@ function SignIn() {
     // navigation.navigate('forgotPassword');
   };
 
-  // Dado mocado
   const handleCreateAccount = () => {
-    console.log('Ir para tela de criar conta');
-    // navigation.navigate('createAccount');
+    navigation.navigate('CreateAccountPersonalInfo');
   };
 
   // Dado mocado
@@ -70,7 +68,7 @@ function SignIn() {
       contentContainerStyle={styles.scrollView}
       showsVerticalScrollIndicator={false}
     >
-      <Container style={{ flex: 1 }}>
+      <Container>
         <View style={styles.viewTitle}>
           <Title1 centered family="medium">
             {t('login:welcome')}

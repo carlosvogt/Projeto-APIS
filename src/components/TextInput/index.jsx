@@ -46,7 +46,7 @@ const TextInput = forwardRef(
     const styles = StyleSheet.create({
       container: {
         width: '100%',
-        marginBottom: 16,
+        marginVertical: 8,
       },
       textInput: {
         borderRadius: 20,
