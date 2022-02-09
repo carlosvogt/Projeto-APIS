@@ -13,6 +13,7 @@ const ModuleResolverPlugin = [
       '@assets': './src/assets',
       '@hooks': './src/hooks',
       '@store': './src/store',
+      '@navigation': './src/navigation',
     },
   },
 ];

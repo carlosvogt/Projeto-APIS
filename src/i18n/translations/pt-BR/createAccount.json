@@ -15,5 +15,6 @@
   "city" : "Cidade *",
   "state" : "Estado *",
   "createAccount" : "Criar conta",
-  "search" : "Pesquisar"
+  "search" : "Pesquisar",
+  "created" : "Criando conta"
 }

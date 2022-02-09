@@ -6,9 +6,9 @@ import SplashScreen from 'react-native-splash-screen';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import store from '@store';
-import { useTheme, ThemeProvider } from './src/theme';
-import Navigation from './src/navigation';
-import { ToastProvider } from './src/components';
+import { useTheme, ThemeProvider } from '@theme';
+import { ToastProvider } from '@components';
+import Navigation from '@navigation/index';
 
 function AppContents() {
   const dispatch = useDispatch();

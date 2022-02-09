@@ -4,6 +4,7 @@ import form from './form.json';
 import calendar from './calendar.json';
 import login from './login.json';
 import createAccount from './createAccount.json';
+import recoverPassword from './recoverPassword.json';
 
 export default {
   formErrors,
@@ -12,4 +13,5 @@ export default {
   calendar,
   login,
   createAccount,
+  recoverPassword,
 };

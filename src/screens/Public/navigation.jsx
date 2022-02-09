@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SignIn from './SignIn';
 import CreateAccountPersonalInfo from './CreateAccount/PersonalInfo';
 import CreateAccountAddress from './CreateAccount/Address';
+import RecoverPassword from './RecoverPassword';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ function PublicNavigator() {
         name="CreateAccountAddress"
         component={CreateAccountAddress}
       />
+      <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
     </Stack.Navigator>
   );
 }

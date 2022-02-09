@@ -12,6 +12,8 @@ import states from '@utils/states';
 function AddressForm({ onSubmit, isSubmitting }) {
   const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState(false);
+  const [loadingZipCode, setLoadingZipCode] = useState(false);
+  const [loadingCoordinates, setLoadingCoordinates] = useState(false);
 
   function validZipCode(value) {
     const zipCode = value.replace(/\D/g, '');
@@ -43,10 +45,11 @@ function AddressForm({ onSubmit, isSubmitting }) {
       justifyContent: 'space-between',
     },
     input: {
-      paddingRight: 16,
+      paddingRight: 8,
       flex: 1,
     },
     button: {
+      width: 120,
       marginTop: 16,
     },
   });
@@ -65,12 +68,16 @@ function AddressForm({ onSubmit, isSubmitting }) {
 
   // Dado mocado
   const handleCoordinates = () => {
-    // buscar coordenadas
+    setLoadingCoordinates(true);
+    console.log('Buscando coordenadas');
+    setLoadingCoordinates(false);
   };
 
   // Dado mocado
   const handleZipCode = () => {
-    // Buscar cep
+    setLoadingZipCode(true);
+    console.log('Buscando CEP');
+    setLoadingZipCode(false);
   };
 
   return (
@@ -89,10 +96,10 @@ function AddressForm({ onSubmit, isSubmitting }) {
           />
         </View>
         <Button
-          loading={isSubmitting}
           style={styles.button}
+          loading={loadingCoordinates}
           onPress={() => handleCoordinates()}
-          title={t('createAccount:research')}
+          title={loadingCoordinates ? null : t('createAccount:research')}
         />
       </View>
 
@@ -108,10 +115,10 @@ function AddressForm({ onSubmit, isSubmitting }) {
           />
         </View>
         <Button
-          loading={isSubmitting}
           style={styles.button}
+          loading={loadingZipCode}
           onPress={() => handleZipCode()}
-          title={t('createAccount:research')}
+          title={loadingZipCode ? null : t('createAccount:research')}
         />
       </View>
 
@@ -138,7 +145,11 @@ function AddressForm({ onSubmit, isSubmitting }) {
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
-          title={t('createAccount:createAccount')}
+          title={
+            isSubmitting
+              ? t('createAccount:createAccount')
+              : t('createAccount:created')
+          }
         />
         <Steps total={2} active={1} />
       </Footer>

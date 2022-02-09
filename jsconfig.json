@@ -58,6 +58,12 @@
       "@store/*": [
         "src/store/*"
       ],
+      "@navigation": [
+        "src/navigation/index",
+      ],
+      "@navigation/*": [
+        "src/navigation/*"
+      ],
 
     }
   },

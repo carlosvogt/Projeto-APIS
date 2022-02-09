@@ -37,10 +37,8 @@ function SignIn() {
     },
   });
 
-  // Dado mocado
   const handleForgotPassword = () => {
-    console.log('Ir para tela de recuperação de senha');
-    // navigation.navigate('forgotPassword');
+    navigation.navigate('RecoverPassword');
   };
 
   const handleCreateAccount = () => {

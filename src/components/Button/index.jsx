@@ -50,7 +50,6 @@ function Button({
         <TouchableOpacity style={[touchableStyle, style]} onPress={onPress}>
           <Title2
             family={titleFamily}
-            textTransform="capitalize"
             color={textColor || colors.reverseBackground}
             underlined
           >
@@ -66,11 +65,7 @@ function Button({
           disabled={disabled || loadingBlock}
           onPress={onPress}
         >
-          <Title1
-            family={titleFamily}
-            textTransform="capitalize"
-            color={textColor || colors.secondary}
-          >
+          <Title1 family={titleFamily} color={textColor || colors.secondary}>
             {title}
           </Title1>
         </PaperButton>
