@@ -11,6 +11,7 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 function ExpensiveNote({
   name,
@@ -26,21 +27,22 @@ function ExpensiveNote({
   const { colors } = useTheme();
   const { t } = useTranslation();
   const [status, setStatus] = useState(false);
+  const darkMode = useSelector((state) => state.mode.darkMode);
 
   const styles = StyleSheet.create({
     container: {
-      borderWidth: 1,
+      borderWidth: darkMode ? 0 : 1,
       borderColor: colors.primary,
       borderRadius: 20,
-      backgroundColor: colors.background,
-      paddingVertical: 16,
+      backgroundColor: colors.secondary,
+      paddingVertical: 8,
       paddingLeft: 16,
       paddingRight: 8,
       marginBottom: 16,
       justifyContent: 'space-between',
     },
     closedContainer: {
-      backgroundColor: colors.background,
+      backgroundColor: colors.secondary,
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
@@ -70,7 +72,8 @@ function ExpensiveNote({
       borderTopColor: colors.primary,
     },
     menu: {
-      height: 50,
+      height: 55,
+      width: 30,
     },
     marginTop: {
       marginTop: 8,
@@ -95,9 +98,10 @@ function ExpensiveNote({
       borderBottomLeftRadius: 20,
       borderBottomRightRadius: 20,
       width: 'auto',
-      backgroundColor: colors.background,
+      backgroundColor: colors.secondary,
       borderWidth: 1,
       borderColor: colors.secondary,
+      elevation: 10,
     },
     optionWrapper: {
       marginVertical: 8,

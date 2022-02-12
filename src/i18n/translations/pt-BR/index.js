@@ -5,6 +5,11 @@ import calendar from './calendar.json';
 import login from './login.json';
 import createAccount from './createAccount.json';
 import recoverPassword from './recoverPassword.json';
+import home from './home.json';
+import apiaries from './apiaries.json';
+import apiariesMap from './apiariesMap.json';
+import mortalityMap from './mortalityMap.json';
+import routesMap from './routesMap.json';
 
 export default {
   formErrors,
@@ -14,4 +19,9 @@ export default {
   login,
   createAccount,
   recoverPassword,
+  home,
+  apiaries,
+  apiariesMap,
+  mortalityMap,
+  routesMap,
 };

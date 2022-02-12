@@ -4,7 +4,6 @@ export { default as ArrowDown } from './ArrowDown';
 export { default as ArrowMore } from './ArrowMore';
 export { default as Bee } from './Bee';
 export { default as CheckOutline } from './CheckOutline';
-export { default as ConfigIcon } from './ConfigIcon';
 export { default as DarkMode } from './DarkMode';
 export { default as Done } from './Done';
 export { default as Download } from './Download';

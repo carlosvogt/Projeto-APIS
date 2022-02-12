@@ -8,7 +8,6 @@ export { default as Form } from './Form';
 export { ToastProvider, useToast } from './Toast';
 export { default as Alert } from './Alert';
 export { default as NavBackButton } from './NavBackButton';
-export { default as TouchableDebounce } from './TouchableDebounce';
 export { default as Modal } from './ModalCenter';
 export { default as CreateNoteForm } from './CreateNoteForm';
 export { default as CreateProductionForm } from './CreateProductionForm';
@@ -16,6 +15,7 @@ export { default as CalendarDialog } from './CalendarDialog';
 export { default as Dropdown } from './Dropdown';
 export { default as ModalBottom } from './ModalBottom';
 export { default as ExpensiveNote } from './ExpensiveNote';
+export { default as UserAvatar } from './Avatar';
 
 export {
   HelperText,

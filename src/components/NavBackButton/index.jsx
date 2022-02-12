@@ -1,10 +1,9 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '@theme';
 import { ArrowBack } from '@assets';
-import TouchableDebounce from '../TouchableDebounce';
 
 const styles = StyleSheet.create({
   backButtonContainer: {
@@ -33,13 +32,13 @@ function NavBackButton({ onGoBack, canGoBack }) {
   }
 
   return (
-    <TouchableDebounce
+    <TouchableOpacity
       testID="nav-back-button"
       style={containerStyles}
       onPress={handleGoBack}
     >
       <ArrowBack color={colors.secondary} />
-    </TouchableDebounce>
+    </TouchableOpacity>
   );
 }
 

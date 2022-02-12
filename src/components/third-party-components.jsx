@@ -9,6 +9,7 @@ export {
   HelperText,
   TextInput,
   Portal,
+  Avatar,
 } from 'react-native-paper';
 
 export { MaterialIcons, SimpleLineIcons, MaterialCommunityIcon };
