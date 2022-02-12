@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { ExpensiveNote, UserAvatar } from '@components';
+import { ExpensiveNote, UserAvatar, Modal } from '@components';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@theme';
 import { useNavigation } from '@react-navigation/native';
@@ -13,6 +13,11 @@ function HomeScreen() {
   const { colors } = useTheme();
   const navigation = useNavigation();
   const userImage = null;
+  const [showModal, setShowModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isSubmittingDelete, setIsSubmittingDelete] = useState(false);
 
   // Dado mocado
   const username = 'Carlos Rodrigo Vogt';
@@ -93,19 +98,18 @@ function HomeScreen() {
     },
   ];
 
-  // Dado mocado
-  const handleEdit = () => {
-    console.log('Editar Nota', selectedCode);
+  const handleEditModal = () => {
+    setModalTitle(t('home:editNote'));
+    setShowModal(true);
   };
 
-  // Dado mocado
-  const handleDelete = () => {
-    console.log('Deletar nota', selectedCode);
+  const handleDeleteModal = () => {
+    setShowDeleteModal(true);
   };
 
   const modalNoteOptions = [
-    { option: t('home:edit'), onClick: handleEdit },
-    { option: t('home:delete'), onClick: handleDelete },
+    { option: t('home:edit'), onClick: handleEditModal },
+    { option: t('home:delete'), onClick: handleDeleteModal },
   ];
 
   const handleGoProfile = () => {
@@ -114,8 +118,59 @@ function HomeScreen() {
     });
   };
 
+  const handleShowModal = () => {
+    setModalTitle(t('home:addNote'));
+    setShowModal(true);
+  };
+
+  const dismissModal = () => {
+    setShowModal(false);
+    setIsSubmitting(false);
+  };
+
+  const dismissDeleteModal = () => {
+    setShowDeleteModal(false);
+    setIsSubmittingDelete(false);
+  };
+
+  // Dado mocado
+  const handleNote = (value) => {
+    setIsSubmitting(true);
+    console.log('fazer o que precisa', value);
+    setIsSubmitting(false);
+    setShowModal(false);
+  };
+
+  // Dado mocado
+  const handleDeleteNote = () => {
+    setIsSubmittingDelete(true);
+    console.log('Deletar nota', selectedCode);
+    setIsSubmittingDelete(false);
+    setShowDeleteModal(false);
+  };
+
   return (
     <View style={styles.container}>
+      <Modal
+        title={modalTitle}
+        mode="note"
+        cancelFunction={() => dismissModal()}
+        positiveAction={(value) => handleNote(value)}
+        showModal={showModal}
+        isSubmitting={isSubmitting}
+      />
+
+      <Modal
+        title={t('home:deleteNote')}
+        description={t('home:deleteNoteQuestion')}
+        cancelText={t('home:cancel')}
+        positiveText={t('home:delete')}
+        cancelFunction={() => dismissDeleteModal()}
+        positiveAction={() => handleDeleteNote()}
+        showModal={showDeleteModal}
+        isSubmitting={isSubmittingDelete}
+      />
+
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => handleGoProfile()}
@@ -142,7 +197,7 @@ function HomeScreen() {
         <View style={styles.add}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => handleGoProfile()}
+            onPress={() => handleShowModal()}
           >
             <Add size={40} color={colors.secondary} />
           </TouchableOpacity>
