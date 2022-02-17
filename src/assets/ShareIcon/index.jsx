@@ -3,7 +3,7 @@ import Svg, { Path } from 'react-native-svg';
 import PropTypes from 'prop-types';
 import { useTheme } from '@theme';
 
-function Share({ color, size }) {
+function ShareIcon({ color, size }) {
   const height = size;
   const width = size;
   const { colors } = useTheme();
@@ -20,12 +20,12 @@ function Share({ color, size }) {
     </Svg>
   );
 }
-Share.propTypes = {
+ShareIcon.propTypes = {
   size: PropTypes.number,
 };
 
-Share.defaultProps = {
+ShareIcon.defaultProps = {
   size: 25,
 };
 
-export default Share;
+export default ShareIcon;

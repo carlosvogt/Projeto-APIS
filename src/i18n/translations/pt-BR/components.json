@@ -1,0 +1,10 @@
+{
+  "camera":{
+    "takeAnother" : "Tirar outra",
+    "conclusion" : "Concluir",
+    "imageConfirmation" : "A foto ficou boa?",
+    "imageBody" : "Caso a foto não esteja como você queria, você pode tirar outra.",
+    "takePicture" : "Tirar foto"
+  }
+
+}

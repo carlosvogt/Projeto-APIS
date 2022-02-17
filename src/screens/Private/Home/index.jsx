@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { ExpensiveNote, UserAvatar, Modal } from '@components';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@theme';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Add } from '@assets';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function HomeScreen() {
   const { t } = useTranslation();
   const [selectedCode, setSelectedCode] = useState(0);
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const userImage = null;
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isSubmittingDelete, setIsSubmittingDelete] = useState(false);
+  const isFocused = useIsFocused();
+  const [userImage, setUserImage] = useState();
 
   // Dado mocado
   const username = 'Carlos Rodrigo Vogt';
@@ -149,6 +151,18 @@ function HomeScreen() {
     setShowDeleteModal(false);
   };
 
+  const loadPhoto = async () => {
+    if (username) {
+      const perfil = await AsyncStorage.getItem(JSON.stringify(username));
+      setUserImage(perfil ? { uri: `${perfil}` } : null);
+    }
+  };
+
+  useEffect(() => {
+    loadPhoto();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused, username]);
+
   return (
     <View style={styles.container}>
       <Modal
@@ -164,7 +178,9 @@ function HomeScreen() {
         title={t('home:deleteNote')}
         description={t('home:deleteNoteQuestion')}
         cancelText={t('home:cancel')}
-        positiveText={t('home:delete')}
+        positiveText={
+          isSubmittingDelete ? t('home:deleting') : t('home:delete')
+        }
         cancelFunction={() => dismissDeleteModal()}
         positiveAction={() => handleDeleteNote()}
         showModal={showDeleteModal}
@@ -176,12 +192,7 @@ function HomeScreen() {
           onPress={() => handleGoProfile()}
           style={styles.profile}
         >
-          <UserAvatar
-            image={userImage}
-            onPress={handleGoProfile}
-            name={username}
-            size={50}
-          />
+          <UserAvatar image={userImage} name={username} size={60} />
         </TouchableOpacity>
         <View>
           <Title2 centered color={colors.secondary}>

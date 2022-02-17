@@ -18,7 +18,7 @@ export { default as More } from './More';
 export { default as Password } from './Password';
 export { default as Person } from './Person';
 export { default as Send } from './Send';
-export { default as Share } from './Share';
+export { default as ShareIcon } from './ShareIcon';
 export { default as Trash } from './Trash';
 export { default as VisibilityOff } from './VisibilityOff';
 export { default as VisibilityOn } from './VisibilityOn';

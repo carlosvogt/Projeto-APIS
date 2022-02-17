@@ -8,7 +8,7 @@ function Title2({ underlined, color, children, ...rest }) {
   return (
     <StyledText
       {...rest}
-      lineHeight={16}
+      lineHeight={25}
       letterSpacing={0.31}
       fontSize={16}
       color={color || colors.text}

@@ -73,12 +73,12 @@ const ModalCenter = ({
               {mode === 'question' && (
                 <>
                   <View style={styles.question}>
-                    <Title1 color={colors.reverseBackground} family="medium">
+                    <Title1 color={colors.primary} family="medium">
                       {title}
                     </Title1>
                   </View>
                   <View style={styles.question}>
-                    <Title2 color={colors.reverseBackground} family="medium">
+                    <Title2 color={colors.primary} family="medium">
                       {description}
                     </Title2>
                   </View>

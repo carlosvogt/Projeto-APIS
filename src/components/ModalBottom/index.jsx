@@ -41,7 +41,7 @@ const ModalBottom = ({ onPressOut, showModal, children }) => {
       width: '100%',
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
-      backgroundColor: colors.reverseBackground,
+      backgroundColor: colors.background,
       alignItems: 'center',
       paddingTop: 26,
     },
@@ -53,10 +53,7 @@ const ModalBottom = ({ onPressOut, showModal, children }) => {
         <View style={styles.modalContainer}>
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View
-              style={[
-                styles.modalBody,
-                { backgroundColor: colors.reverseBackground },
-              ]}
+              style={[styles.modalBody, { backgroundColor: colors.background }]}
             >
               <View style={styles.handle} />
               <View style={styles.modalView}>{children}</View>

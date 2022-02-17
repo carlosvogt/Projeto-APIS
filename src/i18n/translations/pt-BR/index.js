@@ -10,6 +10,8 @@ import apiaries from './apiaries.json';
 import apiariesMap from './apiariesMap.json';
 import mortalityMap from './mortalityMap.json';
 import routesMap from './routesMap.json';
+import profile from './profile.json';
+import components from './components.json';
 
 export default {
   formErrors,
@@ -24,4 +26,6 @@ export default {
   apiariesMap,
   mortalityMap,
   routesMap,
+  profile,
+  components,
 };

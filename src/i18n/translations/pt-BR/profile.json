@@ -1,0 +1,16 @@
+{
+  "header" : "Configurações",
+  "personalInfo" : "Informações pessoais",
+  "changePassword" : "Alterar senha",
+  "share" : "Compartilhar",
+  "suggestions" : "Sugestões",
+  "checkout" : "Sair da conta",
+  "darkMode" : "Modo noturno",
+  "lightMode" : "Modo diurno",
+  "deleteAccount" : "Apagar conta",
+  "checkoutBody" : "Você quer realmente sair da conta?",
+  "deleteBody" : "Você quer realmente apagar sua conta? Todos os dados serão excluídos e não poderão ser recuperados!",
+  "getOut" : "Sair",
+  "delete" : "Apagar",
+  "deleting" : "Apagando"
+}
