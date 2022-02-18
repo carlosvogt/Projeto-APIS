@@ -13,6 +13,7 @@ import routesMap from './routesMap.json';
 import profile from './profile.json';
 import components from './components.json';
 import changePassword from './changePassword.json';
+import suggestions from './suggestions.json';
 
 export default {
   formErrors,
@@ -30,4 +31,5 @@ export default {
   profile,
   components,
   changePassword,
+  suggestions,
 };
