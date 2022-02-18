@@ -74,7 +74,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         keyboardType="numeric"
         returnKeyType="next"
         label={t('createAccount:password')}
-        error={errors.password?.message}
+        errorMessage={errors.password?.message}
         control={control}
         onSubmitEditing={() => confirmPassword.current.focus()}
       />
@@ -84,7 +84,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         keyboardType="numeric"
         returnKeyType="done"
         label={t('createAccount:confirmPassword')}
-        error={errors.confirmPassword?.message}
+        errorMessage={errors.confirmPassword?.message}
         control={control}
       />
 

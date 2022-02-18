@@ -7,7 +7,7 @@ function PasswordInput({
   secureTextEntry,
   control,
   name,
-  error,
+  errorMessage,
   label,
   ...rest
 }) {
@@ -22,7 +22,7 @@ function PasswordInput({
       {...rest}
       name={name}
       label={label}
-      errorMessage={error}
+      errorMessage={errorMessage}
       control={control}
       textContentType="password"
       secureTextEntry={secureText}
@@ -37,14 +37,14 @@ PasswordInput.propTypes = {
   control: PropTypes.object.isRequired,
   name: PropTypes.string,
   label: PropTypes.string.isRequired,
-  error: PropTypes.string,
+  errorMessage: PropTypes.string,
   secureTextEntry: PropTypes.bool,
 };
 
 PasswordInput.defaultProps = {
   secureTextEntry: true,
   name: 'password',
-  error: '',
+  errorMessage: '',
 };
 
 export default PasswordInput;

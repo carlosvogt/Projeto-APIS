@@ -45,7 +45,7 @@ function SignInForm({ onSubmit, isSubmitting }) {
         inputRef={password}
         name="password"
         label={t('login:password')}
-        error={errors.password?.message}
+        errorMessage={errors.password?.message}
         control={control}
       />
 
