@@ -51,6 +51,7 @@ function ChangePasswordForm({ onSubmit, isSubmitting }) {
         inputRef={confirmPassword}
         name="confirmPassword"
         label={t('changePassword:confirmPassword')}
+        returnKeyType="done"
         errorMessage={errors.confirmPassword?.message}
         control={control}
       />
