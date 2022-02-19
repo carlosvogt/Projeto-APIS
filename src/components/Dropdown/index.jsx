@@ -5,6 +5,7 @@ import { useTheme } from '@theme';
 import { Dropdown } from 'react-native-element-dropdown';
 import { StyleSheet, View, Text } from 'react-native';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 function DropdownComponent({
   value,
@@ -14,6 +15,8 @@ function DropdownComponent({
   search,
   searchPlaceholder,
   error,
+  mode,
+  defaultValue,
 }) {
   const { colors } = useTheme();
   const darkMode = useSelector((state) => state.mode.darkMode);
@@ -23,10 +26,10 @@ function DropdownComponent({
   const styles = StyleSheet.create({
     container: {
       backgroundColor: colors.secondary,
-      borderTopRightRadius: 20,
-      borderTopLeftRadius: 20,
-      borderBottomLeftRadius: isFocus ? 0 : 20,
-      borderBottomRightRadius: isFocus ? 0 : 20,
+      borderTopRightRadius: isFocus && mode === 'top' ? 0 : 20,
+      borderTopLeftRadius: isFocus && mode === 'top' ? 0 : 20,
+      borderBottomLeftRadius: isFocus && mode === 'bottom' ? 0 : 20,
+      borderBottomRightRadius: isFocus && mode === 'bottom' ? 0 : 20,
       marginVertical: 14,
       borderWidth: darkMode ? 0 : 1,
       borderColor: error ? colors.error : colors.primary,
@@ -61,7 +64,8 @@ function DropdownComponent({
     },
     inputSearchStyle: {
       height: 40,
-      borderBottomWidth: 0.5,
+      borderBottomWidth: mode === 'top' ? 0 : 0.5,
+      borderTopWidth: mode === 'bottom' ? 0 : 0.5,
       borderWidth: 0,
       borderColor: colors.primary,
       fontSize: 16,
@@ -70,13 +74,15 @@ function DropdownComponent({
       color: colors.primary,
     },
     containerStyle: {
-      borderBottomLeftRadius: 20,
-      borderBottomRightRadius: 20,
+      borderBottomLeftRadius: mode === 'top' ? 0 : 20,
+      borderBottomRightRadius: mode === 'top' ? 0 : 20,
+      borderTopRightRadius: mode === 'bottom' ? 0 : 20,
+      borderTopLeftRadius: mode === 'bottom' ? 0 : 20,
       marginTop: darkMode ? -11 : 0,
-      borderTopWidth: 0,
       borderRightWidth: darkMode ? 0 : 1,
       borderLeftWidth: darkMode ? 0 : 1,
-      borderBottomWidth: darkMode ? 0 : 1,
+      borderBottomWidth: darkMode && mode === 'bottom' ? 0 : 1,
+      borderTopWidth: mode === 'top' && !darkMode ? 1 : 0,
       borderColor: colors.primary,
     },
     error: {
@@ -111,7 +117,7 @@ function DropdownComponent({
           showsVerticalScrollIndicator={false}
           selectedTextStyle={styles.selectedTextStyle}
           placeholderStyle={styles.placeholderStyle}
-          placeholder={isFocus ? '' : label}
+          placeholder={isFocus ? '' : defaultValue || label}
           inputSearchStyle={styles.inputSearchStyle}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
@@ -122,7 +128,7 @@ function DropdownComponent({
           labelField="label"
           valueField="value"
           iconColor={colors.primary}
-          dropdownPosition="bottom"
+          dropdownPosition={mode}
           searchPlaceholder={searchPlaceholder}
           value={value}
           containerStyle={styles.containerStyle}
@@ -135,5 +141,12 @@ function DropdownComponent({
     </>
   );
 }
+DropdownComponent.propTypes = {
+  mode: PropTypes.string,
+};
+
+DropdownComponent.defaultProps = {
+  mode: 'bottom',
+};
 
 export default DropdownComponent;

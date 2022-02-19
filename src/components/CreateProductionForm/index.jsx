@@ -166,6 +166,7 @@ function CreateProductionForm({
         value={selectedOption}
         setValue={setSelectedOption}
         data={options}
+        mode="bottom"
       />
 
       <Footer withBorder={false} style={styles.footer}>

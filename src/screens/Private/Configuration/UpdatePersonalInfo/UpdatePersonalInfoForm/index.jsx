@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { Button, Form, Steps, Dropdown } from '@components';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { Footer } from '@components/layout';
 import { View, StyleSheet } from 'react-native';
 import states from '@utils/states';
+import { Button, Form, Dropdown } from '@components';
+import { Title1, Title2 } from '@components/typography';
 
-function AddressForm({ onSubmit, isSubmitting }) {
+function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   const { t } = useTranslation();
+  const email = useRef();
+  const phone = useRef();
+  const zipCodeRef = useRef();
+
   const [selectedOption, setSelectedOption] = useState(false);
   const [loadingZipCode, setLoadingZipCode] = useState(false);
+  const [defaultState, setDefaultState] = useState('RS');
   const [loadingCoordinates, setLoadingCoordinates] = useState(false);
 
   function validZipCode(value) {
@@ -23,7 +29,27 @@ function AddressForm({ onSubmit, isSubmitting }) {
     return true;
   }
 
+  function validPhone(value) {
+    const cellphone = value.replace(/\D/g, '');
+    if (cellphone.length < 11) {
+      return false;
+    }
+    return true;
+  }
+
   const schema = Yup.object().shape({
+    name: Yup.string().required(t('formErrors:required')),
+    email: Yup.string()
+      .email(t('formErrors:email'))
+      .required(t('formErrors:required')),
+    phone: Yup.string()
+      .required(t('formErrors:required'))
+      .test('validPhone', t('formErrors:phone'), (value) => {
+        if (value) {
+          return validPhone(value);
+        }
+        return true;
+      }),
     zipCode: Yup.string().test(
       'validZipCode',
       t('formErrors:zipCode'),
@@ -52,6 +78,13 @@ function AddressForm({ onSubmit, isSubmitting }) {
       width: 120,
       marginTop: 16,
     },
+    viewTitle: {
+      marginTop: 24,
+      marginBottom: 16,
+    },
+    viewInstruction: {
+      marginBottom: 24,
+    },
   });
 
   const {
@@ -59,10 +92,23 @@ function AddressForm({ onSubmit, isSubmitting }) {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema), mode: 'onChange' });
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+    defaultValues: {
+      name: 'Carlos Rodrigo Vogt',
+      email: 'carlosvogt15@gmail.com',
+      phone: '51996882190',
+      zipCode: '96890000',
+      coordinates: '00000000000',
+      city: 'Sinimbu',
+      state: 'RS',
+    },
+  });
 
   const handleSetState = (value) => {
     setSelectedOption(value);
+    setDefaultState(null);
     setValue('state', value.toLocaleUpperCase());
   };
 
@@ -82,9 +128,50 @@ function AddressForm({ onSubmit, isSubmitting }) {
 
   return (
     <>
+      <View style={styles.viewTitle}>
+        <Title1 family="medium">{t('updatePersonalInfo:personalData')}</Title1>
+      </View>
+      <View style={styles.viewInstruction}>
+        <Title2>{t('createAccount:requiredInfo')}</Title2>
+      </View>
+
+      <Form.TextInput
+        name="name"
+        label={t('createAccount:name')}
+        errorMessage={errors.name?.message}
+        control={control}
+        returnKeyType="next"
+        onSubmitEditing={() => email.current.focus()}
+      />
+      <Form.TextInput
+        inputRef={email}
+        name="email"
+        label={t('createAccount:email')}
+        errorMessage={errors.email?.message}
+        control={control}
+        returnKeyType="next"
+        keyboardType="email-address"
+        onSubmitEditing={() => phone.current.focus()}
+      />
+      <Form.TextInput
+        name="phone"
+        inputRef={phone}
+        maskType="phone"
+        maxLength={15}
+        label={t('createAccount:phone')}
+        errorMessage={errors.phone?.message}
+        control={control}
+        returnKeyType="next"
+        onSubmitEditing={() => zipCodeRef.current.focus()}
+      />
+      <View style={styles.viewTitle}>
+        <Title1 family="medium">{t('updatePersonalInfo:address')}</Title1>
+      </View>
+
       <View style={styles.view}>
         <View style={styles.input}>
           <Form.TextInput
+            inputRef={zipCodeRef}
             name="zipCode"
             label={t('createAccount:zipCode')}
             errorMessage={errors.zipCode?.message}
@@ -140,31 +227,32 @@ function AddressForm({ onSubmit, isSubmitting }) {
         control={control}
         search
         searchPlaceholder={t('createAccount:search')}
-        mode="bottom"
+        mode="top"
+        defaultValue={defaultState}
       />
+
       <Footer>
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
           title={
             isSubmitting
-              ? t('createAccount:createAccount')
-              : t('createAccount:created')
+              ? t('updatePersonalInfo:saving')
+              : t('updatePersonalInfo:save')
           }
         />
-        <Steps total={2} active={1} />
       </Footer>
     </>
   );
 }
 
-AddressForm.propTypes = {
+UpdatePersonalInfoForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool,
 };
 
-AddressForm.defaultProps = {
+UpdatePersonalInfoForm.defaultProps = {
   isSubmitting: false,
 };
 
-export default AddressForm;
+export default UpdatePersonalInfoForm;

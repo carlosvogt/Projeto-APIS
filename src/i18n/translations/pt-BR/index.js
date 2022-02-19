@@ -14,6 +14,7 @@ import profile from './profile.json';
 import components from './components.json';
 import changePassword from './changePassword.json';
 import suggestions from './suggestions.json';
+import updatePersonalInfo from './updatePersonalInfo.json';
 
 export default {
   formErrors,
@@ -32,4 +33,5 @@ export default {
   components,
   changePassword,
   suggestions,
+  updatePersonalInfo,
 };

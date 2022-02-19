@@ -46,9 +46,7 @@ function SuggestionsForm({ onSubmit, isSubmitting }) {
 
       <Footer>
         <Button
-          title={
-            isSubmitting ? t('changePassword:saving') : t('changePassword:save')
-          }
+          title={t('suggestions:send')}
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
         />
