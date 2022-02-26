@@ -109,7 +109,9 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   const handleSetState = (value) => {
     setSelectedOption(value);
     setDefaultState(null);
-    setValue('state', value.toLocaleUpperCase());
+    setValue('state', value.toLocaleUpperCase(), {
+      shouldValidate: true,
+    });
   };
 
   // Dado mocado

@@ -6,6 +6,7 @@ import CheckViability from './CheckViability';
 import ApiariesHome from './ApiariesHome';
 import ApiaryHome from './ApiaryHome';
 import CreateApiaryAddress from './CreateApiary/Address';
+import CheckViabilityResponse from './CheckViabilityResponse';
 
 function ApiaryNavigation() {
   const Stack = createStackNavigator();
@@ -36,6 +37,13 @@ function ApiaryNavigation() {
       <Stack.Screen
         name="CreateApiaryPersonalInfo"
         component={CreateApiaryPersonalInfo}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CheckViabilityResponse"
+        component={CheckViabilityResponse}
         options={{
           headerShown: false,
         }}

@@ -16,6 +16,7 @@ import changePassword from './changePassword.json';
 import suggestions from './suggestions.json';
 import updatePersonalInfo from './updatePersonalInfo.json';
 import createApiary from './createApiary.json';
+import checkViability from './checkViability.json';
 
 export default {
   formErrors,
@@ -36,4 +37,5 @@ export default {
   suggestions,
   updatePersonalInfo,
   createApiary,
+  checkViability,
 };

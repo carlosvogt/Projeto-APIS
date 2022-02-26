@@ -63,7 +63,9 @@ function AddressForm({ onSubmit, isSubmitting }) {
 
   const handleSetState = (value) => {
     setSelectedOption(value);
-    setValue('state', value.toLocaleUpperCase());
+    setValue('state', value.toLocaleUpperCase(), {
+      shouldValidate: true,
+    });
   };
 
   // Dado mocado
