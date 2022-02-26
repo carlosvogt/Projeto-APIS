@@ -15,6 +15,7 @@ import components from './components.json';
 import changePassword from './changePassword.json';
 import suggestions from './suggestions.json';
 import updatePersonalInfo from './updatePersonalInfo.json';
+import createApiary from './createApiary.json';
 
 export default {
   formErrors,
@@ -34,4 +35,5 @@ export default {
   changePassword,
   suggestions,
   updatePersonalInfo,
+  createApiary,
 };

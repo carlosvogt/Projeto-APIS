@@ -3,9 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { ExpensiveNote, TextInput, Modal } from '@components';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  BackHandler,
+} from 'react-native';
 import { useTheme } from '@theme';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Add, CheckOutline } from '@assets';
 import { Header } from '@components/layout';
 
@@ -141,7 +147,7 @@ function ApiariesHome() {
 
   const handleAddApiary = () => {
     navigation.navigate('ApiaryNavigation', {
-      screen: 'CreateApiary',
+      screen: 'CreateApiaryPersonalInfo',
     });
   };
 
@@ -164,6 +170,24 @@ function ApiariesHome() {
     setShowModal(false);
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate('HomeScreen');
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, []),
+  );
+
+  const handleHome = () => {
+    navigation.navigate('HomeScreen');
+  };
+
   return (
     <View style={styles.container}>
       <Modal
@@ -173,7 +197,7 @@ function ApiariesHome() {
         showModal={showModal}
         isSubmitting={isSubmitting}
       />
-      <Header title={t('apiaries:name')} />
+      <Header title={t('apiaries:name')} onGoBack={handleHome} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}

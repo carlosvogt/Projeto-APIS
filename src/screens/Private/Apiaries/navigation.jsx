@@ -1,10 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import EditApiary from './EditApiary';
-import CreateApiary from './CreateApiary';
+import CreateApiaryPersonalInfo from './CreateApiary/PersonalInfo';
 import CheckViability from './CheckViability';
 import ApiariesHome from './ApiariesHome';
 import ApiaryHome from './ApiaryHome';
+import CreateApiaryAddress from './CreateApiary/Address';
 
 function ApiaryNavigation() {
   const Stack = createStackNavigator();
@@ -26,8 +27,15 @@ function ApiaryNavigation() {
         }}
       />
       <Stack.Screen
-        name="CreateApiary"
-        component={CreateApiary}
+        name="CreateApiaryAddress"
+        component={CreateApiaryAddress}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CreateApiaryPersonalInfo"
+        component={CreateApiaryPersonalInfo}
         options={{
           headerShown: false,
         }}

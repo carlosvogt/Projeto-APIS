@@ -4,5 +4,7 @@
   "phone" : "Favor informe um telefone válido",
   "password" : "Atenção, as senhas devem ser iguais",
   "passwordLength" : "A senha deve ter no mínimo 6 números",
-  "zipCode" : "Favor informe um CEP válido"
+  "zipCode" : "Favor informe um CEP válido",
+  "percentage" : "Favor informe uma porcentagem válida"
+
 }

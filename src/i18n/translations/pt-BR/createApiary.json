@@ -1,0 +1,21 @@
+{
+  "header" : "Cadastrar apiário",
+  "personalInfo" : "Dados de identificação",
+  "mandatoryData" : "* Dados obrigatórios",
+  "apiaryName" : "Nome do apiário *",
+  "owner" : "Proprietário do local *",
+  "phone" : "Telefone do proprietário",
+  "quantity" : "Quantidade de locais feitos *",
+  "quantityFull" : "Quantidade de colmeias instaladas *",
+  "ownerPercent" : "% do dono da terra",
+  "address" : "Endereço",
+  "zipCode" : "CEP",
+  "coordinates" : "Coordenadas",
+  "research" : "Buscar",
+  "city" : "Cidade *",
+  "state" : "Estado *",
+  "create" : "Criar",
+  "creating" : "Criando",
+  "continue" : "Continuar",
+  "search" : "Pesquisar"
+}
