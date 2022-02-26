@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { Title5 } from '@components/typography';
 import { View } from 'react-native';
 import HomeScreen from './Home';
-import ApiariesScreen from './Apiaries';
+import ApiariesHome from './Apiaries/ApiariesHome';
 import ApiariesMapScreen from './ApiariesMap';
 import MortalityMapScreen from './MortalityMap';
 import RoutesMapScreen from './RoutesMap';
@@ -44,7 +44,7 @@ function PrivateNavigator() {
                   <Title5 color={color}>{t('home:name')}</Title5>
                 </>
               );
-            case 'ApiariesScreen':
+            case 'ApiariesHome':
               return (
                 <>
                   <Bee color={color} />
@@ -98,14 +98,14 @@ function PrivateNavigator() {
         }}
       />
       <Tab.Screen
-        name="ApiariesScreen"
+        name="ApiariesHome"
         options={{
           headerShown: false,
           tabBarItemStyle: {
             borderRadius: 20,
           },
         }}
-        component={ApiariesScreen}
+        component={ApiariesHome}
       />
       <Tab.Screen
         name="ApiariesMapScreen"

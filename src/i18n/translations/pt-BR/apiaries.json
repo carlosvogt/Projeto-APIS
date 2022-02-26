@@ -1,3 +1,9 @@
 {
-  "name": "Apiários"
+  "name": "Apiários",
+  "add" : "Cadastrar",
+  "viability" : "Viabilidade",
+  "placeholder" : "Pesquisar",
+  "nothingFound" : "Nenhum resultado encontrado!",
+  "addNote" : "Adicionar nota",
+  "seeApiary" : "Visualizar apiário"
 }
