@@ -17,6 +17,7 @@ import suggestions from './suggestions.json';
 import updatePersonalInfo from './updatePersonalInfo.json';
 import createApiary from './createApiary.json';
 import checkViability from './checkViability.json';
+import editApiary from './editApiary.json';
 
 export default {
   formErrors,
@@ -38,4 +39,5 @@ export default {
   updatePersonalInfo,
   createApiary,
   checkViability,
+  editApiary,
 };

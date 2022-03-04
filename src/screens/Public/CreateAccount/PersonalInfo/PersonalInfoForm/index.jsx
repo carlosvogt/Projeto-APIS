@@ -14,6 +14,14 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
   const password = useRef();
   const confirmPassword = useRef();
 
+  function validPhone(value) {
+    const cellphone = value.replace(/\D/g, '');
+    if (cellphone.length < 10) {
+      return false;
+    }
+    return true;
+  }
+
   const schema = Yup.object().shape({
     name: Yup.string().required(t('formErrors:required')),
     email: Yup.string()
@@ -21,8 +29,12 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
       .required(t('formErrors:required')),
     phone: Yup.string()
       .required(t('formErrors:required'))
-      .length(15, t('formErrors:phone')),
-
+      .test('validPhone', t('formErrors:phone'), (value) => {
+        if (value) {
+          return validPhone(value);
+        }
+        return true;
+      }),
     password: Yup.string()
       .required(t('formErrors:required'))
       .min(6, t('formErrors:passwordLength')),
@@ -61,7 +73,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         name="phone"
         inputRef={phone}
         maskType="phone"
-        maxLength={15}
+        maxLength={16}
         label={t('createAccount:phone')}
         errorMessage={errors.phone?.message}
         control={control}

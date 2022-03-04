@@ -26,6 +26,20 @@
     "noNoteTitle" : "Você não possui anotações!",
     "noNoteBody" : "Criei a sua primeira anotação para este apiário.",
     "noApiari" : "Você não possui apiários cadastrados!",
-    "noApiariBody" : "Para adicionar, basta clicar no botão acima."
+    "noApiariBody" : "Para adicionar, basta clicar no botão acima.",
+    "apiary" : "Apiário:",
+    "address" : "Endereço:",
+    "fullPlaces" : "Colmeias:",
+    "emptyPlaces" : "Vagas:",
+    "noTitle" : "Sem título",
+    "date" : "Data:",
+    "owner" : "Dono: ",
+    "ownerPercent" : "Percentual do dono: ",
+    "ownerPhone" : "Telefone: ",
+    "noProduction" : "Você não possui produções!",
+    "qtd" : " - Qtd:",
+    "kg" : "Kg",
+    "payed" : "Pago:",
+    "notInformed" : "Não informado"
   }
 }

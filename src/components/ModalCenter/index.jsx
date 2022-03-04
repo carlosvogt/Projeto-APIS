@@ -27,6 +27,7 @@ const ModalCenter = ({
   showModal,
   mode,
   isSubmitting,
+  defaultData,
 }) => {
   const { colors } = useTheme();
   const deviceWidth = Dimensions.get('window').width;
@@ -110,6 +111,7 @@ const ModalCenter = ({
                 <View style={styles.noteContainer}>
                   <CreateNoteForm
                     title={title}
+                    defaultData={defaultData}
                     cancelFunction={cancelFunction}
                     positiveAction={positiveAction}
                     isSubmitting={isSubmitting}
@@ -120,6 +122,7 @@ const ModalCenter = ({
                 <View style={styles.noteContainer}>
                   <CreateProductionForm
                     title={title}
+                    defaultData={defaultData}
                     cancelFunction={cancelFunction}
                     positiveAction={positiveAction}
                     isSubmitting={isSubmitting}

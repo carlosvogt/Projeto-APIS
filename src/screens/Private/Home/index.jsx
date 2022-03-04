@@ -16,10 +16,13 @@ function HomeScreen() {
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
+  const [modalType, setModalType] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isSubmittingDelete, setIsSubmittingDelete] = useState(false);
   const isFocused = useIsFocused();
   const [userImage, setUserImage] = useState();
+  const [selectedNoteIndex, setSelectedNoteIndex] = useState(0);
+  const [defaultData, setDefaultData] = useState(null);
 
   // Dado mocado
   const username = 'Carlos Rodrigo Vogt';
@@ -65,43 +68,45 @@ function HomeScreen() {
   const notes = [
     {
       code: 1,
-      nome: 'Anotação 1',
+      name: 'Anotação 1',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
     },
     {
       code: 2,
-      nome: 'Anotação 2',
+      name: 'Anotação 2',
       note: 'Aqui o texto será escrito de forma integral',
     },
     {
       code: 3,
-      nome: '',
+      name: '',
       note: 'Aqui o texto será escrito de forma integral aaa',
     },
     {
       code: 4,
-      nome: 'Anotação 1',
+      name: 'Anotação 1',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
     },
     {
       code: 5,
-      nome: 'Anotação 1',
+      name: 'Anotação 1',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
     },
     {
       code: 6,
-      nome: 'Anotação 1',
+      name: 'Anotação 1',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
     },
     {
       code: 7,
-      nome: 'Anotação 1',
+      name: 'Anotação 1',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
     },
   ];
 
   const handleEditModal = () => {
+    setModalType(2);
     setModalTitle(t('home:editNote'));
+    setDefaultData(notes[selectedNoteIndex]);
     setShowModal(true);
   };
 
@@ -110,8 +115,8 @@ function HomeScreen() {
   };
 
   const modalNoteOptions = [
-    { option: t('home:edit'), onClick: handleEditModal },
-    { option: t('home:delete'), onClick: handleDeleteModal },
+    { option: t('home:editNote'), delete: false, onClick: handleEditModal },
+    { option: t('home:deleteNote'), delete: true, onClick: handleDeleteModal },
   ];
 
   const handleGoProfile = () => {
@@ -120,7 +125,9 @@ function HomeScreen() {
     });
   };
 
-  const handleShowModal = () => {
+  const handleAddNote = () => {
+    setModalType(1);
+    setDefaultData(null);
     setModalTitle(t('home:addNote'));
     setShowModal(true);
   };
@@ -136,9 +143,17 @@ function HomeScreen() {
   };
 
   // Dado mocado
-  const handleNote = (value) => {
+  const handleCreateNote = (value) => {
     setIsSubmitting(true);
-    console.log('fazer o que precisa', value);
+    console.log('Adicionar nota', value);
+    setIsSubmitting(false);
+    setShowModal(false);
+  };
+
+  // Dado mocado
+  const handleEditNote = (value) => {
+    setIsSubmitting(true);
+    console.log('Editar nota', value, selectedCode);
     setIsSubmitting(false);
     setShowModal(false);
   };
@@ -160,7 +175,6 @@ function HomeScreen() {
 
   useEffect(() => {
     loadPhoto();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused, username]);
 
   return (
@@ -169,7 +183,10 @@ function HomeScreen() {
         title={modalTitle}
         mode="note"
         cancelFunction={() => dismissModal()}
-        positiveAction={(value) => handleNote(value)}
+        defaultData={defaultData}
+        positiveAction={(value) =>
+          modalType === 1 ? handleCreateNote(value) : handleEditNote(value)
+        }
         showModal={showModal}
         isSubmitting={isSubmitting}
       />
@@ -208,7 +225,7 @@ function HomeScreen() {
         <View style={styles.add}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => handleShowModal()}
+            onPress={() => handleAddNote()}
           >
             <Add size={40} color={colors.secondary} />
           </TouchableOpacity>
@@ -217,17 +234,19 @@ function HomeScreen() {
           </Title1>
         </View>
         {notes.length > 0 ? (
-          notes.map((note) => {
+          notes.map((note, index) => {
             return (
               <ExpensiveNote
                 mode="note"
                 key={note.code}
-                name={note.nome}
-                notes={note.note}
+                data={note}
                 hasData
                 modalOptions={modalNoteOptions}
                 selectedCode={note.code}
-                setSelectedCode={() => setSelectedCode(note.code)}
+                setSelectedCode={() => {
+                  setSelectedCode(note.code);
+                  setSelectedNoteIndex(index);
+                }}
               />
             );
           })

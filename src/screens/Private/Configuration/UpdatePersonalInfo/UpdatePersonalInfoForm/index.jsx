@@ -31,7 +31,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
 
   function validPhone(value) {
     const cellphone = value.replace(/\D/g, '');
-    if (cellphone.length < 11) {
+    if (cellphone.length < 10) {
       return false;
     }
     return true;
@@ -159,7 +159,8 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
         name="phone"
         inputRef={phone}
         maskType="phone"
-        maxLength={15}
+        maxLength={16}
+        keyboardType="numeric"
         label={t('createAccount:phone')}
         errorMessage={errors.phone?.message}
         control={control}
