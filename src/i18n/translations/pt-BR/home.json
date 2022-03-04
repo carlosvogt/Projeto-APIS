@@ -1,12 +1,11 @@
 {
   "name": "Home",
-  "edit" :"Editar",
-  "delete" : "Apagar",
   "notes" : "Anotações",
   "addNote" : "Adicionar nota",
   "editNote" : "Editar nota",
   "deleteNote" : "Apagar nota",
   "deleteNoteQuestion" : "Você quer realmente apagar a nota?",
   "cancel" : "Cancelar",
-  "deleting" : "Apagando"
+  "deleting" : "Apagando",
+  "delete": "Apagar"
 }

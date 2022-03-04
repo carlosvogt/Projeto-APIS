@@ -11,21 +11,20 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
   const { t } = useTranslation();
   const owner = useRef();
   const phone = useRef();
-  const quantity = useRef();
+  const totalPlaces = useRef();
   const quantityFull = useRef();
   const ownerPercent = useRef();
 
   function validPhone(value) {
     const cellphone = value.replace(/\D/g, '');
-    if (cellphone.length < 11) {
+    if (cellphone.length < 10) {
       return false;
     }
     return true;
   }
 
   function validPercentage(value) {
-    const percent = value.replace(/\D/g, '');
-    if (percent > 100) {
+    if (value > 100) {
       return false;
     }
     return true;
@@ -40,7 +39,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
       }
       return true;
     }),
-    quantity: Yup.string().required(t('formErrors:required')),
+    totalPlaces: Yup.string().required(t('formErrors:required')),
     quantityFull: Yup.string().required(t('formErrors:required')),
     ownerPercent: Yup.string().test(
       'validPercent',
@@ -83,21 +82,21 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         name="phone"
         inputRef={phone}
         maskType="phone"
-        maxLength={15}
+        maxLength={16}
         label={t('createApiary:phone')}
         errorMessage={errors.phone?.message}
         control={control}
         keyboardType="numeric"
         returnKeyType="next"
-        onSubmitEditing={() => quantity.current.focus()}
+        onSubmitEditing={() => totalPlaces.current.focus()}
       />
       <Form.TextInput
-        inputRef={quantity}
-        name="quantity"
+        inputRef={totalPlaces}
+        name="totalPlaces"
         keyboardType="numeric"
         returnKeyType="next"
         label={t('createApiary:quantity')}
-        errorMessage={errors.quantity?.message}
+        errorMessage={errors.totalPlaces?.message}
         control={control}
         onSubmitEditing={() => quantityFull.current.focus()}
       />

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { ExpensiveNote, TextInput, Modal } from '@components';
+import { ExpensiveNote, TextInput } from '@components';
 import {
   ScrollView,
   StyleSheet,
@@ -17,13 +17,10 @@ import { Header } from '@components/layout';
 
 function ApiariesHome() {
   const { t } = useTranslation();
-  const [selectedCode, setSelectedCode] = useState(0);
   const { colors } = useTheme();
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
   const [editedText, setEditedText] = useState();
-  const [showModal, setShowModal] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -38,19 +35,15 @@ function ApiariesHome() {
     button: {
       flexDirection: 'row',
       height: 50,
-      width: 'auto',
+      width: '100%',
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
-      marginRight: 8,
-      paddingHorizontal: 8,
+      marginTop: 16,
       backgroundColor: colors.primary,
     },
     add: {
-      marginTop: 8,
-      flexDirection: 'row',
       alignItems: 'center',
-      width: ' 100%',
       justifyContent: 'center',
     },
     view: {
@@ -62,85 +55,138 @@ function ApiariesHome() {
   const apiaries = [
     {
       code: 1,
-      nome: 'Apiário número 1',
-      qtdOcupada: 50,
-      qtdLivre: 10,
+      name: 'São João',
+      city: 'Sinimbu',
+      coordinates: '1000000019000',
+      zipCode: '96890000',
+      state: 'RS',
+      quantityFull: '50',
+      totalPlaces: '55',
+      owner: 'Carlos Vogt',
+      phone: '(51) 9 9999-9999',
+      ownerPercent: '5',
+      total: '2000',
+      totalPayed: '300',
+      mortality: 'Sim',
       notes: [
         {
           code: 1,
-          nome: 'Anotação 1',
+          name: 'Anotação 1',
           note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
         },
         {
           code: 2,
-          nome: 'Anotação 2',
+          name: 'Anotação 2',
           note: 'Aqui o texto será escrito de forma integral',
         },
         {
           code: 3,
-          nome: '',
+          name: '',
           note: 'Aqui o texto será escrito de forma integral aaa',
+        },
+      ],
+      production: [
+        {
+          code: 1,
+          name: 'Safra 2019',
+          date: '15/01/2020',
+          qtd: '500',
+          payed: 'Sim',
+          payedQtd: '150',
+        },
+        {
+          code: 2,
+          name: 'Safra 2020',
+          date: '15/01/2020',
+          qtd: '1500',
+          payed: 'Sim',
+          payedQtd: '150',
         },
       ],
     },
     {
       code: 2,
-      nome: 'Apiário número 2',
-      qtdOcupada: 50,
-      qtdLivre: 10,
+      name: 'Primavera',
+      city: 'Sinimbu',
+      coordinates: '1000000019000',
+      zipCode: '96890000',
+      state: 'RS',
+      quantityFull: '50',
+      totalPlaces: '55',
+      owner: 'Carlos Vogt',
+      phone: '(51) 9 9999-9999',
+      ownerPercent: '5',
+      total: '1000',
+      totalPayed: '50',
+      mortality: 'Sim',
       notes: [
         {
           code: 1,
-          nome: 'Anotação 1',
+          name: 'Anotação 1',
           note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+        },
+      ],
+      production: [
+        {
+          code: 1,
+          name: 'Safra 2019',
+          date: '15/01/2020',
+          qtd: '500',
+          payed: '',
+          payedQtd: '50',
+        },
+        {
+          code: 2,
+          name: 'Safra 2020',
+          date: '15/01/2020',
+          qtd: '500',
+          payed: 'Sim',
+          payedQtd: '',
         },
       ],
     },
     {
       code: 3,
-      nome: 'Apiário número 3',
-      qtdOcupada: 50,
-      qtdLivre: 10,
+      name: 'Vera Cruz',
+      city: 'Sinimbu',
+      coordinates: '1000000019000',
+      zipCode: '96890000',
+      state: 'RS',
+      quantityFull: '50',
+      totalPlaces: '55',
+      owner: 'Carlos Vogt',
+      phone: '(51) 9 9999-9999',
+      ownerPercent: '5',
+      total: '0',
+      totalPayed: '0',
+      mortality: 'Não',
       notes: [],
+      production: [],
     },
   ];
 
   useEffect(() => {
     const handleListTitle = apiaries.filter((item) =>
-      item.nome.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()),
+      item.name.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()),
     );
     setEditedText(handleListTitle);
   }, [searchText]);
 
-  const handleNewNote = () => {
-    setShowModal(true);
-  };
-
-  const handleToApiary = () => {
-    console.log('Ir para apiários', selectedCode);
+  const handleToApiary = (index) => {
     navigation.navigate('ApiaryNavigation', {
       screen: 'ApiaryHome',
+      params: { ...apiaries[index] },
     });
   };
 
-  const modalOptions = [
-    { option: t('apiaries:addNote'), onClick: handleNewNote },
-    { option: t('apiaries:seeApiary'), onClick: handleToApiary },
-  ];
-
-  const handleNotes = (note) => {
+  const handleApiaries = (apiary, index) => {
     return (
       <ExpensiveNote
-        key={note.code}
-        name={note.nome}
-        qtdEmpty={note.qtdLivre}
-        qtdOccupy={note.qtdOcupada}
-        notes={note.notes}
+        key={apiary.code}
+        data={apiary}
         hasData
-        modalOptions={modalOptions}
         mode="apiary"
-        selectedCode={note.code}
-        setSelectedCode={() => setSelectedCode(note.code)}
+        onPress={() => handleToApiary(index)}
       />
     );
   };
@@ -155,19 +201,6 @@ function ApiariesHome() {
     navigation.navigate('ApiaryNavigation', {
       screen: 'CheckViability',
     });
-  };
-
-  const dismissModal = () => {
-    setShowModal(false);
-    setIsSubmitting(false);
-  };
-
-  // Dado mocado
-  const handleNote = (value) => {
-    setIsSubmitting(true);
-    console.log('fazer o que precisa', value);
-    setIsSubmitting(false);
-    setShowModal(false);
   };
 
   useFocusEffect(
@@ -190,13 +223,6 @@ function ApiariesHome() {
 
   return (
     <View style={styles.container}>
-      <Modal
-        mode="note"
-        cancelFunction={() => dismissModal()}
-        positiveAction={(value) => handleNote(value)}
-        showModal={showModal}
-        isSubmitting={isSubmitting}
-      />
       <Header title={t('apiaries:name')} onGoBack={handleHome} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
@@ -224,21 +250,23 @@ function ApiariesHome() {
             </View>
           </TouchableOpacity>
         </View>
-        <TextInput
-          onChangeText={(text) => setSearchText(text)}
-          value={searchText}
-          name="search"
-          placeholderTextColor={colors.primary}
-          placeholder={t('apiaries:placeholder')}
-        />
+        <View style={{ marginBottom: 8 }}>
+          <TextInput
+            onChangeText={(text) => setSearchText(text)}
+            value={searchText}
+            name="search"
+            placeholderTextColor={colors.primary}
+            placeholder={t('apiaries:placeholder')}
+          />
+        </View>
         {searchText === '' ? (
           apiaries.length > 0 ? (
-            apiaries.map((note) => handleNotes(note))
+            apiaries.map((apiary, index) => handleApiaries(apiary, index))
           ) : (
             <ExpensiveNote hasData={false} mode="apiary" />
           )
         ) : editedText.length > 0 ? (
-          editedText.map((note) => handleNotes(note))
+          editedText.map((apiary, index) => handleApiaries(apiary, index))
         ) : (
           <Title2 centered color={colors.primary}>
             {t('apiaries:nothingFound')}

@@ -20,8 +20,7 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
   const [selectedQuestionEight, setSelectedQuestionEight] = useState(false);
 
   function validPercentage(value) {
-    const percent = value.replace(/\D/g, '');
-    if (percent > 100) {
+    if (value > 100) {
       return false;
     }
     return true;

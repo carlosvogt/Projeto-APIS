@@ -19,6 +19,7 @@ function CreateProductionForm({
   isSubmitting,
   positiveAction,
   cancelFunction,
+  defaultData,
 }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -26,9 +27,9 @@ function CreateProductionForm({
   const [openKeyboard, setOpenKeyboard] = useState(true);
   const [selectedOption, setSelectedOption] = useState(false);
 
-  const harvestDate = useRef();
-  const amount = useRef();
-  const payedOwner = useRef();
+  const date = useRef();
+  const qtd = useRef();
+  const payedQtd = useRef();
 
   const options = [
     {
@@ -42,8 +43,8 @@ function CreateProductionForm({
   ];
 
   const schema = Yup.object().shape({
-    harvest: Yup.string().required(t('formErrors:required')),
-    harvestDate: Yup.string()
+    name: Yup.string().required(t('formErrors:required')),
+    date: Yup.string()
       .required(t('formErrors:required'))
       .test('date', t('form:label.date'), (value) => {
         if (value) {
@@ -55,7 +56,9 @@ function CreateProductionForm({
         }
         return true;
       }),
-    amount: Yup.string().required(t('formErrors:required')),
+    qtd: Yup.string().required(t('formErrors:required')),
+    payedQtd: Yup.string(),
+    payed: Yup.string(),
   });
 
   const styles = StyleSheet.create({
@@ -88,17 +91,34 @@ function CreateProductionForm({
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema), mode: 'onChange' });
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+    defaultValues: {
+      name: defaultData?.name || '',
+      date: defaultData?.date || '',
+      qtd: defaultData?.qtd || '',
+      payedQtd: defaultData?.payedQtd || '',
+      payed: defaultData?.payed || '',
+    },
+  });
 
   function handleCalendar(value) {
     const formattedData = value.split('-');
     setValue(
-      'harvestDate',
+      'date',
       `${formattedData[2]}/${formattedData[1]}/${formattedData[0]}`,
       { shouldValidate: true },
     );
     setShowCalendar(false);
   }
+
+  const handleSetOption = (value) => {
+    setSelectedOption(value);
+    setValue('payed', value, {
+      shouldValidate: true,
+    });
+  };
 
   return (
     <ScrollView
@@ -112,17 +132,17 @@ function CreateProductionForm({
       </View>
 
       <Form.TextInput
-        name="harvest"
+        name="name"
         label={t('form:label.harvest')}
         control={control}
         returnKeyType="next"
         keyboardType="numeric"
-        errorMessage={errors.harvest?.message}
-        onSubmitEditing={() => harvestDate.current.focus()}
+        errorMessage={errors.name?.message}
+        onSubmitEditing={() => date.current.focus()}
       />
       <Form.TextInput
-        name="harvestDate"
-        inputRef={harvestDate}
+        name="date"
+        inputRef={date}
         icon="calendar-range"
         label={t('form:label.harvestDate')}
         control={control}
@@ -132,8 +152,8 @@ function CreateProductionForm({
         maskType="date"
         keyboardType="numeric"
         showSoftInputOnFocus={openKeyboard}
-        errorMessage={errors.harvestDate?.message}
-        onSubmitEditing={() => amount.current.focus()}
+        errorMessage={errors.date?.message}
+        onSubmitEditing={() => qtd.current.focus()}
         onPressIcon={() => {
           setOpenKeyboard(false);
           Keyboard.dismiss();
@@ -142,31 +162,33 @@ function CreateProductionForm({
         }}
       />
       <Form.TextInput
-        name="amount"
-        inputRef={amount}
+        name="qtd"
+        inputRef={qtd}
         label={t('form:label.amount')}
         control={control}
         returnKeyType="next"
         keyboardType="numeric"
-        errorMessage={errors.amount?.message}
-        onSubmitEditing={() => payedOwner.current.focus()}
+        errorMessage={errors.qtd?.message}
+        onSubmitEditing={() => payedQtd.current.focus()}
       />
 
       <Form.TextInput
-        name="payedOwner"
-        inputRef={payedOwner}
+        name="payedQtd"
+        inputRef={payedQtd}
         keyboardType="numeric"
         label={t('form:label.payedOwner')}
         control={control}
-        errorMessage={errors.payedOwner?.message}
+        errorMessage={errors.payedQtd?.message}
       />
 
       <DropdownComponent
+        name="payed"
         label={t('form:label.payed')}
         value={selectedOption}
-        setValue={setSelectedOption}
+        setValue={(value) => handleSetOption(value)}
         data={options}
         mode="bottom"
+        defaultValue={defaultData?.payed}
       />
 
       <Footer withBorder={false} style={styles.footer}>

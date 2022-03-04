@@ -15,6 +15,7 @@ function CreateNoteForm({
   isSubmitting,
   positiveAction,
   cancelFunction,
+  defaultData,
 }) {
   const { t } = useTranslation();
   const description = useRef();
@@ -50,7 +51,14 @@ function CreateNoteForm({
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema), mode: 'onChange' });
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+    defaultValues: {
+      title: defaultData?.name || '',
+      description: defaultData?.note || '',
+    },
+  });
 
   return (
     <ScrollView
