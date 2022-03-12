@@ -9,7 +9,6 @@ import home from './home.json';
 import apiaries from './apiaries.json';
 import apiariesMap from './apiariesMap.json';
 import mortalityMap from './mortalityMap.json';
-import routesMap from './routesMap.json';
 import profile from './profile.json';
 import components from './components.json';
 import changePassword from './changePassword.json';
@@ -31,7 +30,6 @@ export default {
   apiaries,
   apiariesMap,
   mortalityMap,
-  routesMap,
   profile,
   components,
   changePassword,

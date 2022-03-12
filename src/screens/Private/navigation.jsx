@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTheme } from '@theme';
-import { Home, Bee, Map, Gps, Location } from '@assets';
+import { Home, Bee, Gps, Location } from '@assets';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Title5 } from '@components/typography';
@@ -10,7 +10,6 @@ import HomeScreen from './Home';
 import ApiariesHome from './Apiaries/ApiariesHome';
 import ApiariesMapScreen from './ApiariesMap';
 import MortalityMapScreen from './MortalityMap';
-import RoutesMapScreen from './RoutesMap';
 
 function PrivateNavigator() {
   const { colors } = useTheme();
@@ -63,15 +62,8 @@ function PrivateNavigator() {
             case 'MortalityMapScreen':
               return (
                 <>
-                  <Map color={color} />
-                  <Title5 color={color}>{t('mortalityMap:name')}</Title5>
-                </>
-              );
-            case 'RoutesMapScreen':
-              return (
-                <>
                   <Gps color={color} />
-                  <Title5 color={color}>{t('routesMap:name')}</Title5>
+                  <Title5 color={color}>{t('mortalityMap:name')}</Title5>
                 </>
               );
             default:
@@ -122,22 +114,12 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
-            borderRadius: 20,
-          },
-        }}
-        component={MortalityMapScreen}
-      />
-      <Tab.Screen
-        name="RoutesMapScreen"
-        options={{
-          headerShown: false,
-          tabBarItemStyle: {
             borderTopRightRadius: 20,
             borderTopLeftRadius: 20,
             borderBottomLeftRadius: 20,
           },
         }}
-        component={RoutesMapScreen}
+        component={MortalityMapScreen}
       />
     </Tab.Navigator>
   );

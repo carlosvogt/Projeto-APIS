@@ -14,6 +14,8 @@ const Dark = {
   error: '#E54343',
   black: '#000000',
   line: '#F5F5F5',
+  primaryLight: '#F5C499af',
+  errorLight: '#E54343af',
 };
 
 const DarkTheme = merge(BaseTheme, {

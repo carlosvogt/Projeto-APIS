@@ -3,11 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android": "yarn load-brand-properties && react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "load-brand-properties": "node ./scripts/load-brand-properties.js",
+    "android:releaseAPK": "yarn load-brand-properties && cd android && ./gradlew assembleRelease",
+    "prepare-release": "yarn load-brand-properties "
+
   },
   "dependencies": {
     "@hookform/resolvers": "^2.8.8",
@@ -28,10 +32,13 @@
     "react-native": "0.66.4",
     "react-native-calendars": "^1.1276.0",
     "react-native-camera": "^4.2.1",
+    "react-native-config": "^1.4.5",
     "react-native-element-dropdown": "^1.6.1",
+    "react-native-geolocation-service": "^5.3.0-beta.4",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-image-picker": "^4.7.3",
     "react-native-localize": "^2.1.7",
+    "react-native-maps": "0.29.4",
     "react-native-paper": "^4.9.2",
     "react-native-popup-menu": "^0.15.12",
     "react-native-safe-area-context": "^3.3.2",
@@ -46,6 +53,8 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
+    "envfile": "^6.17.0",
     "@babel/core": "^7.16.5",
     "@babel/eslint-parser": "^7.16.5",
     "@babel/runtime": "^7.16.5",

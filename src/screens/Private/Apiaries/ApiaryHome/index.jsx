@@ -30,6 +30,7 @@ function ApiaryHome() {
   const navigation = useNavigation();
   const darkMode = useSelector((state) => state.mode.darkMode);
 
+  console.log(data);
   const styles = StyleSheet.create({
     container: {
       flexGrow: 1,

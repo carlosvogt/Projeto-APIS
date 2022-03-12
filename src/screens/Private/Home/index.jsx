@@ -34,6 +34,7 @@ function HomeScreen() {
     scrollView: {
       flexGrow: 1,
       marginHorizontal: 16,
+      paddingBottom: 120,
       marginVertical: 8,
       justifyContent: 'center',
     },
@@ -99,6 +100,11 @@ function HomeScreen() {
     {
       code: 7,
       name: 'Anotação 1',
+      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+    },
+    {
+      code: 8,
+      name: 'Anotação 8',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
     },
   ];
