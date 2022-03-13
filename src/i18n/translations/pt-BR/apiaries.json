@@ -33,6 +33,9 @@
     "delete" : "Apagar",
     "editProductionTitle" : "Editar produção",
     "deleteProductionTitle" : "Apagar produção",
-    "deleteProductionDescription" : "Você quer realmente apagar a produção?"
+    "deleteProductionDescription" : "Você quer realmente apagar a produção?",
+    "locationDenied" : "Permissão de localização negada pelo usuário",
+    "revokedPermission" : "Permissão de localização revogada pelo usuário",
+    "noPermission" : "Atenção, para visualizar o mapa você deve habilitar a permissão de localização!"
   }
 }

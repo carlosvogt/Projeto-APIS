@@ -13,22 +13,21 @@ function Header({ title, onGoBack, canGoBack }) {
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: colors.primary,
-      borderBottomRightRadius: 25,
     },
+    view: {
+      backgroundColor: colors.primary,
+      height: 50,
+      justifyContent: 'center',
+    },
+    iconContainer: { paddingRight: 16 },
   });
 
   return (
     <View style={styles.container}>
-      <View style={{ paddingRight: 16 }}>
+      <View style={styles.iconContainer}>
         <NavBackButton onGoBack={onGoBack} canGoBack={canGoBack} />
       </View>
-      <View
-        style={{
-          backgroundColor: colors.primary,
-          height: 50,
-          justifyContent: 'center',
-        }}
-      >
+      <View style={styles.view}>
         <TitleHeader>{title}</TitleHeader>
       </View>
     </View>

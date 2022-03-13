@@ -1,3 +1,6 @@
 {
-  "name": "Mapa de mortalidade"
+  "name": "Mapa de mortalidade",
+  "locationDenied" : "Permissão de localização negada pelo usuário",
+  "revokedPermission" : "Permissão de localização revogada pelo usuário",
+  "noPermission" : "Atenção, para visualizar o mapa você deve habilitar a permissão de localização!"
 }

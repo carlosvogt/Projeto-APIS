@@ -15,15 +15,16 @@ import MapView, { Callout, Circle, Marker } from 'react-native-maps';
 import { Header } from '@components/layout';
 import { useTranslation } from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
-import { useToast } from '@components';
 import { useNavigation } from '@react-navigation/native';
+import { Title1 } from '@components/typography';
 
 function ApiariesMapScreen() {
   const { t } = useTranslation();
-  const toast = useToast();
   const { colors } = useTheme();
   const navigation = useNavigation();
   const [userLocalization, setUserLocalization] = useState({});
+  const [permission, setPermission] = useState(false);
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -31,6 +32,12 @@ function ApiariesMapScreen() {
     map: {
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').height,
+    },
+    view: {
+      padding: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+      flex: 1,
     },
   });
 
@@ -208,6 +215,7 @@ function ApiariesMapScreen() {
     );
 
     if (hasPermission) {
+      setPermission(true);
       return true;
     }
 
@@ -220,15 +228,9 @@ function ApiariesMapScreen() {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(
-        'Location permission denied by user.',
-        ToastAndroid.LONG,
-      );
+      ToastAndroid.show(t('apiariesMap:locationDenied'), ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(
-        'Location permission revoked by user.',
-        ToastAndroid.LONG,
-      );
+      ToastAndroid.show(t('apiariesMap:revokedPermission'), ToastAndroid.LONG);
     }
 
     return false;
@@ -272,7 +274,7 @@ function ApiariesMapScreen() {
 
   useEffect(() => {
     getLocation();
-  }, [apiaries, toast]);
+  }, [apiaries]);
 
   function onRegionChange(region) {
     setUserLocalization(region);
@@ -281,57 +283,67 @@ function ApiariesMapScreen() {
   return (
     <>
       <Header title={t('apiariesMap:name')} />
-      <View style={styles.container}>
-        {userLocalization.latitude && (
-          <MapView
-            style={{ flex: 1 }}
-            showsUserLocation
-            initialRegion={userLocalization}
-            onRegionChange={onRegionChange}
-          >
-            {apiaries.map((item, index) => {
-              return (
-                <View key={item.code}>
-                  <Marker
-                    coordinate={{
-                      latitude: parseFloat(item.latitude),
-                      longitude: parseFloat(item.longitude),
-                    }}
-                    pinColor={
-                      item.type === 'apiary'
-                        ? colors.primary
-                        : item.type === 'home'
-                        ? colors.success
-                        : colors.error
-                    }
-                  >
-                    <Callout onPress={() => handleToApiary(item.type, index)}>
-                      <Text style={{ color: colors.primary }}>{item.name}</Text>
-                    </Callout>
-                  </Marker>
-                  {item.type !== 'home' && (
-                    <Circle
-                      center={{
+      {permission ? (
+        <View style={styles.container}>
+          {userLocalization.latitude && (
+            <MapView
+              style={{ flex: 1 }}
+              showsUserLocation
+              initialRegion={userLocalization}
+              onRegionChange={onRegionChange}
+            >
+              {apiaries.map((item, index) => {
+                return (
+                  <View key={item.code}>
+                    <Marker
+                      coordinate={{
                         latitude: parseFloat(item.latitude),
                         longitude: parseFloat(item.longitude),
                       }}
-                      radius={1500}
-                      fillColor={
+                      pinColor={
                         item.type === 'apiary'
-                          ? colors.primaryLight
-                          : colors.errorLight
+                          ? colors.primary
+                          : item.type === 'home'
+                          ? colors.success
+                          : colors.error
                       }
-                      strokeColor={
-                        item.type === 'apiary' ? colors.primary : colors.error
-                      }
-                    />
-                  )}
-                </View>
-              );
-            })}
-          </MapView>
-        )}
-      </View>
+                    >
+                      <Callout onPress={() => handleToApiary(item.type, index)}>
+                        <Text style={{ color: colors.primary }}>
+                          {item.name}
+                        </Text>
+                      </Callout>
+                    </Marker>
+                    {item.type !== 'home' && (
+                      <Circle
+                        center={{
+                          latitude: parseFloat(item.latitude),
+                          longitude: parseFloat(item.longitude),
+                        }}
+                        radius={1500}
+                        fillColor={
+                          item.type === 'apiary'
+                            ? colors.primaryLight
+                            : colors.errorLight
+                        }
+                        strokeColor={
+                          item.type === 'apiary' ? colors.primary : colors.error
+                        }
+                      />
+                    )}
+                  </View>
+                );
+              })}
+            </MapView>
+          )}
+        </View>
+      ) : (
+        <View style={styles.view}>
+          <Title1 centered color={colors.error} family="medium">
+            {t('mortalityMap:noPermission')}
+          </Title1>
+        </View>
+      )}
     </>
   );
 }

@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+/* eslint-disable sonarjs/cognitive-complexity */
+/* eslint-disable no-nested-ternary */
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { Modal, ExpensiveNote } from '@components';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ToastAndroid,
+  PermissionsAndroid,
+  Platform,
+  Dimensions,
+} from 'react-native';
 import { Header } from '@components/layout';
 import { Add } from '@assets';
 import { useTheme } from '@theme';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import MapView, { Circle, Marker } from 'react-native-maps';
 
 function ApiaryHome() {
   const { t } = useTranslation();
@@ -30,7 +42,8 @@ function ApiaryHome() {
   const navigation = useNavigation();
   const darkMode = useSelector((state) => state.mode.darkMode);
 
-  console.log(data);
+  const [permission, setPermission] = useState(false);
+
   const styles = StyleSheet.create({
     container: {
       flexGrow: 1,
@@ -91,6 +104,21 @@ function ApiaryHome() {
       alignItems: 'center',
       textAlign: 'center',
       alignContent: 'center',
+    },
+    map: { flex: 1 },
+    view: {
+      padding: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+      flex: 1,
+    },
+    containerMap: {
+      flex: 1,
+      width: Dimensions.get('window').width - 32,
+      height: 250,
+      marginBottom: 16,
+      borderWidth: darkMode ? 0 : 1,
+      borderColor: colors.primary,
     },
   });
 
@@ -260,6 +288,45 @@ function ApiaryHome() {
     },
   ];
 
+  const hasLocationPermission = async () => {
+    if (Platform.OS === 'android' && Platform.Version < 23) {
+      return true;
+    }
+
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (hasPermission) {
+      setPermission(true);
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      ToastAndroid.show(t('apiariesMap:locationDenied'), ToastAndroid.LONG);
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      ToastAndroid.show(t('apiariesMap:revokedPermission'), ToastAndroid.LONG);
+    }
+
+    return false;
+  };
+
+  const getLocation = async () => {
+    await hasLocationPermission();
+  };
+
+  useEffect(() => {
+    getLocation();
+  }, []);
+
   return (
     <>
       <Header title={t('apiaries:home:header')} />
@@ -365,6 +432,59 @@ function ApiaryHome() {
             </>
           ) : (
             <ExpensiveNote hasData={false} mode="production" />
+          )}
+        </View>
+        <View>
+          {permission && data.latitude ? (
+            <View style={styles.containerMap}>
+              <MapView
+                style={styles.map}
+                showsUserLocation
+                initialRegion={{
+                  latitude: parseFloat(data.latitude),
+                  longitude: parseFloat(data.longitude),
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}
+              >
+                <View>
+                  <Marker
+                    coordinate={{
+                      latitude: parseFloat(data.latitude),
+                      longitude: parseFloat(data.longitude),
+                    }}
+                    pinColor={
+                      data.type === 'apiary'
+                        ? colors.primary
+                        : data.type === 'home'
+                        ? colors.success
+                        : colors.error
+                    }
+                  />
+                  <Circle
+                    center={{
+                      latitude: parseFloat(data.latitude),
+                      longitude: parseFloat(data.longitude),
+                    }}
+                    radius={1500}
+                    fillColor={
+                      data.type === 'apiary'
+                        ? colors.primaryLight
+                        : colors.errorLight
+                    }
+                    strokeColor={
+                      data.type === 'apiary' ? colors.primary : colors.error
+                    }
+                  />
+                </View>
+              </MapView>
+            </View>
+          ) : (
+            <View style={styles.view}>
+              <Title1 centered color={colors.error} family="medium">
+                {t('apiaries:home.noPermission')}
+              </Title1>
+            </View>
           )}
         </View>
       </ScrollView>

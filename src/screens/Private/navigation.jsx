@@ -29,8 +29,6 @@ function PrivateNavigator() {
         tabBarShowLabel: false,
         tabBarStyle: {
           height: 65,
-          borderTopRightRadius: 20,
-          borderTopLeftRadius: 20,
           backgroundColor: colors.background,
         },
 
@@ -83,7 +81,6 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
-            borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             borderBottomRightRadius: 20,
           },
@@ -114,7 +111,6 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
-            borderTopRightRadius: 20,
             borderTopLeftRadius: 20,
             borderBottomLeftRadius: 20,
           },

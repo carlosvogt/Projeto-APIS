@@ -14,12 +14,12 @@ import MapView, { Circle } from 'react-native-maps';
 import { Header } from '@components/layout';
 import { useTranslation } from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
-import { useToast } from '@components';
+import { Title1 } from '@components/typography';
 
 function MortalityMap() {
   const { t } = useTranslation();
-  const toast = useToast();
   const { colors } = useTheme();
+  const [permission, setPermission] = useState(false);
 
   const [userLocalization, setUserLocalization] = useState({});
   const styles = StyleSheet.create({
@@ -29,6 +29,12 @@ function MortalityMap() {
     map: {
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').height,
+    },
+    view: {
+      padding: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+      flex: 1,
     },
   });
 
@@ -71,6 +77,7 @@ function MortalityMap() {
     );
 
     if (hasPermission) {
+      setPermission(true);
       return true;
     }
 
@@ -83,15 +90,9 @@ function MortalityMap() {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(
-        'Location permission denied by user.',
-        ToastAndroid.LONG,
-      );
+      ToastAndroid.show(t('apiariesMap:locationDenied'), ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(
-        'Location permission revoked by user.',
-        ToastAndroid.LONG,
-      );
+      ToastAndroid.show(t('apiariesMap:revokedPermission'), ToastAndroid.LONG);
     }
 
     return false;
@@ -135,7 +136,7 @@ function MortalityMap() {
 
   useEffect(() => {
     getLocation();
-  }, [data, toast]);
+  }, [data]);
 
   function onRegionChange(region) {
     setUserLocalization(region);
@@ -144,33 +145,41 @@ function MortalityMap() {
   return (
     <>
       <Header title={t('apiariesMap:name')} />
-      <View style={styles.container}>
-        {userLocalization.latitude && (
-          <MapView
-            style={{ flex: 1 }}
-            showsUserLocation
-            initialRegion={userLocalization}
-            onRegionChange={onRegionChange}
-            moveOnMarkerPress={false}
-          >
-            {data.map((item) => {
-              return (
-                <View key={item.cod}>
-                  <Circle
-                    center={{
-                      latitude: parseFloat(item.latitude),
-                      longitude: parseFloat(item.longitude),
-                    }}
-                    radius={1500}
-                    fillColor={colors.errorLight}
-                    strokeColor={colors.error}
-                  />
-                </View>
-              );
-            })}
-          </MapView>
-        )}
-      </View>
+      {permission ? (
+        <View style={styles.container}>
+          {userLocalization.latitude && (
+            <MapView
+              style={{ flex: 1 }}
+              showsUserLocation
+              initialRegion={userLocalization}
+              onRegionChange={onRegionChange}
+              moveOnMarkerPress={false}
+            >
+              {data.map((item) => {
+                return (
+                  <View key={item.cod}>
+                    <Circle
+                      center={{
+                        latitude: parseFloat(item.latitude),
+                        longitude: parseFloat(item.longitude),
+                      }}
+                      radius={1500}
+                      fillColor={colors.errorLight}
+                      strokeColor={colors.error}
+                    />
+                  </View>
+                );
+              })}
+            </MapView>
+          )}
+        </View>
+      ) : (
+        <View style={styles.view}>
+          <Title1 centered color={colors.error} family="medium">
+            {t('mortalityMap:noPermission')}
+          </Title1>
+        </View>
+      )}
     </>
   );
 }
