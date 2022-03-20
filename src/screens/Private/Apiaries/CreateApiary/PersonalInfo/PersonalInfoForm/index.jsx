@@ -82,7 +82,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         name="phone"
         inputRef={phone}
         maskType="phone"
-        maxLength={16}
+        maxLength={15}
         label={t('createApiary:phone')}
         errorMessage={errors.phone?.message}
         control={control}

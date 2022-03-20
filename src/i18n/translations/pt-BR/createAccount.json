@@ -16,5 +16,15 @@
   "state" : "Estado *",
   "createAccount" : "Criar conta",
   "search" : "Pesquisar",
-  "created" : "Criando conta"
+  "created" : "Criando conta",
+  "locationDenied" : "Permissão de localização negada pelo usuário",
+  "revokedPermission" : "Permissão de localização revogada pelo usuário",
+  "noPermission" : "Permissão negada!",
+  "lat" : "Latitude:",
+  "long" : "Longitude:",
+  "attention" : "Atenção",
+  "noInternet" : "Você está sem acesso a internet! Informe a cidade e o estado manualmente.",
+  "ok" : "Ok",
+  "gpsPermission" : "Você precisa habilitar a permissão de localização para poder executar esta ação!",
+  "code" : "Código"
 }

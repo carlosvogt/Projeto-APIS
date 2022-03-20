@@ -46,7 +46,7 @@ function Button({
 
   return (
     <View style={viewStyle}>
-      {mode === 'outlined' ? (
+      {mode === 'outlined' && title ? (
         <TouchableOpacity style={[touchableStyle, style]} onPress={onPress}>
           <Title2
             family={titleFamily}

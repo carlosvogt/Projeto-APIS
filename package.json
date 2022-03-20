@@ -11,11 +11,11 @@
     "load-brand-properties": "node ./scripts/load-brand-properties.js",
     "android:releaseAPK": "yarn load-brand-properties && cd android && ./gradlew assembleRelease",
     "prepare-release": "yarn load-brand-properties "
-
   },
   "dependencies": {
     "@hookform/resolvers": "^2.8.8",
     "@react-native-async-storage/async-storage": "^1.15.17",
+    "@react-native-community/netinfo": "^8.2.0",
     "@react-navigation/bottom-tabs": "^6.0.9",
     "@react-navigation/drawer": "^6.2.5",
     "@react-navigation/material-top-tabs": "^6.0.6",
@@ -53,8 +53,6 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "dotenv": "^10.0.0",
-    "envfile": "^6.17.0",
     "@babel/core": "^7.16.5",
     "@babel/eslint-parser": "^7.16.5",
     "@babel/runtime": "^7.16.5",
@@ -62,6 +60,8 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^27.4.5",
     "babel-plugin-module-resolver": "^4.1.0",
+    "dotenv": "^10.0.0",
+    "envfile": "^6.17.0",
     "eslint": "^8.4.1",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",

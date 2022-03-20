@@ -73,10 +73,11 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         name="phone"
         inputRef={phone}
         maskType="phone"
-        maxLength={16}
+        maxLength={15}
         label={t('createAccount:phone')}
         errorMessage={errors.phone?.message}
         control={control}
+        keyboardType="numeric"
         returnKeyType="next"
         onSubmitEditing={() => password.current.focus()}
       />

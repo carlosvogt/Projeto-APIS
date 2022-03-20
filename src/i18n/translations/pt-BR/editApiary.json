@@ -22,5 +22,15 @@
   "yes" : "Sim",
   "not" : "Não",
   "save" : "Salvar",
-  "saving" : "Salvando"
+  "saving" : "Salvando",
+  "locationDenied" : "Permissão de localização negada pelo usuário",
+  "revokedPermission" : "Permissão de localização revogada pelo usuário",
+  "noPermission" : "Permissão negada!",
+  "lat" : "Latitude:",
+  "long" : "Longitude:",
+  "attention" : "Atenção",
+  "noInternet" : "Você está sem acesso a internet! Informe a cidade e o estado manualmente.",
+  "ok" : "Ok",
+  "gpsPermission" : "Você precisa habilitar a permissão de localização para poder executar esta ação!",
+  "code" : "Código"
 }

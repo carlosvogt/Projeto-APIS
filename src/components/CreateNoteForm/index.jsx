@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Dimensions } from 'react-native';
 import { Footer } from '@components/layout';
 import { useTheme } from '@theme';
 import Button from '../Button';
@@ -20,6 +20,7 @@ function CreateNoteForm({
   const { t } = useTranslation();
   const description = useRef();
   const { colors } = useTheme();
+  const deviceWidth = Dimensions.get('window').width;
 
   const schema = Yup.object().shape({
     description: Yup.string().required(t('formErrors:required')),
@@ -45,6 +46,8 @@ function CreateNoteForm({
       justifyContent: 'center',
       paddingVertical: 16,
     },
+    viewStyle: { paddingHorizontal: 20 },
+    buttonStyle: { width: deviceWidth * 0.45 },
   });
 
   const {
@@ -97,16 +100,14 @@ function CreateNoteForm({
           mode="outlined"
           textColor="red"
           titleFamily="medium"
-          viewStyle={{ paddingHorizontal: 20 }}
+          viewStyle={styles.viewStyle}
         />
         <Button
           title={t('form:label.save')}
           loading={isSubmitting}
           onPress={handleSubmit(positiveAction)}
-          viewStyle={{ paddingHorizontal: 20 }}
-          style={{
-            width: 200,
-          }}
+          viewStyle={styles.viewStyle}
+          style={styles.buttonStyle}
         />
       </Footer>
     </ScrollView>

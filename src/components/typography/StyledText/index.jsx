@@ -46,7 +46,7 @@ function StyledText({
 }
 
 StyledText.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   family: PropTypes.oneOf(['light', 'medium', 'regular', 'thin']),
   fontSize: PropTypes.number,
   letterSpacing: PropTypes.number,
@@ -63,6 +63,7 @@ StyledText.propTypes = {
 };
 
 StyledText.defaultProps = {
+  children: '',
   family: 'regular',
   fontSize: 16,
   letterSpacing: 0,

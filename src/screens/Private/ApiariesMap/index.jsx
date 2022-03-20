@@ -7,7 +7,6 @@ import {
   PermissionsAndroid,
   Platform,
   ToastAndroid,
-  Alert,
   Text,
 } from 'react-native';
 import { useTheme } from '@theme';
@@ -17,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
 import { useNavigation } from '@react-navigation/native';
 import { Title1 } from '@components/typography';
+import { Modal } from '@components';
 
 function ApiariesMapScreen() {
   const { t } = useTranslation();
@@ -24,6 +24,8 @@ function ApiariesMapScreen() {
   const navigation = useNavigation();
   const [userLocalization, setUserLocalization] = useState({});
   const [permission, setPermission] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [description, setDescription] = useState('');
 
   const styles = StyleSheet.create({
     container: {
@@ -240,6 +242,7 @@ function ApiariesMapScreen() {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
+      setDescription(t('apiariesMap:gpsPermission'));
       return;
     }
 
@@ -253,13 +256,15 @@ function ApiariesMapScreen() {
         });
       },
       (error) => {
-        Alert.alert(`Code ${error.code}`, error.message);
+        setDescription(
+          `${t('apiariesMap:code')} ${error.code} - ${error.message}`,
+        );
+        setShowModal(true);
         setUserLocalization({});
       },
       {
         accuracy: {
           android: 'high',
-          ios: 'best',
         },
         enableHighAccuracy: true,
         timeout: 15000,
@@ -282,6 +287,14 @@ function ApiariesMapScreen() {
 
   return (
     <>
+      <Modal
+        title={t('apiariesMap:attention')}
+        cancelFunction={() => setShowModal(false)}
+        cancelText={t('apiariesMap:ok')}
+        description={description}
+        mode="alert"
+        showModal={showModal}
+      />
       <Header title={t('apiariesMap:name')} />
       {permission ? (
         <View style={styles.container}>

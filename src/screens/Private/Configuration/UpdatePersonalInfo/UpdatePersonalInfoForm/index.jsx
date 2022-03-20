@@ -5,21 +5,30 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { Footer } from '@components/layout';
-import { View, StyleSheet } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  PermissionsAndroid,
+  Platform,
+  ToastAndroid,
+} from 'react-native';
 import states from '@utils/states';
-import { Button, Form, Dropdown } from '@components';
+import { Button, Form, Dropdown, Modal } from '@components';
 import { Title1, Title2 } from '@components/typography';
+import Geolocation from 'react-native-geolocation-service';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   const { t } = useTranslation();
   const email = useRef();
   const phone = useRef();
   const zipCodeRef = useRef();
-
   const [selectedOption, setSelectedOption] = useState(false);
   const [loadingZipCode, setLoadingZipCode] = useState(false);
-  const [defaultState, setDefaultState] = useState('RS');
   const [loadingCoordinates, setLoadingCoordinates] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [description, setDescription] = useState('');
+  const netInfo = useNetInfo();
 
   function validZipCode(value) {
     const zipCode = value.replace(/\D/g, '');
@@ -61,6 +70,8 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       },
     ),
     coordinates: Yup.string(),
+    latitude: Yup.string(),
+    longitude: Yup.string(),
     city: Yup.string().required(t('formErrors:required')),
     state: Yup.string().required(t('formErrors:required')),
   });
@@ -87,10 +98,12 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     },
   });
 
+  // Dados mocados
   const {
     control,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -98,13 +111,21 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     defaultValues: {
       name: 'Carlos Rodrigo Vogt',
       email: 'carlosvogt15@gmail.com',
-      phone: '51996882190',
-      zipCode: '96890000',
-      coordinates: '00000000000',
+      phone: '(51) 99688-2190',
+      zipCode: '96.890-000',
+      coordinates: 'Latitude:-29.5420433 Longitude:-52.5148017',
+      latitude: '-29.5420433',
+      longitude: '-52.5148017',
       city: 'Sinimbu',
       state: 'RS',
     },
   });
+
+  const formValues = getValues();
+
+  const [defaultState, setDefaultState] = useState(
+    formValues.state.toLocaleLowerCase(),
+  );
 
   const handleSetState = (value) => {
     setSelectedOption(value);
@@ -114,22 +135,124 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     });
   };
 
-  // Dado mocado
-  const handleCoordinates = () => {
-    setLoadingCoordinates(true);
-    console.log('Buscando coordenadas');
-    setLoadingCoordinates(false);
-  };
+  useState(() => {
+    handleSetState(defaultState);
+  }, []);
 
-  // Dado mocado
   const handleZipCode = () => {
     setLoadingZipCode(true);
-    console.log('Buscando CEP');
+    const hasInternet = netInfo.isConnected;
+
+    if (hasInternet) {
+      const zipCode = formValues.zipCode.replace(/\D/g, '');
+      fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
+        .then((res) => res.json())
+        .then((data) => {
+          setValue('city', data.localidade, {
+            shouldValidate: true,
+          });
+          handleSetState(data.uf.toLocaleLowerCase());
+        });
+    } else {
+      setDescription(t('updatePersonalInfo:noInternet'));
+      setShowModal(true);
+    }
     setLoadingZipCode(false);
+  };
+
+  const hasLocationPermission = async () => {
+    if (Platform.OS === 'android' && Platform.Version < 23) {
+      return true;
+    }
+
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      ToastAndroid.show(
+        t('updatePersonalInfo:locationDenied'),
+        ToastAndroid.LONG,
+      );
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      ToastAndroid.show(
+        t('updatePersonalInfo:revokedPermission'),
+        ToastAndroid.LONG,
+      );
+    }
+
+    return false;
+  };
+
+  const handleCoordinates = async () => {
+    setLoadingCoordinates(true);
+    const hasPermission = await hasLocationPermission();
+
+    if (!hasPermission) {
+      setValue('coordinates', t('updatePersonalInfo:noPermission'));
+      setValue('latitude', '');
+      setValue('longitude', '');
+      setDescription(t('updatePersonalInfo:gpsPermission'));
+      setLoadingCoordinates(false);
+      setShowModal(true);
+      return;
+    }
+
+    Geolocation.getCurrentPosition(
+      (position) => {
+        setValue(
+          'coordinates',
+          `${t('updatePersonalInfo:lat')}${position.coords.latitude} ${t(
+            'updatePersonalInfo:long',
+          )}${position.coords.longitude}`,
+        );
+        setValue('latitude', position.coords.latitude);
+        setValue('longitude', position.coords.latitude);
+      },
+      (error) => {
+        setDescription(
+          `${t('updatePersonalInfo:code')} ${error.code} - ${error.message}`,
+        );
+        setShowModal(true);
+      },
+      {
+        accuracy: {
+          android: 'high',
+        },
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
+        distanceFilter: 0,
+        forceRequestLocation: true,
+        forceLocationManager: false,
+        showLocationDialog: true,
+      },
+    );
+    setLoadingCoordinates(false);
   };
 
   return (
     <>
+      <Modal
+        title={t('updatePersonalInfo:attention')}
+        cancelFunction={() => setShowModal(false)}
+        cancelText={t('updatePersonalInfo:ok')}
+        description={description}
+        mode="alert"
+        showModal={showModal}
+      />
       <View style={styles.viewTitle}>
         <Title1 family="medium">{t('updatePersonalInfo:personalData')}</Title1>
       </View>
@@ -159,7 +282,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
         name="phone"
         inputRef={phone}
         maskType="phone"
-        maxLength={16}
+        maxLength={15}
         keyboardType="numeric"
         label={t('createAccount:phone')}
         errorMessage={errors.phone?.message}
@@ -187,9 +310,10 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
         </View>
         <Button
           style={styles.button}
-          loading={loadingCoordinates}
-          onPress={() => handleCoordinates()}
-          title={loadingCoordinates ? null : t('createAccount:research')}
+          disabled={formValues?.zipCode.length !== 10}
+          loading={loadingZipCode}
+          onPress={() => handleZipCode()}
+          title={loadingZipCode ? '' : t('createAccount:research')}
         />
       </View>
 
@@ -201,14 +325,14 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
             errorMessage={errors.coordinates?.message}
             control={control}
             editable={false}
-            multilane
+            multiline
           />
         </View>
         <Button
           style={styles.button}
-          loading={loadingZipCode}
-          onPress={() => handleZipCode()}
-          title={loadingZipCode ? null : t('createAccount:research')}
+          loading={loadingCoordinates}
+          onPress={() => handleCoordinates()}
+          title={loadingCoordinates ? '' : t('createAccount:research')}
         />
       </View>
 

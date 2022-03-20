@@ -7,7 +7,6 @@ import {
   PermissionsAndroid,
   Platform,
   ToastAndroid,
-  Alert,
 } from 'react-native';
 import { useTheme } from '@theme';
 import MapView, { Circle } from 'react-native-maps';
@@ -15,11 +14,14 @@ import { Header } from '@components/layout';
 import { useTranslation } from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
 import { Title1 } from '@components/typography';
+import { Modal } from '@components';
 
 function MortalityMap() {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const [permission, setPermission] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [description, setDescription] = useState('');
 
   const [userLocalization, setUserLocalization] = useState({});
   const styles = StyleSheet.create({
@@ -90,9 +92,9 @@ function MortalityMap() {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('apiariesMap:locationDenied'), ToastAndroid.LONG);
+      ToastAndroid.show(t('mortalityMap:locationDenied'), ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('apiariesMap:revokedPermission'), ToastAndroid.LONG);
+      ToastAndroid.show(t('mortalityMap:revokedPermission'), ToastAndroid.LONG);
     }
 
     return false;
@@ -102,6 +104,7 @@ function MortalityMap() {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
+      setDescription(t('mortalityMap:gpsPermission'));
       return;
     }
 
@@ -115,13 +118,15 @@ function MortalityMap() {
         });
       },
       (error) => {
-        Alert.alert(`Code ${error.code}`, error.message);
+        setDescription(
+          `${t('mortalityMap:code')} ${error.code} - ${error.message}`,
+        );
+        setShowModal(true);
         setUserLocalization({});
       },
       {
         accuracy: {
           android: 'high',
-          ios: 'best',
         },
         enableHighAccuracy: true,
         timeout: 15000,
@@ -144,7 +149,15 @@ function MortalityMap() {
 
   return (
     <>
-      <Header title={t('apiariesMap:name')} />
+      <Modal
+        title={t('apiariesMap:attention')}
+        cancelFunction={() => setShowModal(false)}
+        cancelText={t('apiariesMap:ok')}
+        description={description}
+        mode="alert"
+        showModal={showModal}
+      />
+      <Header title={t('mortalityMap:name')} />
       {permission ? (
         <View style={styles.container}>
           {userLocalization.latitude && (

@@ -4,7 +4,13 @@ import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View, Keyboard } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Keyboard,
+  Dimensions,
+} from 'react-native';
 import { Footer } from '@components/layout';
 import { useTheme } from '@theme';
 import { validateDate } from '@utils/validators';
@@ -26,7 +32,7 @@ function CreateProductionForm({
   const [showCalendar, setShowCalendar] = useState(false);
   const [openKeyboard, setOpenKeyboard] = useState(true);
   const [selectedOption, setSelectedOption] = useState(false);
-
+  const deviceWidth = Dimensions.get('window').width;
   const date = useRef();
   const qtd = useRef();
   const payedQtd = useRef();
@@ -83,7 +89,7 @@ function CreateProductionForm({
       paddingVertical: 16,
     },
     viewStyle: { paddingHorizontal: 20 },
-    buttonStyle: { width: 200 },
+    buttonStyle: { width: deviceWidth * 0.45 },
   });
 
   const {

@@ -62,7 +62,17 @@ const ModalCenter = ({
       paddingBottom: 8,
     },
     viewStyle: { paddingHorizontal: 20 },
-    buttonStyle: { width: 200 },
+    buttonStyle: { width: deviceWidth * 0.45 },
+    confirmView: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+    },
+    view: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   });
 
   return (
@@ -83,13 +93,7 @@ const ModalCenter = ({
                       {description}
                     </Title2>
                   </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <View style={styles.view}>
                     <Button
                       title={cancelText}
                       onPress={cancelFunction}
@@ -101,6 +105,28 @@ const ModalCenter = ({
                     <Button
                       title={positiveText}
                       onPress={positiveAction}
+                      viewStyle={styles.viewStyle}
+                      style={styles.buttonStyle}
+                    />
+                  </View>
+                </>
+              )}
+              {mode === 'alert' && (
+                <>
+                  <View style={styles.question}>
+                    <Title1 color={colors.primary} family="medium">
+                      {title}
+                    </Title1>
+                  </View>
+                  <View style={styles.question}>
+                    <Title2 color={colors.primary} family="medium">
+                      {description}
+                    </Title2>
+                  </View>
+                  <View style={styles.confirmView}>
+                    <Button
+                      title={cancelText}
+                      onPress={cancelFunction}
                       viewStyle={styles.viewStyle}
                       style={styles.buttonStyle}
                     />
@@ -138,7 +164,7 @@ const ModalCenter = ({
 };
 
 ModalCenter.propTypes = {
-  mode: PropTypes.oneOf(['note', 'question', 'production']),
+  mode: PropTypes.oneOf(['note', 'question', 'production', 'alert']),
 };
 
 ModalCenter.defaultProps = {
