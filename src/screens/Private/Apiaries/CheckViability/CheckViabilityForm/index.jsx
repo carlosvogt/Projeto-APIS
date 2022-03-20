@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { Button, Form, Dropdown } from '@components';
@@ -9,8 +9,7 @@ import { Footer } from '@components/layout';
 
 function CheckViabilityForm({ onSubmit, isSubmitting }) {
   const { t } = useTranslation();
-  const questionTwo = useRef();
-  const questionNine = useRef();
+  const [selectedQuestionOne, setSelectedQuestionOne] = useState(false);
   const [selectedQuestionTwo, setSelectedQuestionTwo] = useState(false);
   const [selectedQuestionTree, setSelectedQuestionTree] = useState(false);
   const [selectedQuestionFour, setSelectedQuestionFour] = useState(false);
@@ -19,22 +18,8 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
   const [selectedQuestionSeven, setSelectedQuestionSeven] = useState(false);
   const [selectedQuestionEight, setSelectedQuestionEight] = useState(false);
 
-  function validPercentage(value) {
-    if (value > 100) {
-      return false;
-    }
-    return true;
-  }
-
   const schema = Yup.object().shape({
-    questionOne: Yup.string()
-      .required(t('formErrors:required'))
-      .test('validPercent', t('formErrors:percentage'), (value) => {
-        if (value) {
-          return validPercentage(value);
-        }
-        return true;
-      }),
+    questionOne: Yup.string().required(t('formErrors:required')),
     questionTwo: Yup.string().required(t('formErrors:required')),
     questionTree: Yup.string().required(t('formErrors:required')),
     questionFour: Yup.string().required(t('formErrors:required')),
@@ -74,14 +59,48 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
   ];
   const distancy = [
     {
+      label: t('checkViability:less300'),
+      value: t('checkViability:less300'),
+    },
+    {
+      label: t('checkViability:between300and400'),
+      value: t('checkViability:between300and400'),
+    },
+    {
       label: t('checkViability:more400'),
       value: t('checkViability:more400'),
     },
+  ];
+
+  const floraOptions = [
     {
-      label: t('checkViability:less400'),
-      value: t('checkViability:less400'),
+      label: t('checkViability:<=10'),
+      value: t('checkViability:<=10'),
+    },
+    {
+      label: t('checkViability:>10>=20'),
+      value: t('checkViability:>10>=20'),
+    },
+    {
+      label: t('checkViability:>20>=30'),
+      value: t('checkViability:>20>=30'),
+    },
+    {
+      label: t('checkViability:>30>=40'),
+      value: t('checkViability:>30>=40'),
+    },
+    {
+      label: t('checkViability:>40'),
+      value: t('checkViability:>40'),
     },
   ];
+
+  const handleSetOptionOne = (value) => {
+    setSelectedQuestionOne(value);
+    setValue('questionOne', value, {
+      shouldValidate: true,
+    });
+  };
 
   const handleSetOptionTwo = (value) => {
     setSelectedQuestionTwo(value);
@@ -130,14 +149,15 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
 
   return (
     <>
-      <Form.TextInput
+      <Dropdown
         name="questionOne"
         label={t('checkViability:questionOne')}
-        errorMessage={errors.questionOne?.message}
+        value={selectedQuestionOne}
+        setValue={(value) => handleSetOptionOne(value)}
+        data={floraOptions}
+        error={errors.questionOne?.message}
         control={control}
-        returnKeyType="next"
-        keyboardType="numeric"
-        onSubmitEditing={() => questionTwo.current.focus()}
+        mode="bottom"
       />
       <Dropdown
         name="questionTwo"
@@ -210,7 +230,6 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
         mode="bottom"
       />
       <Form.TextInput
-        inputRef={questionNine}
         name="questionNine"
         keyboardType="numeric"
         returnKeyType="done"
