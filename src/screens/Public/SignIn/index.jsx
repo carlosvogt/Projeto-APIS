@@ -7,10 +7,12 @@ import { useNavigation } from '@react-navigation/native';
 import { Footer } from '@components/layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTheme } from '@theme';
 import SignInForm from './SignInForm';
 
 function SignIn() {
   const { t } = useTranslation();
+  const { colors } = useTheme();
   const navigation = useNavigation();
   const darkMode = useSelector((state) => state.mode.darkMode);
   const [loading, setLoading] = useState(false);
@@ -28,12 +30,9 @@ function SignIn() {
     viewInstruction: {
       marginBottom: 16,
     },
-    forgotPassword: {
-      paddingVertical: 16,
-    },
     createAccount: {
       marginHorizontal: 32,
-      marginBottom: 16,
+      marginVertical: 48,
     },
   });
 
@@ -68,12 +67,12 @@ function SignIn() {
     >
       <Container>
         <View style={styles.viewTitle}>
-          <Title1 centered family="medium">
+          <Title1 color={colors.primary} centered family="medium">
             {t('login:welcome')}
           </Title1>
         </View>
         <View style={styles.viewInstruction}>
-          <Title2>{t('login:instruction')}</Title2>
+          <Title2 color={colors.primary}>{t('login:instruction')}</Title2>
         </View>
 
         <SignInForm
@@ -82,17 +81,17 @@ function SignIn() {
         />
 
         <Button
-          title={t('login:forgotPassword')}
-          onPress={() => handleForgotPassword()}
-          mode="outlined"
-          style={styles.forgotPassword}
-          titleFamily="light"
-        />
-
-        <Button
           title={t('login:createAccount')}
           style={styles.createAccount}
           onPress={() => handleCreateAccount()}
+        />
+
+        <Button
+          title={t('login:forgotPassword')}
+          onPress={() => handleForgotPassword()}
+          mode="outlined"
+          textColor={colors.primary}
+          titleFamily="light"
         />
 
         <Footer withBorder={false}>

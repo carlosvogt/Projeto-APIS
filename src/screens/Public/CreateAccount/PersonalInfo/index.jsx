@@ -5,12 +5,13 @@ import { StyleSheet, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '@theme';
 import PersonalInfoForm from './PersonalInfoForm';
 
 function PersonalInfo() {
   const { t } = useTranslation();
   const navigation = useNavigation();
-
+  const { colors } = useTheme();
   const styles = StyleSheet.create({
     scrollView: {
       flexGrow: 1,
@@ -38,10 +39,14 @@ function PersonalInfo() {
       >
         <Container>
           <View style={styles.viewTitle}>
-            <Title1 family="medium">{t('createAccount:personalInfo')}</Title1>
+            <Title1 color={colors.primary} family="medium">
+              {t('createAccount:personalInfo')}
+            </Title1>
           </View>
           <View style={styles.viewInstruction}>
-            <Title2>{t('createAccount:requiredInfo')}</Title2>
+            <Title2 color={colors.primary}>
+              {t('createAccount:requiredInfo')}
+            </Title2>
           </View>
 
           <PersonalInfoForm onSubmit={(form) => handlePersonalInfo(form)} />

@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { Button, Form, Dropdown, Modal } from '@components';
@@ -18,6 +18,7 @@ import states from '@utils/states';
 import { Title1 } from '@components/typography';
 import Geolocation from 'react-native-geolocation-service';
 import { useNetInfo } from '@react-native-community/netinfo';
+import { useTheme } from '@theme';
 
 function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
   const { t } = useTranslation();
@@ -34,6 +35,8 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState('');
   const netInfo = useNetInfo();
+  const [totalQtd, setTotalQtd] = useState(0);
+  const { colors } = useTheme();
 
   const styles = StyleSheet.create({
     view: {
@@ -77,6 +80,14 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
     return true;
   }
 
+  function validQuantity(value) {
+    const qtd = parseInt(value, 10);
+    if (qtd > totalQtd) {
+      return false;
+    }
+    return true;
+  }
+
   const schema = Yup.object().shape({
     name: Yup.string().required(t('formErrors:required')),
     owner: Yup.string().required(t('formErrors:required')),
@@ -87,7 +98,14 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       return true;
     }),
     totalPlaces: Yup.string().required(t('formErrors:required')),
-    quantityFull: Yup.string().required(t('formErrors:required')),
+    quantityFull: Yup.string()
+      .required(t('formErrors:required'))
+      .test('validQuantity', t('formErrors:quantity'), (value) => {
+        if (value) {
+          return validQuantity(value);
+        }
+        return true;
+      }),
     ownerPercent: Yup.string().test(
       'validPercent',
       t('formErrors:percentage'),
@@ -151,12 +169,20 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
   const handleSetState = (value) => {
     setSelectedState(value);
     setDefaultState(null);
-    setValue('state', value.toLocaleUpperCase(), {
-      shouldValidate: true,
-    });
+    if (value) {
+      setValue('state', value.toLocaleUpperCase(), {
+        shouldValidate: true,
+      });
+    }
   };
 
-  useState(() => {
+  useEffect(() => {
+    if (formValues.totalPlaces) {
+      setTotalQtd(parseInt(formValues.totalPlaces, 10));
+    }
+  }, [formValues]);
+
+  useEffect(() => {
     handleSetState(defaultState);
   }, []);
 
@@ -284,6 +310,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       <Form.TextInput
         name="name"
         label={t('editApiary:apiaryName')}
+        placeholder={t('editApiary:apiaryNamePlaceholder')}
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
@@ -293,6 +320,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         inputRef={owner}
         name="owner"
         label={t('editApiary:owner')}
+        placeholder={t('editApiary:ownerPlaceholder')}
         errorMessage={errors.owner?.message}
         control={control}
         returnKeyType="next"
@@ -304,6 +332,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         maskType="phone"
         maxLength={15}
         label={t('editApiary:phone')}
+        placeholder={t('editApiary:phonePlaceholder')}
         errorMessage={errors.phone?.message}
         control={control}
         keyboardType="numeric"
@@ -316,6 +345,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         keyboardType="numeric"
         returnKeyType="next"
         label={t('editApiary:quantity')}
+        placeholder={t('editApiary:quantityPlaceholder')}
         errorMessage={errors.totalPlaces?.message}
         control={control}
         onSubmitEditing={() => quantityFull.current.focus()}
@@ -326,6 +356,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         keyboardType="numeric"
         returnKeyType="next"
         label={t('editApiary:quantityFull')}
+        placeholder={t('editApiary:quantityFullPlaceholder')}
         errorMessage={errors.quantityFull?.message}
         control={control}
         onSubmitEditing={() => ownerPercent.current.focus()}
@@ -337,6 +368,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         returnKeyType="done"
         maxLength={3}
         label={t('editApiary:ownerPercent')}
+        placeholder={t('editApiary:ownerPercentPlaceholder')}
         errorMessage={errors.ownerPercent?.message}
         control={control}
       />
@@ -353,13 +385,16 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       />
 
       <View style={styles.viewTitle}>
-        <Title1 family="medium">{t('editApiary:address')}</Title1>
+        <Title1 color={colors.primary} family="medium">
+          {t('editApiary:address')}
+        </Title1>
       </View>
       <View style={styles.view}>
         <View style={styles.input}>
           <Form.TextInput
             name="zipCode"
             label={t('editApiary:zipCode')}
+            placeholder={t('editApiary:zipCodePlaceholder')}
             errorMessage={errors.zipCode?.message}
             control={control}
             keyboardType="numeric"
@@ -371,6 +406,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         <Button
           style={styles.button}
           loading={loadingZipCode}
+          disabled={formValues?.zipCode.length !== 10}
           onPress={() => handleZipCode()}
           title={loadingZipCode ? '' : t('editApiary:research')}
         />
@@ -395,14 +431,6 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         />
       </View>
 
-      <Form.TextInput
-        name="city"
-        label={t('editApiary:city')}
-        errorMessage={errors.city?.message}
-        control={control}
-        returnKeyType="next"
-      />
-
       <Dropdown
         name="state"
         label={t('editApiary:state')}
@@ -413,11 +441,20 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         control={control}
         search
         searchPlaceholder={t('editApiary:search')}
-        mode="bottom"
+        mode="top"
         defaultValue={defaultState}
       />
 
-      <Footer>
+      <Form.TextInput
+        name="city"
+        label={t('editApiary:city')}
+        placeholder={t('editApiary:cityPlaceholder')}
+        errorMessage={errors.city?.message}
+        control={control}
+        returnKeyType="next"
+      />
+
+      <Footer style={{ marginTop: 16 }}>
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}

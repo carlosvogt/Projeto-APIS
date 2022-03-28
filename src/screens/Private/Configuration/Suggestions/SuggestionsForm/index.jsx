@@ -27,6 +27,7 @@ function SuggestionsForm({ onSubmit, isSubmitting }) {
       <Form.TextInput
         name="subject"
         label={t('suggestions:subject')}
+        placeholder={t('suggestions:subjectPlaceholder')}
         returnKeyType="next"
         errorMessage={errors.subject?.message}
         control={control}
@@ -36,6 +37,7 @@ function SuggestionsForm({ onSubmit, isSubmitting }) {
         inputRef={message}
         name="message"
         label={t('suggestions:message')}
+        placeholder={t('suggestions:messagePlaceholder')}
         returnKeyType="done"
         errorMessage={errors.message?.message}
         control={control}

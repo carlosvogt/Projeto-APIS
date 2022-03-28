@@ -33,6 +33,7 @@ function SignInForm({ onSubmit, isSubmitting }) {
       <Form.TextInput
         name="login"
         label={t('login:email')}
+        placeholder={t('login:emailPlaceholder')}
         errorMessage={errors.login?.message}
         control={control}
         returnKeyType="next"
@@ -45,6 +46,7 @@ function SignInForm({ onSubmit, isSubmitting }) {
         inputRef={password}
         name="password"
         label={t('login:password')}
+        placeholder={t('login:passwordPlaceholder')}
         errorMessage={errors.password?.message}
         control={control}
       />

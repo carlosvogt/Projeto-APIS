@@ -5,12 +5,14 @@ import { Container } from '@components';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Header } from '@components/layout';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '@theme';
 import SuggestionsForm from './SuggestionsForm';
 
 function Suggestions() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+  const { colors } = useTheme();
 
   const styles = StyleSheet.create({
     scrollView: {
@@ -40,7 +42,9 @@ function Suggestions() {
       >
         <Container>
           <View style={styles.viewTitle}>
-            <Title1 family="medium">{t('suggestions:instruction')}</Title1>
+            <Title1 color={colors.primary} family="medium">
+              {t('suggestions:instruction')}
+            </Title1>
           </View>
 
           <SuggestionsForm

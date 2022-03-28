@@ -54,6 +54,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
       <Form.TextInput
         name="name"
         label={t('createAccount:name')}
+        placeholder={t('createAccount:namePlaceholder')}
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
@@ -63,6 +64,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         inputRef={email}
         name="email"
         label={t('createAccount:email')}
+        placeholder={t('createAccount:emailPlaceholder')}
         errorMessage={errors.email?.message}
         control={control}
         returnKeyType="next"
@@ -75,6 +77,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         maskType="phone"
         maxLength={15}
         label={t('createAccount:phone')}
+        placeholder={t('createAccount:phonePlaceholder')}
         errorMessage={errors.phone?.message}
         control={control}
         keyboardType="numeric"
@@ -87,6 +90,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         keyboardType="numeric"
         returnKeyType="next"
         label={t('createAccount:password')}
+        placeholder={t('createAccount:passwordPlaceholder')}
         errorMessage={errors.password?.message}
         control={control}
         onSubmitEditing={() => confirmPassword.current.focus()}
@@ -97,6 +101,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         keyboardType="numeric"
         returnKeyType="done"
         label={t('createAccount:confirmPassword')}
+        placeholder={t('createAccount:confirmPasswordPlaceholder')}
         errorMessage={errors.confirmPassword?.message}
         control={control}
       />

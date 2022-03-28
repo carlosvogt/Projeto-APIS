@@ -90,9 +90,11 @@ function AddressForm({ onSubmit, isSubmitting }) {
 
   const handleSetState = (value) => {
     setSelectedOption(value);
-    setValue('state', value.toLocaleUpperCase(), {
-      shouldValidate: true,
-    });
+    if (value) {
+      setValue('state', value.toLocaleUpperCase(), {
+        shouldValidate: true,
+      });
+    }
   };
 
   const handleZipCode = () => {
@@ -212,6 +214,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
           <Form.TextInput
             name="zipCode"
             label={t('createAccount:zipCode')}
+            placeholder={t('createAccount:zipCodePlaceholder')}
             errorMessage={errors.zipCode?.message}
             control={control}
             keyboardType="numeric"
@@ -225,7 +228,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
           disabled={formValues?.zipCode.length !== 10}
           loading={loadingZipCode}
           onPress={() => handleZipCode()}
-          title={loadingZipCode ? null : t('createAccount:research')}
+          title={loadingZipCode ? '' : t('createAccount:research')}
         />
       </View>
 
@@ -244,17 +247,9 @@ function AddressForm({ onSubmit, isSubmitting }) {
           style={styles.button}
           loading={loadingCoordinates}
           onPress={() => handleCoordinates()}
-          title={loadingCoordinates ? null : t('createAccount:research')}
+          title={loadingCoordinates ? '' : t('createAccount:research')}
         />
       </View>
-
-      <Form.TextInput
-        name="city"
-        label={t('createAccount:city')}
-        errorMessage={errors.city?.message}
-        control={control}
-        returnKeyType="next"
-      />
 
       <Dropdown
         name="state"
@@ -266,8 +261,18 @@ function AddressForm({ onSubmit, isSubmitting }) {
         control={control}
         search
         searchPlaceholder={t('createAccount:search')}
-        mode="bottom"
+        mode="top"
       />
+
+      <Form.TextInput
+        name="city"
+        label={t('createAccount:city')}
+        placeholder={t('createAccount:cityPlaceholder')}
+        errorMessage={errors.city?.message}
+        control={control}
+        returnKeyType="next"
+      />
+
       <Footer>
         <Button
           loading={isSubmitting}

@@ -5,12 +5,14 @@ import { StyleSheet, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '@theme';
 import CheckViabilityForm from './CheckViabilityForm';
 
 function CheckViability() {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { colors } = useTheme();
 
   const styles = StyleSheet.create({
     scrollView: {
@@ -43,12 +45,14 @@ function CheckViability() {
       >
         <Container>
           <View style={styles.viewTitle}>
-            <Title1 family="medium">
+            <Title1 color={colors.primary} family="medium">
               {t('checkViability:checkViability')}
             </Title1>
           </View>
           <View style={styles.viewInstruction}>
-            <Title2>{t('checkViability:checkInstruction')}</Title2>
+            <Title2 color={colors.primary}>
+              {t('checkViability:checkInstruction')}
+            </Title2>
           </View>
 
           <CheckViabilityForm

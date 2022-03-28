@@ -4,10 +4,12 @@ import { Title1, Title2 } from '@components/typography';
 import { Container } from '@components';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { Header } from '@components/layout';
+import { useTheme } from '@theme';
 import RecoverPasswordForm from './RecoverPasswordForm';
 
 function RecoverPassword() {
   const { t } = useTranslation();
+  const { colors } = useTheme();
   const [loading, setLoading] = useState(false);
   const [emailSended, setEmailSended] = useState(false);
 
@@ -43,12 +45,14 @@ function RecoverPassword() {
       >
         <Container>
           <View style={styles.viewTitle}>
-            <Title1 centered family="medium">
+            <Title1 centered family="medium" color={colors.primary}>
               {t('recoverPassword:question')}
             </Title1>
           </View>
           <View style={styles.viewInstruction}>
-            <Title2 centered>{t('recoverPassword:body')}</Title2>
+            <Title2 color={colors.primary} centered>
+              {t('recoverPassword:body')}
+            </Title2>
           </View>
 
           <RecoverPasswordForm

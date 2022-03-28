@@ -234,10 +234,11 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
         keyboardType="numeric"
         returnKeyType="done"
         label={t('checkViability:questionNine')}
+        placeholder={t('checkViability:questionNinePlaceholder')}
         errorMessage={errors.questionNine?.message}
         control={control}
       />
-      <Footer>
+      <Footer style={{ marginTop: 8 }}>
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}

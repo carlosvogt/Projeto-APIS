@@ -140,6 +140,7 @@ function CreateProductionForm({
       <Form.TextInput
         name="name"
         label={t('form:label.harvest')}
+        placeholder={t('form:label.harvestPlaceholder')}
         control={control}
         returnKeyType="next"
         keyboardType="numeric"
@@ -151,6 +152,7 @@ function CreateProductionForm({
         inputRef={date}
         icon="calendar-range"
         label={t('form:label.harvestDate')}
+        placeholder={t('form:label.harvestDatePlaceholder')}
         control={control}
         maxLength={10}
         iconColor={colors.primary}
@@ -171,6 +173,7 @@ function CreateProductionForm({
         name="qtd"
         inputRef={qtd}
         label={t('form:label.amount')}
+        placeholder={t('form:label.amountPlaceholder')}
         control={control}
         returnKeyType="next"
         keyboardType="numeric"

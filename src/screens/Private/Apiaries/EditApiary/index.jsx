@@ -5,6 +5,7 @@ import { StyleSheet, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useTheme } from '@theme';
 import EditApiaryForm from './EditApiaryForm';
 
 function EditApiary() {
@@ -12,6 +13,7 @@ function EditApiary() {
   const navigation = useNavigation();
   const params = useRoute();
   const [loading, setLoading] = useState(false);
+  const { colors } = useTheme();
 
   const { ...data } = params.params;
 
@@ -47,10 +49,14 @@ function EditApiary() {
       >
         <Container>
           <View style={styles.viewTitle}>
-            <Title1 family="medium">{t('editApiary:personalInfo')}</Title1>
+            <Title1 color={colors.primary} family="medium">
+              {t('editApiary:personalInfo')}
+            </Title1>
           </View>
           <View style={styles.viewInstruction}>
-            <Title2>{t('editApiary:mandatoryData')}</Title2>
+            <Title2 color={colors.primary}>
+              {t('editApiary:mandatoryData')}
+            </Title2>
           </View>
 
           <EditApiaryForm

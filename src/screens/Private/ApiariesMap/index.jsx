@@ -41,6 +41,23 @@ function ApiariesMapScreen() {
       alignItems: 'center',
       flex: 1,
     },
+    legendItem: {
+      marginHorizontal: 8,
+      paddingBottom: 4,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    legendContainer: {
+      backgroundColor: colors.background,
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    legendIcon: {
+      width: 10,
+      height: 10,
+      borderRadius: 10,
+      marginRight: 4,
+    },
   });
 
   // Dados mocados
@@ -296,60 +313,93 @@ function ApiariesMapScreen() {
         showModal={showModal}
       />
       <Header title={t('apiariesMap:name')} />
+
       {permission ? (
-        <View style={styles.container}>
-          {userLocalization.latitude && (
-            <MapView
-              style={{ flex: 1 }}
-              showsUserLocation
-              initialRegion={userLocalization}
-              onRegionChange={onRegionChange}
-            >
-              {apiaries.map((item, index) => {
-                return (
-                  <View key={item.code}>
-                    <Marker
-                      coordinate={{
-                        latitude: parseFloat(item.latitude),
-                        longitude: parseFloat(item.longitude),
-                      }}
-                      pinColor={
-                        item.type === 'apiary'
-                          ? colors.primary
-                          : item.type === 'home'
-                          ? colors.success
-                          : colors.error
-                      }
-                    >
-                      <Callout onPress={() => handleToApiary(item.type, index)}>
-                        <Text style={{ color: colors.primary }}>
-                          {item.name}
-                        </Text>
-                      </Callout>
-                    </Marker>
-                    {item.type !== 'home' && (
-                      <Circle
-                        center={{
+        <>
+          <View style={styles.container}>
+            {userLocalization.latitude && (
+              <MapView
+                style={{ flex: 1 }}
+                showsUserLocation
+                initialRegion={userLocalization}
+                onRegionChange={onRegionChange}
+              >
+                {apiaries.map((item, index) => {
+                  return (
+                    <View key={item.code}>
+                      <Marker
+                        coordinate={{
                           latitude: parseFloat(item.latitude),
                           longitude: parseFloat(item.longitude),
                         }}
-                        radius={1500}
-                        fillColor={
+                        pinColor={
                           item.type === 'apiary'
-                            ? colors.primaryLight
-                            : colors.errorLight
+                            ? colors.primary
+                            : item.type === 'home'
+                            ? colors.success
+                            : colors.error
                         }
-                        strokeColor={
-                          item.type === 'apiary' ? colors.primary : colors.error
-                        }
-                      />
-                    )}
-                  </View>
-                );
-              })}
-            </MapView>
-          )}
-        </View>
+                      >
+                        <Callout
+                          onPress={() => handleToApiary(item.type, index)}
+                        >
+                          <Text style={{ color: colors.primary }}>
+                            {item.name}
+                          </Text>
+                        </Callout>
+                      </Marker>
+                      {item.type !== 'home' && (
+                        <Circle
+                          center={{
+                            latitude: parseFloat(item.latitude),
+                            longitude: parseFloat(item.longitude),
+                          }}
+                          radius={1500}
+                          fillColor={
+                            item.type === 'apiary'
+                              ? colors.primaryLight
+                              : colors.errorLight
+                          }
+                          strokeColor={
+                            item.type === 'apiary'
+                              ? colors.primary
+                              : colors.error
+                          }
+                        />
+                      )}
+                    </View>
+                  );
+                })}
+              </MapView>
+            )}
+          </View>
+          <View style={styles.legendContainer}>
+            <View style={styles.legendItem}>
+              <View
+                style={[styles.legendIcon, { backgroundColor: colors.success }]}
+              />
+              <Text style={{ color: colors.success }}>
+                {t('apiariesMap:home')}
+              </Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View
+                style={[styles.legendIcon, { backgroundColor: colors.primary }]}
+              />
+              <Text style={{ color: colors.primary }}>
+                {t('apiariesMap:apiary')}
+              </Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View
+                style={[styles.legendIcon, { backgroundColor: colors.error }]}
+              />
+              <Text style={{ color: colors.error }}>
+                {t('apiariesMap:death')}
+              </Text>
+            </View>
+          </View>
+        </>
       ) : (
         <View style={styles.view}>
           <Title1 centered color={colors.error} family="medium">

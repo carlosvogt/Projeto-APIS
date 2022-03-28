@@ -36,6 +36,7 @@ function RecoverPasswordForm({ onSubmit, isSubmitting, emailSended }) {
       <Form.TextInput
         name="email"
         label={t('recoverPassword:email')}
+        placeholder={t('recoverPassword:emailPlaceholder')}
         errorMessage={errors.email?.message}
         control={control}
         returnKeyType="done"

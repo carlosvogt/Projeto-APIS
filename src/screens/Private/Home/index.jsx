@@ -40,8 +40,8 @@ function HomeScreen() {
     },
     header: {
       backgroundColor: colors.primary,
-      borderBottomLeftRadius: 20,
-      borderBottomRightRadius: 20,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
       alignItems: 'center',
       justifyContent: 'center',
       paddingVertical: 16,
@@ -52,7 +52,7 @@ function HomeScreen() {
     button: {
       width: 40,
       height: 40,
-      borderRadius: 20,
+      borderRadius: 10,
       justifyContent: 'center',
       alignItems: 'center',
       marginRight: 8,
@@ -60,8 +60,12 @@ function HomeScreen() {
     },
     add: {
       marginBottom: 8,
+      marginTop: 8,
       flexDirection: 'row',
       alignItems: 'center',
+    },
+    noteContainer: {
+      marginTop: 8,
     },
   });
 
@@ -71,41 +75,49 @@ function HomeScreen() {
       code: 1,
       name: 'Anotação 1',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+      lastModify: '21/03/2021 - 16:14',
     },
     {
       code: 2,
       name: 'Anotação 2',
       note: 'Aqui o texto será escrito de forma integral',
+      lastModify: '21/03/2021 - 16:14',
     },
     {
       code: 3,
       name: '',
       note: 'Aqui o texto será escrito de forma integral aaa',
+      lastModify: '21/03/2021 - 16:14',
     },
     {
       code: 4,
       name: 'Anotação 1',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+      lastModify: '21/03/2021 - 16:14',
     },
     {
       code: 5,
       name: 'Anotação 1',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+      lastModify: '21/03/2021 - 16:14',
     },
     {
       code: 6,
       name: 'Anotação 1',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+      lastModify: '21/03/2021 - 16:14',
     },
     {
       code: 7,
       name: 'Anotação 1',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+      lastModify: '21/03/2021 - 16:14',
     },
     {
       code: 8,
       name: 'Anotação 8',
       note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+      lastModify: '21/03/2021 - 16:14',
     },
   ];
 
@@ -235,30 +247,32 @@ function HomeScreen() {
           >
             <Add size={40} color={colors.secondary} />
           </TouchableOpacity>
-          <Title1 centered color={colors.primary}>
+          <Title1 centered color={colors.primary} family="medium">
             {t('home:notes')}
           </Title1>
         </View>
-        {notes.length > 0 ? (
-          notes.map((note, index) => {
-            return (
-              <ExpensiveNote
-                mode="note"
-                key={note.code}
-                data={note}
-                hasData
-                modalOptions={modalNoteOptions}
-                selectedCode={note.code}
-                setSelectedCode={() => {
-                  setSelectedCode(note.code);
-                  setSelectedNoteIndex(index);
-                }}
-              />
-            );
-          })
-        ) : (
-          <ExpensiveNote hasData={false} mode="note" />
-        )}
+        <View style={styles.noteContainer}>
+          {notes.length > 0 ? (
+            notes.map((note, index) => {
+              return (
+                <ExpensiveNote
+                  mode="note"
+                  key={note.code}
+                  data={note}
+                  hasData
+                  modalOptions={modalNoteOptions}
+                  selectedCode={note.code}
+                  setSelectedCode={() => {
+                    setSelectedCode(note.code);
+                    setSelectedNoteIndex(index);
+                  }}
+                />
+              );
+            })
+          ) : (
+            <ExpensiveNote hasData={false} mode="note" />
+          )}
+        </View>
       </ScrollView>
     </View>
   );

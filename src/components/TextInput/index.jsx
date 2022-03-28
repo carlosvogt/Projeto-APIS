@@ -49,7 +49,7 @@ const TextInput = forwardRef(
         marginVertical: 8,
       },
       textInput: {
-        borderRadius: 20,
+        borderRadius: 10,
         backgroundColor: colors.secondary,
         overflow: 'hidden',
       },
@@ -122,7 +122,7 @@ const TextInput = forwardRef(
           underlineColor="transparent"
           activeUnderlineColor={colors.error}
           theme={{
-            roundness: 20,
+            roundness: 10,
             colors: {
               primary: colors.primary,
               text: colors.primary,

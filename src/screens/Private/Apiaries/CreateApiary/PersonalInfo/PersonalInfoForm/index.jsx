@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { Button, Form, Steps } from '@components';
@@ -14,6 +14,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
   const totalPlaces = useRef();
   const quantityFull = useRef();
   const ownerPercent = useRef();
+  const [totalQtd, setTotalQtd] = useState(0);
 
   function validPhone(value) {
     const cellphone = value.replace(/\D/g, '');
@@ -30,6 +31,14 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
     return true;
   }
 
+  function validQuantity(value) {
+    const qtd = parseInt(value, 10);
+    if (qtd > totalQtd) {
+      return false;
+    }
+    return true;
+  }
+
   const schema = Yup.object().shape({
     name: Yup.string().required(t('formErrors:required')),
     owner: Yup.string().required(t('formErrors:required')),
@@ -40,7 +49,14 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
       return true;
     }),
     totalPlaces: Yup.string().required(t('formErrors:required')),
-    quantityFull: Yup.string().required(t('formErrors:required')),
+    quantityFull: Yup.string()
+      .required(t('formErrors:required'))
+      .test('validQuantity', t('formErrors:quantity'), (value) => {
+        if (value) {
+          return validQuantity(value);
+        }
+        return true;
+      }),
     ownerPercent: Yup.string().test(
       'validPercent',
       t('formErrors:percentage'),
@@ -56,14 +72,24 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange' });
+
+  const formValues = getValues();
+
+  useEffect(() => {
+    if (formValues.totalPlaces) {
+      setTotalQtd(parseInt(formValues.totalPlaces, 10));
+    }
+  }, [formValues]);
 
   return (
     <>
       <Form.TextInput
         name="name"
         label={t('createApiary:apiaryName')}
+        placeholder={t('createApiary:apiaryNamePlaceholder')}
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
@@ -73,6 +99,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         inputRef={owner}
         name="owner"
         label={t('createApiary:owner')}
+        placeholder={t('createApiary:ownerPlaceholder')}
         errorMessage={errors.owner?.message}
         control={control}
         returnKeyType="next"
@@ -84,6 +111,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         maskType="phone"
         maxLength={15}
         label={t('createApiary:phone')}
+        placeholder={t('createApiary:phonePlaceholder')}
         errorMessage={errors.phone?.message}
         control={control}
         keyboardType="numeric"
@@ -96,6 +124,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         keyboardType="numeric"
         returnKeyType="next"
         label={t('createApiary:quantity')}
+        placeholder={t('createApiary:quantityPlaceholder')}
         errorMessage={errors.totalPlaces?.message}
         control={control}
         onSubmitEditing={() => quantityFull.current.focus()}
@@ -106,6 +135,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         keyboardType="numeric"
         returnKeyType="next"
         label={t('createApiary:quantityFull')}
+        placeholder={t('createApiary:quantityFullPlaceholder')}
         errorMessage={errors.quantityFull?.message}
         control={control}
         onSubmitEditing={() => ownerPercent.current.focus()}
@@ -117,11 +147,12 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         returnKeyType="done"
         maxLength={3}
         label={t('createApiary:ownerPercent')}
+        placeholder={t('createApiary:ownerPercentPlaceholder')}
         errorMessage={errors.ownerPercent?.message}
         control={control}
       />
 
-      <Footer>
+      <Footer style={{ marginTop: 8 }}>
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}

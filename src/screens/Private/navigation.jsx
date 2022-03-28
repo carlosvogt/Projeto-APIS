@@ -81,8 +81,8 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
-            borderTopRightRadius: 20,
-            borderBottomRightRadius: 20,
+            borderTopRightRadius: 10,
+            borderBottomRightRadius: 10,
           },
         }}
       />
@@ -91,7 +91,7 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
-            borderRadius: 20,
+            borderRadius: 10,
           },
         }}
         component={ApiariesHome}
@@ -101,7 +101,7 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
-            borderRadius: 20,
+            borderRadius: 10,
           },
         }}
         component={ApiariesMapScreen}
@@ -111,8 +111,8 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
-            borderTopLeftRadius: 20,
-            borderBottomLeftRadius: 20,
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
           },
         }}
         component={MortalityMapScreen}

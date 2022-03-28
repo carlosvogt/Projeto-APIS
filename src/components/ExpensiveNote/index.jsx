@@ -2,7 +2,7 @@
 import React from 'react';
 import { useTheme } from '@theme';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Title2, TitleHeader, Title1 } from '@components/typography';
+import { Title2, TitleHeader, Title1, Title6 } from '@components/typography';
 import { useTranslation } from 'react-i18next';
 import { More } from '@assets';
 import {
@@ -32,7 +32,7 @@ function ExpensiveNote({
     container: {
       borderWidth: darkMode ? 0 : 1,
       borderColor: colors.primary,
-      borderRadius: 20,
+      borderRadius: 10,
       backgroundColor: colors.secondary,
       paddingVertical: 8,
       paddingLeft: 16,
@@ -43,8 +43,22 @@ function ExpensiveNote({
     apiaryContainer: {
       borderWidth: darkMode ? 0 : 1,
       borderColor: colors.primary,
-      borderRadius: 20,
+      borderRadius: 10,
       backgroundColor: colors.secondary,
+      paddingVertical: 8,
+      marginBottom: 16,
+      justifyContent: 'space-between',
+    },
+    apiaryListContainer: {
+      borderWidth: darkMode ? 0 : 1,
+      borderColor: colors.primary,
+      borderRadius: 10,
+      backgroundColor: colors.secondary,
+      paddingTop: 8,
+      marginBottom: 16,
+      justifyContent: 'space-between',
+    },
+    apiaryContainerNoData: {
       paddingVertical: 8,
       marginBottom: 16,
       justifyContent: 'space-between',
@@ -73,10 +87,11 @@ function ExpensiveNote({
       justifyContent: 'space-between',
     },
     subContainer: {
-      flexDirection: 'row',
-      paddingTop: 10,
-      justifyContent: 'space-around',
+      marginTop: 8,
       paddingLeft: 5,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+      backgroundColor: colors.primary,
     },
     emptyApiari: {
       paddingTop: 10,
@@ -98,6 +113,8 @@ function ExpensiveNote({
     marginTop: {
       marginTop: 8,
     },
+    apiaryInfo: { marginVertical: 16 },
+    lastModify: { alignItems: 'flex-start' },
   });
 
   const triggerStyles = {
@@ -114,9 +131,9 @@ function ExpensiveNote({
   const optionsStyles = {
     optionsContainer: {
       paddingVertical: 8,
-      borderTopLeftRadius: 20,
-      borderBottomLeftRadius: 20,
-      borderBottomRightRadius: 20,
+      borderTopLeftRadius: 10,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
       width: 'auto',
       backgroundColor: colors.secondary,
       borderWidth: 1,
@@ -153,34 +170,33 @@ function ExpensiveNote({
     <>
       {mode === 'apiary' &&
         (hasData ? (
-          <View style={styles.apiaryContainer}>
+          <View style={styles.apiaryListContainer}>
             <TouchableOpacity onPress={() => onPress()}>
-              <TitleHeader centered color={colors.primary}>
+              <Title1 centered color={colors.primary} family="medium">
                 {`${t('form:expensiveNote.apiary')} ${data.name}`}
-              </TitleHeader>
-              <Title2 centered color={colors.primary}>
-                {`${t('form:expensiveNote.ownerPhone')} ${data.phone}`}
-              </Title2>
+              </Title1>
+              {data.phone && (
+                <Title2 centered color={colors.primary}>
+                  {`${t('form:expensiveNote.ownerPhone')} ${data.phone}`}
+                </Title2>
+              )}
               <View style={styles.subContainer}>
-                <Title2 color={colors.primary}>{`${t(
-                  'form:expensiveNote.hive',
-                )} ${data.quantityFull}`}</Title2>
-                <Title2 color={colors.primary}>{`${t(
-                  'form:expensiveNote.emptyPlaces',
-                )}${emptyPlaces}`}</Title2>
+                <TitleHeader color={colors.secondary} family="medium" centered>
+                  {`${t('form:expensiveNote.capacity')} ${data.totalPlaces}`}
+                </TitleHeader>
+                <Title2 color={colors.secondary} family="medium" centered>
+                  {`${t('form:expensiveNote.installed')} ${
+                    data.quantityFull
+                  }  |  ${t('form:expensiveNote.available')} ${emptyPlaces}`}
+                </Title2>
               </View>
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={styles.apiaryContainer}>
-            <Title2 centered family="medium" color={colors.primary}>
+          <View style={styles.apiaryContainerNoData}>
+            <TitleHeader centered family="medium" color={colors.primary}>
               {t('form:expensiveNote.noApiari')}
-            </Title2>
-            <View style={styles.emptyApiari}>
-              <Title2 centered color={colors.primary}>
-                {t('form:expensiveNote.noApiariBody')}
-              </Title2>
-            </View>
+            </TitleHeader>
           </View>
         ))}
 
@@ -189,9 +205,14 @@ function ExpensiveNote({
           <View style={styles.container}>
             <View style={styles.closedContainer}>
               <View style={styles.leftContainer}>
-                <TitleHeader color={colors.primary}>
+                <Title1 color={colors.primary} family="medium">
                   {data.name || t('form:expensiveNote.noTitle')}
-                </TitleHeader>
+                </Title1>
+                <View style={styles.lastModify}>
+                  <Title6 family="medium" color={colors.primary}>
+                    {data.lastModify}
+                  </Title6>
+                </View>
                 <View style={styles.marginTop}>
                   <Title2 color={colors.primary}>
                     {data.note || t('form:expensiveNote.noTitle')}
@@ -214,15 +235,10 @@ function ExpensiveNote({
             </View>
           </View>
         ) : (
-          <View style={styles.container}>
+          <View style={styles.apiaryContainerNoData}>
             <TitleHeader centered family="medium" color={colors.primary}>
               {t('form:expensiveNote.noNoteTitle')}
             </TitleHeader>
-            <View style={styles.emptyApiari}>
-              <Title2 centered color={colors.primary}>
-                {t('form:expensiveNote.noApiariBody')}
-              </Title2>
-            </View>
           </View>
         ))}
 
@@ -231,10 +247,18 @@ function ExpensiveNote({
           <View style={styles.noteListContainer}>
             <View style={styles.closedContainer}>
               <View style={styles.leftContainer}>
-                <TitleHeader color={colors.primary}>
-                  {data.name || t('form:expensiveNote.noTitle')}
-                </TitleHeader>
-                <View>
+                <View style={styles.marginTop}>
+                  <Title1 color={colors.primary} family="medium">
+                    {data.name || t('form:expensiveNote.noTitle')}
+                  </Title1>
+                </View>
+                <View style={styles.lastModify}>
+                  <Title6 family="medium" color={colors.primary}>
+                    {data.lastModify}
+                  </Title6>
+                </View>
+
+                <View style={styles.marginTop}>
                   <Title2 color={colors.primary}>
                     {data.note || t('form:expensiveNote.noTitle')}
                   </Title2>
@@ -256,15 +280,10 @@ function ExpensiveNote({
             </View>
           </View>
         ) : (
-          <View style={styles.noData}>
+          <View style={styles.apiaryContainerNoData}>
             <TitleHeader family="medium" color={colors.primary}>
               {t('form:expensiveNote.noNoteTitle')}
             </TitleHeader>
-            <View style={styles.emptyApiari}>
-              <Title2 color={colors.primary}>
-                {t('form:expensiveNote.noApiariBody')}
-              </Title2>
-            </View>
           </View>
         ))}
 
@@ -273,10 +292,18 @@ function ExpensiveNote({
           <View style={styles.noteListContainer}>
             <View style={styles.closedContainer}>
               <View style={styles.leftContainer}>
-                <TitleHeader color={colors.primary}>
-                  {data.name || t('apiaries:home.noTitle')}
-                </TitleHeader>
-                <View>
+                <View style={styles.marginTop}>
+                  <Title1 color={colors.primary} family="medium">
+                    {data.name || t('apiaries:home.noTitle')}
+                  </Title1>
+                </View>
+                <View style={styles.lastModify}>
+                  <Title6 family="medium" color={colors.primary}>
+                    {data.lastModify}
+                  </Title6>
+                </View>
+
+                <View style={styles.marginTop}>
                   <>
                     <Title2 color={colors.primary}>
                       {`${t('form:expensiveNote.date')} ${data.date}`}
@@ -312,45 +339,44 @@ function ExpensiveNote({
             </View>
           </View>
         ) : (
-          <View style={styles.noData}>
+          <View style={styles.apiaryContainerNoData}>
             <TitleHeader family="medium" color={colors.primary}>
               {t('form:expensiveNote.noProduction')}
             </TitleHeader>
-            <View style={styles.emptyApiari}>
-              <Title2 color={colors.primary}>
-                {t('form:expensiveNote.noApiariBody')}
-              </Title2>
-            </View>
           </View>
         ))}
       {mode === 'apiaryDescription' && (
         <View style={styles.apiaryDescriptionContainer}>
           <View style={styles.closedContainer}>
             <View style={styles.leftContainer}>
-              <Title1 color={colors.primary} family="medium">
+              <Title1 color={colors.primary} family="medium" centered>
                 {`${t('form:expensiveNote.apiary')} ${data.name}`}
               </Title1>
-              <Title2 color={colors.primary} family="medium">
-                {`${t('form:expensiveNote.address')} ${data.city}/${
-                  data.state
-                }`}
-              </Title2>
-              <Title2 color={colors.primary} family="medium">
-                {`${t('form:expensiveNote.fullPlaces')} ${data.quantityFull}`}
-              </Title2>
-              <Title2 color={colors.primary} family="medium">
-                {`${t('form:expensiveNote.emptyPlaces')} ${emptyPlaces}`}
-              </Title2>
-              <Title2 color={colors.primary} family="medium">
-                {`${t('form:expensiveNote.owner')} ${data.owner}`}
-              </Title2>
-              <Title2 color={colors.primary} family="medium">
-                {`${t('form:expensiveNote.ownerPhone')} ${data.phone}`}
-              </Title2>
-              <Title2 color={colors.primary} family="medium">
-                {`${t('form:expensiveNote.ownerPercent')} ${
-                  data.ownerPercent
-                }%`}
+              <View style={styles.apiaryInfo}>
+                <Title2 color={colors.primary} family="medium" centered>
+                  {`${t('form:expensiveNote.owner')} ${data.owner}`}
+                </Title2>
+                <Title2 color={colors.primary} family="medium" centered>
+                  {`${t('form:expensiveNote.ownerPercent')} ${
+                    data.ownerPercent
+                  }%`}
+                </Title2>
+                <Title2 color={colors.primary} family="medium" centered>
+                  {`${t('form:expensiveNote.ownerPhone')} ${data.phone}`}
+                </Title2>
+                <Title2 color={colors.primary} family="medium" centered>
+                  {`${t('form:expensiveNote.address')} ${data.city} - ${
+                    data.state
+                  }`}
+                </Title2>
+              </View>
+              <TitleHeader color={colors.primary} family="medium" centered>
+                {`${t('form:expensiveNote.capacity')} ${data.totalPlaces}`}
+              </TitleHeader>
+              <Title2 color={colors.primary} family="medium" centered>
+                {`${t('form:expensiveNote.installed')} ${
+                  data.quantityFull
+                }  |  ${t('form:expensiveNote.available')} ${emptyPlaces}`}
               </Title2>
             </View>
             <TouchableOpacity style={styles.noteListRightContainer}>

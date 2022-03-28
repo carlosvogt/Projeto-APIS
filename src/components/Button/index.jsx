@@ -24,7 +24,7 @@ function Button({
   const { colors } = useTheme();
 
   const buttonStyle = {
-    borderRadius: 20,
+    borderRadius: 10,
     backgroundColor: mode === 'outlined' ? colors.background : colors.primary,
     borderWidth: mode === 'outlined' ? 0 : 1,
     borderColor: mode === 'outlined' ? colors.primary : 'transparent',
@@ -51,7 +51,6 @@ function Button({
           <Title2
             family={titleFamily}
             color={textColor || colors.reverseBackground}
-            underlined
           >
             {title}
           </Title2>

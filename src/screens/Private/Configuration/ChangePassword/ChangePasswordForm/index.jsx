@@ -33,6 +33,7 @@ function ChangePasswordForm({ onSubmit, isSubmitting }) {
       <Form.PasswordInput
         name="oldPassword"
         label={t('changePassword:oldPassword')}
+        placeholder={t('changePassword:oldPasswordPlaceholder')}
         returnKeyType="next"
         errorMessage={errors.oldPassword?.message}
         control={control}
@@ -42,6 +43,7 @@ function ChangePasswordForm({ onSubmit, isSubmitting }) {
         inputRef={newPassword}
         name="newPassword"
         label={t('changePassword:newPassword')}
+        placeholder={t('changePassword:newPasswordPlaceholder')}
         returnKeyType="next"
         errorMessage={errors.newPassword?.message}
         control={control}
@@ -51,6 +53,7 @@ function ChangePasswordForm({ onSubmit, isSubmitting }) {
         inputRef={confirmPassword}
         name="confirmPassword"
         label={t('changePassword:confirmPassword')}
+        placeholder={t('changePassword:confirmPasswordPlaceholder')}
         returnKeyType="done"
         errorMessage={errors.confirmPassword?.message}
         control={control}

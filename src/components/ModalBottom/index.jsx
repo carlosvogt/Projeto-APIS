@@ -26,7 +26,7 @@ const ModalBottom = ({ onPressOut, showModal, children }) => {
     handle: {
       width: '22%',
       marginTop: 8,
-      borderRadius: 20,
+      borderRadius: 10,
       height: 4,
       alignSelf: 'center',
       backgroundColor: colors.primary,
@@ -34,13 +34,13 @@ const ModalBottom = ({ onPressOut, showModal, children }) => {
     modalBody: {
       width: '100%',
       alignItems: 'center',
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
     },
     modalView: {
       width: '100%',
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
       backgroundColor: colors.background,
       alignItems: 'center',
       paddingTop: 26,

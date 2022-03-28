@@ -17,6 +17,7 @@ import { Button, Form, Dropdown, Modal } from '@components';
 import { Title1, Title2 } from '@components/typography';
 import Geolocation from 'react-native-geolocation-service';
 import { useNetInfo } from '@react-native-community/netinfo';
+import { useTheme } from '@theme';
 
 function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   const { t } = useTranslation();
@@ -29,6 +30,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState('');
   const netInfo = useNetInfo();
+  const { colors } = useTheme();
 
   function validZipCode(value) {
     const zipCode = value.replace(/\D/g, '');
@@ -130,9 +132,11 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   const handleSetState = (value) => {
     setSelectedOption(value);
     setDefaultState(null);
-    setValue('state', value.toLocaleUpperCase(), {
-      shouldValidate: true,
-    });
+    if (value) {
+      setValue('state', value.toLocaleUpperCase(), {
+        shouldValidate: true,
+      });
+    }
   };
 
   useState(() => {
@@ -254,15 +258,20 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
         showModal={showModal}
       />
       <View style={styles.viewTitle}>
-        <Title1 family="medium">{t('updatePersonalInfo:personalData')}</Title1>
+        <Title1 color={colors.primary} family="medium">
+          {t('updatePersonalInfo:personalData')}
+        </Title1>
       </View>
       <View style={styles.viewInstruction}>
-        <Title2>{t('createAccount:requiredInfo')}</Title2>
+        <Title2 color={colors.primary}>
+          {t('updatePersonalInfo:requiredInfo')}
+        </Title2>
       </View>
 
       <Form.TextInput
         name="name"
-        label={t('createAccount:name')}
+        label={t('updatePersonalInfo:name')}
+        placeholder={t('updatePersonalInfo:namePlaceholder')}
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
@@ -271,7 +280,8 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       <Form.TextInput
         inputRef={email}
         name="email"
-        label={t('createAccount:email')}
+        label={t('updatePersonalInfo:email')}
+        placeholder={t('updatePersonalInfo:emailPlaceholder')}
         errorMessage={errors.email?.message}
         control={control}
         returnKeyType="next"
@@ -284,14 +294,17 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
         maskType="phone"
         maxLength={15}
         keyboardType="numeric"
-        label={t('createAccount:phone')}
+        label={t('updatePersonalInfo:phone')}
+        placeholder={t('updatePersonalInfo:phonePlaceholder')}
         errorMessage={errors.phone?.message}
         control={control}
         returnKeyType="next"
         onSubmitEditing={() => zipCodeRef.current.focus()}
       />
       <View style={styles.viewTitle}>
-        <Title1 family="medium">{t('updatePersonalInfo:address')}</Title1>
+        <Title1 color={colors.primary} family="medium">
+          {t('updatePersonalInfo:address')}
+        </Title1>
       </View>
 
       <View style={styles.view}>
@@ -299,7 +312,8 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           <Form.TextInput
             inputRef={zipCodeRef}
             name="zipCode"
-            label={t('createAccount:zipCode')}
+            label={t('updatePersonalInfo:zipCode')}
+            placeholder={t('updatePersonalInfo:zipCodePlaceholder')}
             errorMessage={errors.zipCode?.message}
             control={control}
             keyboardType="numeric"
@@ -313,7 +327,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           disabled={formValues?.zipCode.length !== 10}
           loading={loadingZipCode}
           onPress={() => handleZipCode()}
-          title={loadingZipCode ? '' : t('createAccount:research')}
+          title={loadingZipCode ? '' : t('updatePersonalInfo:research')}
         />
       </View>
 
@@ -321,7 +335,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
         <View style={styles.input}>
           <Form.TextInput
             name="coordinates"
-            label={t('createAccount:coordinates')}
+            label={t('updatePersonalInfo:coordinates')}
             errorMessage={errors.coordinates?.message}
             control={control}
             editable={false}
@@ -332,33 +346,34 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           style={styles.button}
           loading={loadingCoordinates}
           onPress={() => handleCoordinates()}
-          title={loadingCoordinates ? '' : t('createAccount:research')}
+          title={loadingCoordinates ? '' : t('updatePersonalInfo:research')}
         />
       </View>
 
-      <Form.TextInput
-        name="city"
-        label={t('createAccount:city')}
-        errorMessage={errors.city?.message}
-        control={control}
-        returnKeyType="next"
-      />
-
       <Dropdown
         name="state"
-        label={t('createAccount:state')}
+        label={t('updatePersonalInfo:state')}
         value={selectedOption}
         setValue={(value) => handleSetState(value)}
         data={states}
         error={errors.state?.message}
         control={control}
         search
-        searchPlaceholder={t('createAccount:search')}
+        searchPlaceholder={t('updatePersonalInfo:search')}
         mode="top"
         defaultValue={defaultState}
       />
 
-      <Footer>
+      <Form.TextInput
+        name="city"
+        label={t('updatePersonalInfo:city')}
+        placeholder={t('updatePersonalInfo:cityPlaceholder')}
+        errorMessage={errors.city?.message}
+        control={control}
+        returnKeyType="next"
+      />
+
+      <Footer style={{ marginTop: 8 }}>
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}

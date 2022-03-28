@@ -5,12 +5,14 @@ import { Container } from '@components';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Header } from '@components/layout';
+import { useTheme } from '@theme';
 import ChangePasswordForm from './ChangePasswordForm';
 
 function ChangePassword() {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const { colors } = useTheme();
 
   const styles = StyleSheet.create({
     scrollView: {
@@ -46,7 +48,9 @@ function ChangePassword() {
       >
         <Container>
           <View style={styles.viewTitle}>
-            <Title1 family="medium">{t('changePassword:body')}</Title1>
+            <Title1 color={colors.primary} family="medium">
+              {t('changePassword:body')}
+            </Title1>
           </View>
 
           <ChangePasswordForm

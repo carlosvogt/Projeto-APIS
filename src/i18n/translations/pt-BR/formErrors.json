@@ -5,6 +5,7 @@
   "password" : "Atenção, as senhas devem ser iguais",
   "passwordLength" : "A senha deve ter no mínimo 6 números",
   "zipCode" : "Favor informe um CEP válido",
-  "percentage" : "Favor informe uma porcentagem válida"
+  "percentage" : "Favor informe uma porcentagem válida",
+  "quantity" : "A quantidade deve ser menor que a quantidade total"
 
 }

@@ -33,7 +33,7 @@ function BaseAlert({ bgColor, message, textColor, visible, autoHide, onHide }) {
         styles.container,
         {
           backgroundColor: bgColor,
-          borderRadius: 20,
+          borderRadius: 10,
         },
       ]}
     >

@@ -5,6 +5,7 @@ import { StyleSheet, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useTheme } from '@theme';
 import AddressForm from './AddressForm';
 
 function Address() {
@@ -12,6 +13,7 @@ function Address() {
   const [loading, setLoading] = useState(false);
   const { params } = useRoute();
   const navigation = useNavigation();
+  const { colors } = useTheme();
 
   const styles = StyleSheet.create({
     modalItem: {
@@ -50,10 +52,14 @@ function Address() {
       >
         <Container>
           <View style={styles.viewTitle}>
-            <Title1 family="medium">{t('createAccount:address')}</Title1>
+            <Title1 color={colors.primary} family="medium">
+              {t('createAccount:address')}
+            </Title1>
           </View>
           <View style={styles.viewInstruction}>
-            <Title2>{t('createAccount:requiredInfo')}</Title2>
+            <Title2 color={colors.primary}>
+              {t('createAccount:requiredInfo')}
+            </Title2>
           </View>
 
           <AddressForm

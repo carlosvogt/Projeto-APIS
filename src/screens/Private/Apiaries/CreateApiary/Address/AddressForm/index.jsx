@@ -90,9 +90,11 @@ function AddressForm({ onSubmit, isSubmitting }) {
 
   const handleSetState = (value) => {
     setSelectedOption(value);
-    setValue('state', value.toLocaleUpperCase(), {
-      shouldValidate: true,
-    });
+    if (value) {
+      setValue('state', value.toLocaleUpperCase(), {
+        shouldValidate: true,
+      });
+    }
   };
 
   const handleZipCode = () => {
@@ -209,6 +211,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
           <Form.TextInput
             name="zipCode"
             label={t('createApiary:zipCode')}
+            placeholder={t('createApiary:zipCodePlaceholder')}
             errorMessage={errors.zipCode?.message}
             control={control}
             keyboardType="numeric"
@@ -219,6 +222,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
         </View>
         <Button
           style={styles.button}
+          disabled={formValues?.zipCode.length !== 10}
           loading={loadingZipCode}
           onPress={() => handleZipCode()}
           title={loadingZipCode ? '' : t('createApiary:research')}
@@ -244,14 +248,6 @@ function AddressForm({ onSubmit, isSubmitting }) {
         />
       </View>
 
-      <Form.TextInput
-        name="city"
-        label={t('createApiary:city')}
-        errorMessage={errors.city?.message}
-        control={control}
-        returnKeyType="next"
-      />
-
       <Dropdown
         name="state"
         label={t('createApiary:state')}
@@ -262,8 +258,18 @@ function AddressForm({ onSubmit, isSubmitting }) {
         control={control}
         search
         searchPlaceholder={t('createApiary:search')}
-        mode="bottom"
+        mode="top"
       />
+
+      <Form.TextInput
+        name="city"
+        label={t('createApiary:city')}
+        placeholder={t('createApiary:cityPlaceholder')}
+        errorMessage={errors.city?.message}
+        control={control}
+        returnKeyType="next"
+      />
+
       <Footer>
         <Button
           loading={isSubmitting}

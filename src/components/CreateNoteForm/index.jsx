@@ -76,6 +76,7 @@ function CreateNoteForm({
 
       <Form.TextInput
         name="title"
+        placeholder={t('form:label.titlePlaceholder')}
         label={t('form:label.title')}
         control={control}
         returnKeyType="next"
@@ -84,6 +85,7 @@ function CreateNoteForm({
 
       <Form.TextInput
         name="description"
+        placeholder={t('form:label.descriptionPlaceholder')}
         inputRef={description}
         multiline
         clearButtonMode="disabled"

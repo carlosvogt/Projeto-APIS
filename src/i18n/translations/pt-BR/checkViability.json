@@ -9,6 +9,7 @@
   "questionSeven" : "Recebe luz solar?",
   "questionEight" : "Possui lavouras no raio de 250m?",
   "questionNine" : "Número de colmeias pretendidas",
+  "questionNinePlaceholder" : "Digite o número de colmeias pretendidas",
   "check" : "Checar",
   "checking" : "Checando",
   "checkViability" : "Checar viabilidade",

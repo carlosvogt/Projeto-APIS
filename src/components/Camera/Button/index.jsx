@@ -17,7 +17,7 @@ function Button({ onPress, loading }) {
       backgroundColor: colors.primary,
       width: 70,
       height: 70,
-      borderRadius: 35,
+      borderRadius: 10,
       justifyContent: 'center',
       alignItems: 'center',
     },

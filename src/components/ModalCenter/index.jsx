@@ -48,7 +48,7 @@ const ModalCenter = ({
       justifyContent: 'flex-start',
       alignItems: 'flex-end',
       padding: 16,
-      borderRadius: 20,
+      borderRadius: 10,
     },
     question: {
       width: '100%',

@@ -52,21 +52,13 @@ function ApiaryHome() {
       marginHorizontal: 16,
       justifyContent: 'center',
     },
-    header: {
-      backgroundColor: colors.primary,
-      borderBottomLeftRadius: 20,
-      borderBottomRightRadius: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: 16,
-    },
     profile: {
       marginBottom: 16,
     },
     button: {
       width: 40,
       height: 40,
-      borderRadius: 20,
+      borderRadius: 10,
       justifyContent: 'center',
       alignItems: 'center',
       marginRight: 8,
@@ -78,15 +70,32 @@ function ApiaryHome() {
       alignItems: 'center',
     },
     listContainer: {
-      borderRadius: 25,
+      borderRadius: 10,
+      borderWidth: darkMode ? 0 : 1,
+      paddingBottom: 16,
+      borderColor: colors.primary,
+      marginBottom: 16,
+      marginTop: 8,
+      backgroundColor: colors.secondary,
+    },
+    listProductionContainer: {
+      borderRadius: 10,
       borderWidth: darkMode ? 0 : 1,
       paddingVertical: 16,
       borderColor: colors.primary,
       marginBottom: 16,
+      marginTop: 8,
       backgroundColor: colors.secondary,
     },
+    noData: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 16,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.primary,
+    },
     infoContainer: {
-      borderRadius: 25,
+      borderRadius: 10,
       borderWidth: darkMode ? 0 : 1,
       paddingVertical: 16,
       borderColor: colors.primary,
@@ -365,7 +374,9 @@ function ApiaryHome() {
             {t('apiaries:home.notes')}
           </Title1>
         </View>
-        <View style={styles.listContainer}>
+        <View
+          style={data.notes.length > 0 ? styles.listContainer : styles.noData}
+        >
           {data.notes.length > 0 ? (
             data.notes.map((note, index) => {
               return (
@@ -398,7 +409,13 @@ function ApiaryHome() {
             {t('apiaries:home.production')}
           </Title1>
         </View>
-        <View style={styles.listContainer}>
+        <View
+          style={
+            data.notes.length > 0
+              ? styles.listProductionContainer
+              : styles.noData
+          }
+        >
           {data.production.length > 0 ? (
             <>
               <View style={styles.quantity}>

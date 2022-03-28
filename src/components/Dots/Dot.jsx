@@ -9,7 +9,7 @@ function Dot({ isActive }) {
     container: {
       width: 12,
       height: 12,
-      borderRadius: 25,
+      borderRadius: 10,
       backgroundColor: isActive ? colors.primary : colors.secondary,
       borderWidth: isActive ? 0 : 1,
       borderColor: colors.text,

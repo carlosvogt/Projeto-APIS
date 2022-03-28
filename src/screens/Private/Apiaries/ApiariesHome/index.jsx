@@ -36,7 +36,7 @@ function ApiariesHome() {
       flexDirection: 'row',
       height: 50,
       width: '100%',
-      borderRadius: 20,
+      borderRadius: 10,
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: 16,
@@ -47,9 +47,17 @@ function ApiariesHome() {
       justifyContent: 'center',
       marginBottom: 8,
     },
-    view: {
-      marginLeft: 4,
+    iconContainer: {
+      borderWidth: 2,
+      borderColor: colors.secondary,
+      height: 25,
+      width: 25,
+      borderRadius: 25,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 8,
     },
+    iconMargin: { marginRight: 8 },
   });
 
   // Dados mocados
@@ -72,21 +80,25 @@ function ApiariesHome() {
       total: '2000',
       totalPayed: '300',
       mortality: 'Sim',
+      lastModify: '21/03/2021 - 16:14',
       notes: [
         {
           code: 1,
           name: 'Anotação 1',
           note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+          lastModify: '21/03/2021 - 16:14',
         },
         {
           code: 2,
           name: 'Anotação 2',
           note: 'Aqui o texto será escrito de forma integral',
+          lastModify: '21/03/2021 - 16:14',
         },
         {
           code: 3,
           name: '',
           note: 'Aqui o texto será escrito de forma integral aaa',
+          lastModify: '21/03/2021 - 16:14',
         },
       ],
       production: [
@@ -97,6 +109,7 @@ function ApiariesHome() {
           qtd: '500',
           payed: 'Sim',
           payedQtd: '150',
+          lastModify: '21/03/2021 - 16:14',
         },
         {
           code: 2,
@@ -105,6 +118,7 @@ function ApiariesHome() {
           qtd: '1500',
           payed: 'Sim',
           payedQtd: '150',
+          lastModify: '21/03/2021 - 16:14',
         },
       ],
     },
@@ -126,11 +140,13 @@ function ApiariesHome() {
       total: '1000',
       totalPayed: '50',
       mortality: 'Sim',
+      lastModify: '21/03/2021 - 16:14',
       notes: [
         {
           code: 1,
           name: 'Anotação 1',
           note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
+          lastModify: '21/03/2021 - 16:14',
         },
       ],
       production: [
@@ -141,6 +157,7 @@ function ApiariesHome() {
           qtd: '500',
           payed: '',
           payedQtd: '50',
+          lastModify: '21/03/2021 - 16:14',
         },
         {
           code: 2,
@@ -149,6 +166,7 @@ function ApiariesHome() {
           qtd: '500',
           payed: 'Sim',
           payedQtd: '',
+          lastModify: '21/03/2021 - 16:14',
         },
       ],
     },
@@ -172,6 +190,7 @@ function ApiariesHome() {
       mortality: 'Não',
       notes: [],
       production: [],
+      lastModify: '21/03/2021 - 16:14',
     },
     {
       code: 4,
@@ -191,6 +210,7 @@ function ApiariesHome() {
       total: '0',
       totalPayed: '0',
       mortality: 'Não',
+      lastModify: '21/03/2021 - 16:14',
       notes: [],
       production: [],
     },
@@ -264,7 +284,9 @@ function ApiariesHome() {
             style={styles.button}
             onPress={() => handleAddApiary()}
           >
-            <Add size={40} color={colors.secondary} />
+            <View style={styles.iconContainer}>
+              <Add size={25} color={colors.secondary} />
+            </View>
             <Title1 centered color={colors.secondary}>
               {t('apiaries:add')}
             </Title1>
@@ -273,23 +295,26 @@ function ApiariesHome() {
             style={styles.button}
             onPress={() => handleCheckViability()}
           >
-            <CheckOutline size={30} color={colors.secondary} />
-            <View style={styles.view}>
-              <Title1 centered color={colors.secondary}>
-                {t('apiaries:viability')}
-              </Title1>
+            <View style={styles.iconMargin}>
+              <CheckOutline size={30} color={colors.secondary} />
             </View>
+
+            <Title1 centered color={colors.secondary}>
+              {t('apiaries:viability')}
+            </Title1>
           </TouchableOpacity>
         </View>
-        <View style={{ marginBottom: 8 }}>
-          <TextInput
-            onChangeText={(text) => setSearchText(text)}
-            value={searchText}
-            name="search"
-            placeholderTextColor={colors.primary}
-            placeholder={t('apiaries:placeholder')}
-          />
-        </View>
+        {apiaries.length > 0 && (
+          <View style={{ marginBottom: 8 }}>
+            <TextInput
+              onChangeText={(text) => setSearchText(text)}
+              value={searchText}
+              name="search"
+              placeholderTextColor={colors.primary}
+              placeholder={t('apiaries:placeholder')}
+            />
+          </View>
+        )}
         {searchText === '' ? (
           apiaries.length > 0 ? (
             apiaries.map((apiary, index) => handleApiaries(apiary, index))

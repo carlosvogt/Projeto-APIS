@@ -33,8 +33,8 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
       backgroundColor: colors.primary,
       paddingHorizontal: 24,
       paddingVertical: 14,
-      borderTopRightRadius: 20,
-      borderTopLeftRadius: 20,
+      borderTopRightRadius: 10,
+      borderTopLeftRadius: 10,
     },
 
     modalContainer: {
@@ -48,7 +48,7 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
     modalBox: {
       width: deviceWidth - 64,
       backgroundColor: colors.background,
-      borderRadius: 20,
+      borderRadius: 10,
     },
     buttonContainer: {
       flexDirection: 'row',
