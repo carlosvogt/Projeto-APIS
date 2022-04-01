@@ -88,6 +88,7 @@ function MortalityMap() {
     );
 
     if (status === PermissionsAndroid.RESULTS.GRANTED) {
+      setPermission(true);
       return true;
     }
 
