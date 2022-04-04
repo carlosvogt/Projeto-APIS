@@ -10,19 +10,27 @@ import { useTheme, ThemeProvider } from '@theme';
 import { ToastProvider } from '@components';
 import Navigation from '@navigation/index';
 
-function AppContents() {
+const AppContents = () => {
   const dispatch = useDispatch();
   const { colors } = useTheme();
   const darkMode = useSelector((state) => state.mode.darkMode);
 
-  async function getStoreData() {
+  const getStoreData = async () => {
     try {
       const getMode = await AsyncStorage.getItem('darkMode');
+      const getAuth = await AsyncStorage.getItem('auth');
       const darkModeState = JSON.parse(getMode);
+      const getAuthState = JSON.parse(getAuth);
       if (darkModeState) {
         dispatch({
           type: 'SET_MODE',
           payload: darkModeState,
+        });
+      }
+      if (getAuth) {
+        dispatch({
+          type: 'SIGN_IN',
+          payload: getAuthState,
         });
       }
     } catch (e) {
@@ -30,12 +38,12 @@ function AppContents() {
       return e;
     }
     return null;
-  }
+  };
 
-  async function loadData() {
+  const loadData = async () => {
     await getStoreData();
     SplashScreen.hide();
-  }
+  };
 
   useLayoutEffect(() => {
     loadData();
@@ -49,7 +57,7 @@ function AppContents() {
       </ToastProvider>
     </ThemeProvider>
   );
-}
+};
 
 const App = () => {
   return (

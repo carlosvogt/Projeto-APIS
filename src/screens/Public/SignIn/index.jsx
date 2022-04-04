@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { Container, ToggleButton, Button } from '@components';
+import { Container, ToggleButton, Button, useToast } from '@components';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Footer } from '@components/layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from '@theme';
+import { auth } from '@services/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useNetInfo } from '@react-native-community/netinfo';
 import SignInForm from './SignInForm';
 
 function SignIn() {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const navigation = useNavigation();
+  const toast = useToast();
   const darkMode = useSelector((state) => state.mode.darkMode);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const netInfo = useNetInfo();
 
   const styles = StyleSheet.create({
     scrollView: {
@@ -44,12 +49,40 @@ function SignIn() {
     navigation.navigate('CreateAccountPersonalInfo');
   };
 
-  // Dado mocado
-  const handleLogin = (login) => {
-    setLoading(true);
-    console.log('Fazer login', login);
-    // navigation.navigate('home');
-    setLoading(false);
+  const handleUserData = (userCredencial) => {
+    const user = auth.currentUser;
+    if (user.emailVerified) {
+      AsyncStorage.setItem('auth', JSON.stringify(userCredencial));
+      dispatch({
+        type: 'SIGN_IN',
+        payload: userCredencial,
+      });
+    } else {
+      toast.error(t('login:emailVerifiedError'));
+    }
+  };
+
+  const handleLogin = async (form) => {
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      setLoading(true);
+      await signInWithEmailAndPassword(auth, form.email, form.password)
+        .then((userCredencial) => {
+          handleUserData(userCredencial);
+        })
+        .catch((error) => {
+          if (error.code === 'auth/user-not-found') {
+            toast.error(t('login:invalidUser'));
+          } else if (error.code === 'auth/wrong-password') {
+            toast.error(t('login:invalidPassword'));
+          } else {
+            toast.error(error.code);
+          }
+        });
+      setLoading(false);
+    } else {
+      toast.error(t('login:noInternet'));
+    }
   };
 
   const setSelectedMode = async (value) => {

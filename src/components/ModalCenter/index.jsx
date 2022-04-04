@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import Button from '../Button';
 import CreateNoteForm from '../CreateNoteForm';
+import LoginForm from '../LoginForm';
 import CreateProductionForm from '../CreateProductionForm';
 import Title1 from '../typography/Title1';
 import Title2 from '../typography/Title2';
@@ -155,6 +156,17 @@ const ModalCenter = ({
                   />
                 </View>
               )}
+              {mode === 'login' && (
+                <View style={styles.noteContainer}>
+                  <LoginForm
+                    title={title}
+                    defaultData={defaultData}
+                    cancelFunction={cancelFunction}
+                    positiveAction={positiveAction}
+                    isSubmitting={isSubmitting}
+                  />
+                </View>
+              )}
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -164,7 +176,7 @@ const ModalCenter = ({
 };
 
 ModalCenter.propTypes = {
-  mode: PropTypes.oneOf(['note', 'question', 'production', 'alert']),
+  mode: PropTypes.oneOf(['note', 'question', 'production', 'alert', 'login']),
 };
 
 ModalCenter.defaultProps = {

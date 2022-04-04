@@ -13,10 +13,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     ...Platform.select({
       ios: {
-        top: 35,
+        top: 45,
       },
       android: {
-        top: 35,
+        top: 45,
       },
       default: {
         top: 0,

@@ -12,5 +12,6 @@
   "deleteBody" : "Você quer realmente apagar sua conta? Todos os dados serão excluídos e não poderão ser recuperados!",
   "getOut" : "Sair",
   "delete" : "Apagar",
-  "deleting" : "Apagando"
+  "deleting" : "Apagando",
+  "successDelete" : "Sucesso! Sua conta foi apagada!"
 }

@@ -11,6 +11,7 @@ import {
   ToggleButton,
   Modal,
   Camera,
+  useToast,
 } from '@components';
 import {
   ScrollView,
@@ -34,6 +35,12 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'react-native-image-picker';
+import { auth, db } from '@services/firebase';
+import { deleteUser, signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { userEmail, userUid } from '@store/auth';
+import { accountInfo } from '@store/accountData';
 
 function HomeScreen() {
   const { t } = useTranslation();
@@ -52,6 +59,14 @@ function HomeScreen() {
   const [userImage, setUserImage] = useState(null);
   const [photo, setPhoto] = useState([]);
   const iconColor = darkMode ? colors.secondary : colors.primary;
+  const [modalMode, setModalMode] = useState('question');
+  const netInfo = useNetInfo();
+  const email = useSelector(userEmail);
+  const uid = useSelector(userUid);
+  const userInfo = useSelector(accountInfo);
+
+  console.log('info', userInfo);
+  const toast = useToast();
 
   // Dado mocado
   const username = 'Carlos Rodrigo Vogt';
@@ -159,18 +174,69 @@ function HomeScreen() {
     setIsSubmitting(false);
   };
 
-  // Dado mocado
-  const handleConfirmation = () => {
-    setIsSubmitting(true);
-    if (modalType === 2) {
-      console.log('Apagar conta');
-    }
-    console.log('Sair da conta');
-    setIsSubmitting(false);
-    setShowConfirmationModal(false);
-    navigation.navigate('PublicNavigator', {
-      screen: 'SignIn',
+  const handleSignOut = () => {
+    AsyncStorage.removeItem('auth');
+    dispatch({
+      type: 'SIGN_OUT',
     });
+    setShowConfirmationModal(false);
+  };
+
+  // Dado mocado - Esta excluindo apenas o account data, não o resto
+  const handleDeleteUserData = async () => {
+    await deleteDoc(doc(db, uid, 'accountData'))
+      .then(() => {
+        toast.success(t('profile:successDelete'));
+        handleSignOut();
+      })
+      .catch((error) => {
+        toast.error(error.code);
+      });
+  };
+
+  const handleDeleteAccount = async () => {
+    await deleteUser(auth.currentUser)
+      .then(() => {
+        handleDeleteUserData();
+      })
+      .catch((error) => {
+        toast.error(error.code);
+      });
+  };
+
+  const handleModalConfirmation = async (form) => {
+    if (modalType === 1) {
+      handleSignOut();
+    }
+
+    if (modalType === 2) {
+      setModalType(3);
+      setModalMode('login');
+      setShowConfirmationModal(true);
+    }
+
+    if (modalType === 3) {
+      const hasInternet = netInfo.isConnected;
+      if (hasInternet) {
+        setIsSubmitting(true);
+        await signInWithEmailAndPassword(auth, email, form.password)
+          .then(() => {
+            handleDeleteAccount();
+          })
+          .catch((error) => {
+            if (error.code === 'auth/wrong-password') {
+              toast.error(t('form:login.invalidPassword'));
+            } else {
+              toast.error(error.code);
+            }
+          });
+        setIsSubmitting(false);
+      } else {
+        toast.error(t('form:login.noInternet'));
+      }
+      setModalMode('question');
+      setShowConfirmationModal(false);
+    }
   };
 
   const handleSuggestions = () => {
@@ -236,6 +302,7 @@ function HomeScreen() {
       ) : (
         <View style={styles.container} radius={false}>
           <Modal
+            mode={modalMode}
             title={
               modalType === 1
                 ? t('profile:checkout')
@@ -257,7 +324,7 @@ function HomeScreen() {
                 : null
             }
             cancelFunction={() => dismissConfirmationModal()}
-            positiveAction={() => handleConfirmation()}
+            positiveAction={(value) => handleModalConfirmation(value)}
             showModal={showConfirmationModal}
             isSubmitting={isSubmitting}
           />
@@ -347,7 +414,10 @@ function HomeScreen() {
             <View style={styles.line} />
             <TouchableOpacity
               style={styles.touchableOpacity}
-              onPress={() => handleConfirmationModal(1)}
+              onPress={() => {
+                setModalMode('question');
+                handleConfirmationModal(1);
+              }}
             >
               <Logout color={iconColor} size={30} />
               <View style={styles.option}>
@@ -375,7 +445,10 @@ function HomeScreen() {
             <View style={styles.line} />
             <TouchableOpacity
               style={styles.touchableOpacity}
-              onPress={() => handleConfirmationModal(2)}
+              onPress={() => {
+                setModalMode('question');
+                handleConfirmationModal(2);
+              }}
             >
               <Trash color={colors.error} size={30} />
               <View style={styles.option}>

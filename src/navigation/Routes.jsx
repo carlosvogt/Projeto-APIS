@@ -4,10 +4,13 @@ import PublicNavigator from '@screens/Public/navigation';
 import PrivateNavigator from '@screens/Private/navigation';
 import ProfileNavigator from '@screens/Private/Configuration/navigation';
 import ApiaryNavigation from '@screens/Private/Apiaries/navigation';
+import { useSelector } from 'react-redux';
+import { userUid } from '@store/auth';
 
 function Routes() {
   const Stack = createStackNavigator();
-  const token = true;
+  const token = useSelector(userUid);
+
   if (token) {
     return (
       <Stack.Navigator>

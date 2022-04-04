@@ -99,9 +99,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
 
   const handleZipCode = () => {
     setLoadingZipCode(true);
-
     const hasInternet = netInfo.isConnected;
-
     if (hasInternet) {
       const zipCode = formValues.zipCode.replace(/\D/g, '');
       fetch(`https://viacep.com.br/ws/${zipCode}/json/`)

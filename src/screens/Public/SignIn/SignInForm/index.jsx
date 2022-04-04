@@ -18,8 +18,12 @@ function SignInForm({ onSubmit, isSubmitting }) {
   });
 
   const schema = Yup.object().shape({
-    login: Yup.string().required(t('formErrors:required')),
-    password: Yup.string().required(t('formErrors:required')),
+    email: Yup.string()
+      .required(t('formErrors:required'))
+      .email(t('formErrors:email')),
+    password: Yup.string()
+      .required(t('formErrors:required'))
+      .min(6, t('formErrors:passwordLength')),
   });
 
   const {
@@ -31,10 +35,10 @@ function SignInForm({ onSubmit, isSubmitting }) {
   return (
     <>
       <Form.TextInput
-        name="login"
+        name="email"
         label={t('login:email')}
         placeholder={t('login:emailPlaceholder')}
-        errorMessage={errors.login?.message}
+        errorMessage={errors.email?.message}
         control={control}
         returnKeyType="next"
         keyboardType="email-address"
@@ -53,7 +57,7 @@ function SignInForm({ onSubmit, isSubmitting }) {
 
       <View style={styles.button}>
         <Button
-          title={isSubmitting ? t('login:logging') : t('login:login')}
+          title={isSubmitting ? t('login:accessing') : t('login:access')}
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
         />
