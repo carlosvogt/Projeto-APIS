@@ -6,13 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTheme } from '@theme';
-import { auth, db, firebase } from '@services/firebase';
+import { auth, db } from '@services/firebase';
 import {
   createUserWithEmailAndPassword,
   deleteUser,
   sendEmailVerification,
 } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { useNetInfo } from '@react-native-community/netinfo';
 import AddressForm from './AddressForm';
 
@@ -49,18 +49,36 @@ function Address() {
     await deleteUser(auth.currentUser);
   };
 
+  const getDateTime = () => {
+    const day = new Date().getDate();
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+    const hours = new Date().getHours();
+    const minutes = new Date().getMinutes();
+    return `${day}/${month}/${year} - ${hours}:${minutes}`;
+  };
+
   const handleCreateAccountData = async (form, userCredencial) => {
-    await setDoc(doc(db, userCredencial.user.uid, 'accountData'), {
-      name: params.name,
-      email: params.email,
-      phone: params.phone,
-      zipCode: form.zipCode,
-      coordinates: form.coordinates,
-      latitude: form.latitude,
-      longitude: form.longitude,
-      city: form.city,
-      state: form.state,
-    })
+    const dateTime = getDateTime();
+    await setDoc(
+      doc(
+        db,
+        `users/${userCredencial.user.uid}/accountData`,
+        userCredencial.user.uid,
+      ),
+      {
+        name: params.name,
+        email: params.email,
+        phone: params.phone,
+        zipCode: form.zipCode,
+        coordinates: form.coordinates,
+        latitude: form.latitude,
+        longitude: form.longitude,
+        city: form.city,
+        state: form.state,
+        dateTime,
+      },
+    )
       .then(() => {
         toast.success(t('createAccount:success'));
         navigation.navigate('SignIn');

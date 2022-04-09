@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1 } from '@components/typography';
 import { Container } from '@components';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Linking } from 'react-native';
 import { Header } from '@components/layout';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '@theme';
@@ -25,10 +25,11 @@ function Suggestions() {
     },
   });
 
-  // Dado mocado
   const handleSuggestion = (values) => {
     setLoading(true);
-    console.log(values);
+    Linking.openURL(
+      `mailto:carlosvogt@outlook.com?subject=${values.subject}&body=${values.message}`,
+    );
     navigation.navigate('Profile');
     setLoading(false);
   };

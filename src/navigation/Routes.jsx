@@ -9,9 +9,9 @@ import { userUid } from '@store/auth';
 
 function Routes() {
   const Stack = createStackNavigator();
-  const token = useSelector(userUid);
+  const uuid = useSelector(userUid);
 
-  if (token) {
+  if (uuid) {
     return (
       <Stack.Navigator>
         <Stack.Screen

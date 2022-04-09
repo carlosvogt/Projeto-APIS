@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { ExpensiveNote, UserAvatar, Modal } from '@components';
+import { ExpensiveNote, UserAvatar, Modal, useToast } from '@components';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@theme';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Add } from '@assets';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  query,
+  getDocs,
+  collection,
+  setDoc,
+  doc,
+  deleteDoc,
+  orderBy,
+  updateDoc,
+} from 'firebase/firestore';
+import { db } from '@services/firebase';
+import { userUid } from '@store/auth';
+import { useSelector } from 'react-redux';
+import uuid from 'react-native-uuid';
 
 function HomeScreen() {
   const { t } = useTranslation();
@@ -23,6 +37,9 @@ function HomeScreen() {
   const [userImage, setUserImage] = useState();
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(0);
   const [defaultData, setDefaultData] = useState(null);
+  const userUuid = useSelector(userUid);
+  const toast = useToast();
+  const [notes, setNotes] = useState([]);
 
   // Dado mocado
   const username = 'Carlos Rodrigo Vogt';
@@ -69,57 +86,30 @@ function HomeScreen() {
     },
   });
 
-  // Dados mocados
-  const notes = [
-    {
-      code: 1,
-      name: 'Anotação 1',
-      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-      lastModify: '21/03/2021 - 16:14',
-    },
-    {
-      code: 2,
-      name: 'Anotação 2',
-      note: 'Aqui o texto será escrito de forma integral',
-      lastModify: '21/03/2021 - 16:14',
-    },
-    {
-      code: 3,
-      name: '',
-      note: 'Aqui o texto será escrito de forma integral aaa',
-      lastModify: '21/03/2021 - 16:14',
-    },
-    {
-      code: 4,
-      name: 'Anotação 1',
-      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-      lastModify: '21/03/2021 - 16:14',
-    },
-    {
-      code: 5,
-      name: 'Anotação 1',
-      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-      lastModify: '21/03/2021 - 16:14',
-    },
-    {
-      code: 6,
-      name: 'Anotação 1',
-      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-      lastModify: '21/03/2021 - 16:14',
-    },
-    {
-      code: 7,
-      name: 'Anotação 1',
-      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-      lastModify: '21/03/2021 - 16:14',
-    },
-    {
-      code: 8,
-      name: 'Anotação 8',
-      note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-      lastModify: '21/03/2021 - 16:14',
-    },
-  ];
+  const getData = async () => {
+    const q = query(
+      collection(db, `users/${userUuid}/homeNotes`),
+      orderBy('lastModify', 'desc'),
+    );
+    const docsSnap = await getDocs(q);
+    setNotes([]);
+    docsSnap.forEach((item) => {
+      setNotes((oldArray) => [...oldArray, item.data()]);
+    });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getDateTime = () => {
+    const day = new Date().getDate();
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+    const hours = new Date().getHours();
+    const minutes = new Date().getMinutes();
+    return `${day}/${month}/${year} - ${hours}:${minutes}`;
+  };
 
   const handleEditModal = () => {
     setModalType(2);
@@ -160,28 +150,65 @@ function HomeScreen() {
     setIsSubmittingDelete(false);
   };
 
-  // Dado mocado
-  const handleCreateNote = (value) => {
+  const handleCreateNote = async (value) => {
     setIsSubmitting(true);
-    console.log('Adicionar nota', value);
+
+    const dateTime = getDateTime();
+    const noteId = uuid.v4();
+    await setDoc(doc(db, `users/${userUuid}/homeNotes`, noteId), {
+      code: noteId,
+      name: value.title,
+      note: value.description,
+      lastModify: dateTime,
+    })
+      .then(() => {
+        toast.success(t('home:noteSuccessCreated'));
+        setShowModal(false);
+        getData();
+      })
+      .catch((error) => {
+        toast.error(error.code);
+      });
+
     setIsSubmitting(false);
-    setShowModal(false);
   };
 
-  // Dado mocado
-  const handleEditNote = (value) => {
+  const handleEditNote = async (value) => {
     setIsSubmitting(true);
-    console.log('Editar nota', value, selectedCode);
+
+    const dateTime = getDateTime();
+    await updateDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode), {
+      code: selectedCode,
+      name: value.title,
+      note: value.description,
+      lastModify: dateTime,
+    })
+      .then(() => {
+        toast.success(t('home:noteUpdated'));
+        setShowModal(false);
+        getData();
+      })
+      .catch((error) => {
+        toast.error(error.code);
+      });
+
     setIsSubmitting(false);
-    setShowModal(false);
   };
 
-  // Dado mocado
-  const handleDeleteNote = () => {
+  const handleDeleteNote = async () => {
     setIsSubmittingDelete(true);
-    console.log('Deletar nota', selectedCode);
+
+    await deleteDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode))
+      .then(() => {
+        toast.success(t('home:noteDeleted'));
+        setShowDeleteModal(false);
+        getData();
+      })
+      .catch((error) => {
+        toast.error(error.code);
+      });
+
     setIsSubmittingDelete(false);
-    setShowDeleteModal(false);
   };
 
   const loadPhoto = async () => {

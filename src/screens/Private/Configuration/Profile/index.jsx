@@ -37,10 +37,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'react-native-image-picker';
 import { auth, db } from '@services/firebase';
 import { deleteUser, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, deleteDoc, collection, query, getDocs } from 'firebase/firestore';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { userEmail, userUid } from '@store/auth';
-import { accountInfo } from '@store/accountData';
+import accountData, { accountInfo } from '@store/accountData';
 
 function HomeScreen() {
   const { t } = useTranslation();
@@ -62,7 +62,7 @@ function HomeScreen() {
   const [modalMode, setModalMode] = useState('question');
   const netInfo = useNetInfo();
   const email = useSelector(userEmail);
-  const uid = useSelector(userUid);
+  const uuid = useSelector(userUid);
   const userInfo = useSelector(accountInfo);
 
   console.log('info', userInfo);
@@ -182,22 +182,27 @@ function HomeScreen() {
     setShowConfirmationModal(false);
   };
 
-  // Dado mocado - Esta excluindo apenas o account data, não o resto
-  const handleDeleteUserData = async () => {
-    await deleteDoc(doc(db, uid, 'accountData'))
-      .then(() => {
-        toast.success(t('profile:successDelete'));
-        handleSignOut();
-      })
-      .catch((error) => {
-        toast.error(error.code);
-      });
+  const deleteHomeNotes = async () => {
+    const q = query(collection(db, `users/${uuid}/homeNotes`));
+    const docsSnap = await getDocs(q);
+    docsSnap.forEach((item) => {
+      deleteDoc(doc(db, `users/${uuid}/homeNotes`, item.data().code));
+    });
+    deleteDoc(doc(db, 'users', uuid));
   };
 
+  const deleteAccountData = async () => {
+    deleteDoc(doc(db, `users/${uuid}/accountData`, uuid));
+  };
+
+  // Dado mocado - Esta excluindo apenas o account data, não o resto
   const handleDeleteAccount = async () => {
     await deleteUser(auth.currentUser)
       .then(() => {
-        handleDeleteUserData();
+        deleteHomeNotes();
+        deleteAccountData();
+        toast.success(t('profile:successDelete'));
+        handleSignOut();
       })
       .catch((error) => {
         toast.error(error.code);

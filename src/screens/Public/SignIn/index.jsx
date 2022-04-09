@@ -42,11 +42,21 @@ function SignIn() {
   });
 
   const handleForgotPassword = () => {
-    navigation.navigate('RecoverPassword');
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      navigation.navigate('RecoverPassword');
+    } else {
+      toast.error(t('login:noInternet'));
+    }
   };
 
   const handleCreateAccount = () => {
-    navigation.navigate('CreateAccountPersonalInfo');
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      navigation.navigate('CreateAccountPersonalInfo');
+    } else {
+      toast.error(t('login:noInternet'));
+    }
   };
 
   const handleUserData = (userCredencial) => {
