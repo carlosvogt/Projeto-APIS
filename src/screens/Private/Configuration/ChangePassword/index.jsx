@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1 } from '@components/typography';
-import { Container } from '@components';
+import { Container, useToast } from '@components';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Header } from '@components/layout';
 import { useTheme } from '@theme';
+import { signInWithEmailAndPassword, updatePassword } from 'firebase/auth';
+import { auth } from '@services/firebase';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { useSelector } from 'react-redux';
+import { accountInfo } from '@store/accountData';
 import ChangePasswordForm from './ChangePasswordForm';
 
 function ChangePassword() {
@@ -13,6 +18,9 @@ function ChangePassword() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const { colors } = useTheme();
+  const userInformation = useSelector(accountInfo);
+  const netInfo = useNetInfo();
+  const toast = useToast();
 
   const styles = StyleSheet.create({
     scrollView: {
@@ -29,13 +37,39 @@ function ChangePassword() {
     },
   });
 
-  // Dado mocado
-  const handleChangePassword = (values) => {
+  const handleChangePassword = async (form) => {
+    await updatePassword(auth.currentUser, form.newPassword)
+      .then(() => {
+        toast.success(t('changePassword:success'));
+        navigation.navigate('Profile');
+      })
+      .catch((error) => {
+        toast.error(error.code);
+      });
+  };
+
+  const handleConfirmUser = async (form) => {
     setLoading(true);
-    console.log(values);
-    navigation.navigate('PublicNavigator', {
-      screen: 'SignIn',
-    });
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      await signInWithEmailAndPassword(
+        auth,
+        userInformation.email,
+        form.oldPassword,
+      )
+        .then(() => {
+          handleChangePassword(form);
+        })
+        .catch((error) => {
+          if (error.code === 'auth/wrong-password') {
+            toast.error(t('changePassword:invalidPassword'));
+          } else {
+            toast.error(error.code);
+          }
+        });
+    } else {
+      toast.error(t('changePassword:noInternet'));
+    }
     setLoading(false);
   };
 
@@ -54,7 +88,7 @@ function ChangePassword() {
           </View>
 
           <ChangePasswordForm
-            onSubmit={(values) => handleChangePassword(values)}
+            onSubmit={(values) => handleConfirmUser(values)}
             isSubmitting={loading}
           />
         </Container>

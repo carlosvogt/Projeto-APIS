@@ -9,7 +9,16 @@ export default function accountData(state = initialState, action) {
       account: action.payload,
     };
   }
+
+  if (action.type === 'CLEAN_ACCOUNT_DATA') {
+    return {
+      ...state,
+      account: null,
+    };
+  }
+
   return state;
 }
 
 export const accountInfo = (state) => state?.accountData?.account ?? '';
+export const userName = (state) => state?.accountData?.account?.name ?? '';

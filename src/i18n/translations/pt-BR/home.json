@@ -10,5 +10,6 @@
   "delete": "Apagar",
   "noteSuccessCreated" : "Nota criada!",
   "noteDeleted" : "Nota deletada!",
-  "noteUpdated" : "Nota atualizada!"
+  "noteUpdated" : "Nota atualizada!",
+  "noInternet" : "Atenção, você não está conectado a internet!"
 }

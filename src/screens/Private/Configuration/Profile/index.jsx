@@ -40,7 +40,7 @@ import { deleteUser, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, deleteDoc, collection, query, getDocs } from 'firebase/firestore';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { userEmail, userUid } from '@store/auth';
-import accountData, { accountInfo } from '@store/accountData';
+import { userName } from '@store/accountData';
 
 function HomeScreen() {
   const { t } = useTranslation();
@@ -63,13 +63,8 @@ function HomeScreen() {
   const netInfo = useNetInfo();
   const email = useSelector(userEmail);
   const uuid = useSelector(userUid);
-  const userInfo = useSelector(accountInfo);
-
-  console.log('info', userInfo);
+  const username = useSelector(userName);
   const toast = useToast();
-
-  // Dado mocado
-  const username = 'Carlos Rodrigo Vogt';
 
   const setSelectedMode = async (value) => {
     await AsyncStorage.setItem('darkMode', JSON.stringify(value));

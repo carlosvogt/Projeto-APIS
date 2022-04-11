@@ -27,5 +27,12 @@
   "city" : "Cidade *",
   "cityPlaceholder" : "Digite sua cidade",
   "state" : "Estado *",
-  "requiredInfo" : "* Dados obrigatórios"
+  "requiredInfo" : "* Dados obrigatórios",
+  "success" : "Sucesso! Dados atualizados.",
+  "emailVerification" : "Sucesso! Dados atualizados! Valide seu e-mail e efetue login novamente.",
+  "invalidPassword" : "Senha incorreta!",
+  "noInternet" : "Atenção, você não está conectado a internet!",
+  "cancel" : "Cancelar",
+  "confirm": "Confirmar",
+  "confirmUser" : "Informe sua senha para confirmar sua identidade"
 }

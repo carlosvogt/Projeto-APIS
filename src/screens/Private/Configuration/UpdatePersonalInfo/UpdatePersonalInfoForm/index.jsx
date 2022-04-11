@@ -18,6 +18,8 @@ import { Title1, Title2 } from '@components/typography';
 import Geolocation from 'react-native-geolocation-service';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useTheme } from '@theme';
+import { accountInfo } from '@store/accountData';
+import { useSelector } from 'react-redux';
 
 function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   const { t } = useTranslation();
@@ -31,6 +33,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   const [description, setDescription] = useState('');
   const netInfo = useNetInfo();
   const { colors } = useTheme();
+  const userInfo = useSelector(accountInfo);
 
   function validZipCode(value) {
     const zipCode = value.replace(/\D/g, '');
@@ -98,9 +101,9 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     viewInstruction: {
       marginBottom: 24,
     },
+    marginTop: { marginTop: 8 },
   });
 
-  // Dados mocados
   const {
     control,
     handleSubmit,
@@ -111,15 +114,15 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     resolver: yupResolver(schema),
     mode: 'onChange',
     defaultValues: {
-      name: 'Carlos Rodrigo Vogt',
-      email: 'carlosvogt15@gmail.com',
-      phone: '(51) 99688-2190',
-      zipCode: '96.890-000',
-      coordinates: 'Latitude:-29.5420433 Longitude:-52.5148017',
-      latitude: '-29.5420433',
-      longitude: '-52.5148017',
-      city: 'Sinimbu',
-      state: 'RS',
+      name: userInfo.name,
+      email: userInfo.email,
+      phone: userInfo.phone,
+      zipCode: userInfo.zipCode,
+      coordinates: userInfo.coordinates,
+      latitude: userInfo.latitude,
+      longitude: userInfo.longitude,
+      city: userInfo.city,
+      state: userInfo.state,
     },
   });
 
@@ -373,7 +376,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
         returnKeyType="next"
       />
 
-      <Footer style={{ marginTop: 8 }}>
+      <Footer style={styles.marginTop}>
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}

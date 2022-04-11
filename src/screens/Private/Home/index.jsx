@@ -19,8 +19,10 @@ import {
 } from 'firebase/firestore';
 import { db } from '@services/firebase';
 import { userUid } from '@store/auth';
+import { userName } from '@store/accountData';
 import { useSelector } from 'react-redux';
 import uuid from 'react-native-uuid';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 function HomeScreen() {
   const { t } = useTranslation();
@@ -38,11 +40,10 @@ function HomeScreen() {
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(0);
   const [defaultData, setDefaultData] = useState(null);
   const userUuid = useSelector(userUid);
+  const username = useSelector(userName);
   const toast = useToast();
   const [notes, setNotes] = useState([]);
-
-  // Dado mocado
-  const username = 'Carlos Rodrigo Vogt';
+  const netInfo = useNetInfo();
 
   const styles = StyleSheet.create({
     container: {
@@ -87,20 +88,28 @@ function HomeScreen() {
   });
 
   const getData = async () => {
-    const q = query(
-      collection(db, `users/${userUuid}/homeNotes`),
-      orderBy('lastModify', 'desc'),
-    );
-    const docsSnap = await getDocs(q);
-    setNotes([]);
-    docsSnap.forEach((item) => {
-      setNotes((oldArray) => [...oldArray, item.data()]);
-    });
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      const q = query(
+        collection(db, `users/${userUuid}/homeNotes`),
+        orderBy('lastModify', 'desc'),
+      );
+      const docsSnap = await getDocs(q);
+      setNotes([]);
+      docsSnap.forEach((item) => {
+        setNotes((oldArray) => [...oldArray, item.data()]);
+      });
+    } else {
+      toast.error(t('home:noInternet'));
+    }
   };
 
   useEffect(() => {
-    getData();
-  }, []);
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet !== null) {
+      getData();
+    }
+  }, [netInfo]);
 
   const getDateTime = () => {
     const day = new Date().getDate();
@@ -151,48 +160,58 @@ function HomeScreen() {
   };
 
   const handleCreateNote = async (value) => {
-    setIsSubmitting(true);
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      setIsSubmitting(true);
 
-    const dateTime = getDateTime();
-    const noteId = uuid.v4();
-    await setDoc(doc(db, `users/${userUuid}/homeNotes`, noteId), {
-      code: noteId,
-      name: value.title,
-      note: value.description,
-      lastModify: dateTime,
-    })
-      .then(() => {
-        toast.success(t('home:noteSuccessCreated'));
-        setShowModal(false);
-        getData();
+      const dateTime = getDateTime();
+      const noteId = uuid.v4();
+      await setDoc(doc(db, `users/${userUuid}/homeNotes`, noteId), {
+        code: noteId,
+        name: value.title,
+        note: value.description,
+        lastModify: dateTime,
       })
-      .catch((error) => {
-        toast.error(error.code);
-      });
+        .then(() => {
+          toast.success(t('home:noteSuccessCreated'));
+          setShowModal(false);
+          getData();
+        })
+        .catch((error) => {
+          toast.error(error.code);
+        });
 
-    setIsSubmitting(false);
+      setIsSubmitting(false);
+    } else {
+      toast.error(t('home:noInternet'));
+    }
   };
 
   const handleEditNote = async (value) => {
-    setIsSubmitting(true);
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      setIsSubmitting(true);
 
-    const dateTime = getDateTime();
-    await updateDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode), {
-      code: selectedCode,
-      name: value.title,
-      note: value.description,
-      lastModify: dateTime,
-    })
-      .then(() => {
-        toast.success(t('home:noteUpdated'));
-        setShowModal(false);
-        getData();
+      const dateTime = getDateTime();
+      await updateDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode), {
+        code: selectedCode,
+        name: value.title,
+        note: value.description,
+        lastModify: dateTime,
       })
-      .catch((error) => {
-        toast.error(error.code);
-      });
+        .then(() => {
+          toast.success(t('home:noteUpdated'));
+          setShowModal(false);
+          getData();
+        })
+        .catch((error) => {
+          toast.error(error.code);
+        });
 
-    setIsSubmitting(false);
+      setIsSubmitting(false);
+    } else {
+      toast.error(t('home:noInternet'));
+    }
   };
 
   const handleDeleteNote = async () => {

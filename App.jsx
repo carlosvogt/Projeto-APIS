@@ -19,8 +19,11 @@ const AppContents = () => {
     try {
       const getMode = await AsyncStorage.getItem('darkMode');
       const getAuth = await AsyncStorage.getItem('auth');
+      const getAccount = await AsyncStorage.getItem('account');
       const darkModeState = JSON.parse(getMode);
       const getAuthState = JSON.parse(getAuth);
+      const getAccountState = JSON.parse(getAccount);
+
       if (darkModeState) {
         dispatch({
           type: 'SET_MODE',
@@ -31,6 +34,12 @@ const AppContents = () => {
         dispatch({
           type: 'SIGN_IN',
           payload: getAuthState,
+        });
+      }
+      if (getAccount) {
+        dispatch({
+          type: 'SET_ACCOUNT_DATA',
+          payload: getAccountState,
         });
       }
     } catch (e) {

@@ -8,9 +8,10 @@ import { Footer } from '@components/layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from '@theme';
-import { auth } from '@services/firebase';
+import { auth, db } from '@services/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNetInfo } from '@react-native-community/netinfo';
+import { collection, getDocs, query } from 'firebase/firestore';
 import SignInForm from './SignInForm';
 
 function SignIn() {
@@ -72,12 +73,27 @@ function SignIn() {
     }
   };
 
+  const getUserInfo = async (userCredencial) => {
+    const q = query(
+      collection(db, `users/${userCredencial.user.uid}/accountData`),
+    );
+    const docsSnap = await getDocs(q);
+    docsSnap.forEach((item) => {
+      AsyncStorage.setItem('account', JSON.stringify(item.data()));
+      dispatch({
+        type: 'SET_ACCOUNT_DATA',
+        payload: item.data(),
+      });
+    });
+  };
+
   const handleLogin = async (form) => {
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
       setLoading(true);
       await signInWithEmailAndPassword(auth, form.email, form.password)
         .then((userCredencial) => {
+          getUserInfo(userCredencial);
           handleUserData(userCredencial);
         })
         .catch((error) => {
