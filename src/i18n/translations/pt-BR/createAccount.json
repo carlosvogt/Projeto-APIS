@@ -35,6 +35,6 @@
   "gpsPermission" : "Você precisa habilitar a permissão de localização para poder executar esta ação!",
   "code" : "Código",
   "emailInUse" : "O e-mail informado já está em uso!",
-  "success" : "Sucesso! Sua conta foi criada! Enviamos um e-mail para a validação de seu cadastro!",
+  "success" : "Sucesso! Sua conta foi criada! Enviamos um e-mail para a validação de seu cadastro.",
   "noInternetLogin" : "Atenção, você não está conectado a internet!"
 }

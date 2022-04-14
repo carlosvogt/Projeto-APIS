@@ -117,7 +117,11 @@ function HomeScreen() {
     const year = new Date().getFullYear();
     const hours = new Date().getHours();
     const minutes = new Date().getMinutes();
-    return `${day}/${month}/${year} - ${hours}:${minutes}`;
+    const newDay = day < 10 ? `0${day}` : day;
+    const newMonth = month < 10 ? `0${month}` : month;
+    const newHour = hours < 10 ? `0${hours}` : hours;
+    const newMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    return `${newDay}/${newMonth}/${year} - ${newHour}:${newMinutes}`;
   };
 
   const handleEditModal = () => {
@@ -163,9 +167,8 @@ function HomeScreen() {
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
       setIsSubmitting(true);
-
       const dateTime = getDateTime();
-      const noteId = uuid.v4();
+      const noteId = `${uuid.v4()}-${value.title}`;
       await setDoc(doc(db, `users/${userUuid}/homeNotes`, noteId), {
         code: noteId,
         name: value.title,
@@ -180,7 +183,6 @@ function HomeScreen() {
         .catch((error) => {
           toast.error(error.code);
         });
-
       setIsSubmitting(false);
     } else {
       toast.error(t('home:noInternet'));
@@ -191,7 +193,6 @@ function HomeScreen() {
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
       setIsSubmitting(true);
-
       const dateTime = getDateTime();
       await updateDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode), {
         code: selectedCode,
@@ -207,7 +208,6 @@ function HomeScreen() {
         .catch((error) => {
           toast.error(error.code);
         });
-
       setIsSubmitting(false);
     } else {
       toast.error(t('home:noInternet'));

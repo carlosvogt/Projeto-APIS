@@ -43,7 +43,11 @@ function UpdatePersonalInfo() {
     const year = new Date().getFullYear();
     const hours = new Date().getHours();
     const minutes = new Date().getMinutes();
-    return `${day}/${month}/${year} - ${hours}:${minutes}`;
+    const newDay = day < 10 ? `0${day}` : day;
+    const newMonth = month < 10 ? `0${month}` : month;
+    const newHour = hours < 10 ? `0${hours}` : hours;
+    const newMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    return `${newDay}/${newMonth}/${year} - ${newHour}:${newMinutes}`;
   };
 
   const handleSignOut = () => {
@@ -66,7 +70,7 @@ function UpdatePersonalInfo() {
       longitude: form.longitude,
       city: form.city,
       state: form.state,
-      dateTime,
+      lastModify: dateTime,
     })
       .then(() => {
         AsyncStorage.setItem('account', JSON.stringify(form));
@@ -114,19 +118,19 @@ function UpdatePersonalInfo() {
   };
 
   const handleUpdatePersonalInfo = (form) => {
-    setLoading(true);
     setNewData(form);
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
+      setLoading(true);
       if (form.email === userInformation.email) {
         updateAccountData(form);
       } else {
         setShowConfirmationModal(true);
       }
+      setLoading(false);
     } else {
       toast.error(t('updatePersonalInfo:noInternet'));
     }
-    setLoading(false);
   };
 
   return (

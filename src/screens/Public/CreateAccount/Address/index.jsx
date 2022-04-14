@@ -55,7 +55,11 @@ function Address() {
     const year = new Date().getFullYear();
     const hours = new Date().getHours();
     const minutes = new Date().getMinutes();
-    return `${day}/${month}/${year} - ${hours}:${minutes}`;
+    const newDay = day < 10 ? `0${day}` : day;
+    const newMonth = month < 10 ? `0${month}` : month;
+    const newHour = hours < 10 ? `0${hours}` : hours;
+    const newMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    return `${newDay}/${newMonth}/${year} - ${newHour}:${newMinutes}`;
   };
 
   const handleCreateAccountData = async (form, userCredencial) => {
@@ -76,7 +80,7 @@ function Address() {
         longitude: form.longitude,
         city: form.city,
         state: form.state,
-        dateTime,
+        lastModify: dateTime,
       },
     )
       .then(() => {

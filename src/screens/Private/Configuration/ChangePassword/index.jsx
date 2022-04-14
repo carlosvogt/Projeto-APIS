@@ -49,9 +49,9 @@ function ChangePassword() {
   };
 
   const handleConfirmUser = async (form) => {
-    setLoading(true);
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
+      setLoading(true);
       await signInWithEmailAndPassword(
         auth,
         userInformation.email,
@@ -67,10 +67,10 @@ function ChangePassword() {
             toast.error(error.code);
           }
         });
+      setLoading(false);
     } else {
       toast.error(t('changePassword:noInternet'));
     }
-    setLoading(false);
   };
 
   return (

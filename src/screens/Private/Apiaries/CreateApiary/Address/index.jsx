@@ -1,19 +1,28 @@
 import React, { useState } from 'react';
-import { Container } from '@components';
+import { Container, useToast } from '@components';
 import { Header } from '@components/layout';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTheme } from '@theme';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { setDoc, doc } from 'firebase/firestore';
+import { db } from '@services/firebase';
+import { userUid } from '@store/auth';
+import uuid from 'react-native-uuid';
+import { useSelector } from 'react-redux';
 import AddressForm from './AddressForm';
 
 function Address() {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { params } = useRoute();
   const navigation = useNavigation();
   const { colors } = useTheme();
+  const netInfo = useNetInfo();
+  const userUuid = useSelector(userUid);
+  const toast = useToast();
 
   const styles = StyleSheet.create({
     modalItem: {
@@ -35,12 +44,55 @@ function Address() {
     },
   });
 
-  // Dado mocado
-  const handleCreateApiary = (form) => {
-    setLoading(true);
-    console.log('Criar apiário', form, params);
-    navigation.navigate('ApiariesHome');
-    setLoading(false);
+  const getDateTime = () => {
+    const day = new Date().getDate();
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+    const hours = new Date().getHours();
+    const minutes = new Date().getMinutes();
+    const newDay = day < 10 ? `0${day}` : day;
+    const newMonth = month < 10 ? `0${month}` : month;
+    const newHour = hours < 10 ? `0${hours}` : hours;
+    const newMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    return `${newDay}/${newMonth}/${year} - ${newHour}:${newMinutes}`;
+  };
+
+  const handleCreateApiary = async (value) => {
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      setIsSubmitting(true);
+      const dateTime = getDateTime();
+      const apiariId = `${uuid.v4()}-${params.name}`;
+      await setDoc(doc(db, `users/${userUuid}/apiaries`, apiariId), {
+        code: apiariId,
+        name: params.name,
+        owner: params.owner,
+        phone: params.phone,
+        totalPlaces: params.totalPlaces,
+        quantityFull: params.quantityFull,
+        ownerPercent: params.ownerPercent,
+        zipCode: value.zipCode,
+        coordinates: value.coordinates,
+        latitude: value.latitude,
+        longitude: value.longitude,
+        city: value.city,
+        state: value.state,
+        quantityEmpty: (
+          parseInt(params.totalPlaces, 10) - parseInt(params.quantityFull, 10)
+        ).toString(),
+        lastModify: dateTime,
+      })
+        .then(() => {
+          toast.success(t('createApiary:success'));
+          navigation.navigate('ApiariesHome');
+        })
+        .catch((error) => {
+          toast.error(error.code);
+        });
+      setIsSubmitting(false);
+    } else {
+      toast.error(t('createApiary:noInternet'));
+    }
   };
 
   return (
@@ -63,7 +115,7 @@ function Address() {
           </View>
 
           <AddressForm
-            isSubmitting={loading}
+            isSubmitting={isSubmitting}
             onSubmit={(form) => handleCreateApiary(form)}
           />
         </Container>
