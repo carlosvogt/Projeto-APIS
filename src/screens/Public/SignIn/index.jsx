@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { Container, ToggleButton, Button, useToast } from '@components';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, LogBox } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Footer } from '@components/layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,6 +23,10 @@ function SignIn() {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const netInfo = useNetInfo();
+  LogBox.ignoreLogs([
+    'AsyncStorage has been extracted from react-native core and will be removed in a future release.',
+    'Require cycle:',
+  ]);
 
   const styles = StyleSheet.create({
     scrollView: {
@@ -91,20 +95,23 @@ function SignIn() {
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, form.email, form.password)
-        .then((userCredencial) => {
-          getUserInfo(userCredencial);
-          handleUserData(userCredencial);
-        })
-        .catch((error) => {
-          if (error.code === 'auth/user-not-found') {
-            toast.error(t('login:invalidUser'));
-          } else if (error.code === 'auth/wrong-password') {
-            toast.error(t('login:invalidPassword'));
-          } else {
-            toast.error(error.code);
-          }
-        });
+      try {
+        const user = await signInWithEmailAndPassword(
+          auth,
+          form.email,
+          form.password,
+        );
+        await getUserInfo(user);
+        handleUserData(user);
+      } catch (error) {
+        if (error.code === 'auth/user-not-found') {
+          toast.error(t('login:invalidUser'));
+        } else if (error.code === 'auth/wrong-password') {
+          toast.error(t('login:invalidPassword'));
+        } else {
+          toast.error(error.code);
+        }
+      }
       setLoading(false);
     } else {
       toast.error(t('login:noInternet'));

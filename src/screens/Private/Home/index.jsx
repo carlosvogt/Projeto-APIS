@@ -2,7 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { ExpensiveNote, UserAvatar, Modal, useToast } from '@components';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+  RefreshControl,
+  LogBox,
+} from 'react-native';
 import { useTheme } from '@theme';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Add } from '@assets';
@@ -44,6 +52,12 @@ function HomeScreen() {
   const toast = useToast();
   const [notes, setNotes] = useState([]);
   const netInfo = useNetInfo();
+  const [refreshing, setRefreshing] = useState(false);
+  const [isPullRefreshing, setIsPullRefreshing] = useState(false);
+  LogBox.ignoreLogs([
+    'AsyncStorage has been extracted from react-native core and will be removed in a future release.',
+    'Require cycle:',
+  ]);
 
   const styles = StyleSheet.create({
     container: {
@@ -88,20 +102,27 @@ function HomeScreen() {
   });
 
   const getData = async () => {
+    setRefreshing(true);
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
-      const q = query(
-        collection(db, `users/${userUuid}/homeNotes`),
-        orderBy('lastModify', 'desc'),
-      );
-      const docsSnap = await getDocs(q);
-      setNotes([]);
-      docsSnap.forEach((item) => {
-        setNotes((oldArray) => [...oldArray, item.data()]);
-      });
+      try {
+        const q = query(
+          collection(db, `users/${userUuid}/homeNotes`),
+          orderBy('lastModify', 'desc'),
+        );
+        const docsSnap = await getDocs(q);
+        setNotes([]);
+        docsSnap.forEach((item) => {
+          setNotes((oldArray) => [...oldArray, item.data()]);
+        });
+      } catch (error) {
+        toast.error(error.code);
+      }
     } else {
       toast.error(t('home:noInternet'));
     }
+    setRefreshing(false);
+    setIsPullRefreshing(false);
   };
 
   useEffect(() => {
@@ -165,24 +186,26 @@ function HomeScreen() {
 
   const handleCreateNote = async (value) => {
     const hasInternet = netInfo.isConnected;
+
     if (hasInternet) {
       setIsSubmitting(true);
       const dateTime = getDateTime();
+      const createdAt = Date();
       const noteId = `${uuid.v4()}-${value.title}`;
-      await setDoc(doc(db, `users/${userUuid}/homeNotes`, noteId), {
-        code: noteId,
-        name: value.title,
-        note: value.description,
-        lastModify: dateTime,
-      })
-        .then(() => {
-          toast.success(t('home:noteSuccessCreated'));
-          setShowModal(false);
-          getData();
-        })
-        .catch((error) => {
-          toast.error(error.code);
+      try {
+        await setDoc(doc(db, `users/${userUuid}/homeNotes`, noteId), {
+          code: noteId,
+          title: value.title || '',
+          description: value.description,
+          lastModify: dateTime,
+          createdAt: createdAt.toString(),
         });
+        await getData();
+        setShowModal(false);
+        toast.success(t('home:noteSuccessCreated'));
+      } catch (error) {
+        toast.error(error.code);
+      }
       setIsSubmitting(false);
     } else {
       toast.error(t('home:noInternet'));
@@ -194,20 +217,18 @@ function HomeScreen() {
     if (hasInternet) {
       setIsSubmitting(true);
       const dateTime = getDateTime();
-      await updateDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode), {
-        code: selectedCode,
-        name: value.title,
-        note: value.description,
-        lastModify: dateTime,
-      })
-        .then(() => {
-          toast.success(t('home:noteUpdated'));
-          setShowModal(false);
-          getData();
-        })
-        .catch((error) => {
-          toast.error(error.code);
+      try {
+        await updateDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode), {
+          title: value.title || '',
+          description: value.description,
+          lastModify: dateTime,
         });
+        await getData();
+        setShowModal(false);
+        toast.success(t('home:noteUpdated'));
+      } catch (error) {
+        toast.error(t('home:noInternet'));
+      }
       setIsSubmitting(false);
     } else {
       toast.error(t('home:noInternet'));
@@ -216,17 +237,14 @@ function HomeScreen() {
 
   const handleDeleteNote = async () => {
     setIsSubmittingDelete(true);
-
-    await deleteDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode))
-      .then(() => {
-        toast.success(t('home:noteDeleted'));
-        setShowDeleteModal(false);
-        getData();
-      })
-      .catch((error) => {
-        toast.error(error.code);
-      });
-
+    try {
+      await deleteDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode));
+      await getData();
+      setShowDeleteModal(false);
+      toast.success(t('home:noteDeleted'));
+    } catch (error) {
+      toast.error(error.code);
+    }
     setIsSubmittingDelete(false);
   };
 
@@ -285,6 +303,17 @@ function HomeScreen() {
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            colors={[colors.primary]}
+            progressBackgroundColor={colors.secondary}
+            refreshing={isPullRefreshing}
+            onRefresh={() => {
+              setIsPullRefreshing(true);
+              getData();
+            }}
+          />
+        }
       >
         <View style={styles.add}>
           <TouchableOpacity
@@ -297,28 +326,33 @@ function HomeScreen() {
             {t('home:notes')}
           </Title1>
         </View>
-        <View style={styles.noteContainer}>
-          {notes.length > 0 ? (
-            notes.map((note, index) => {
-              return (
-                <ExpensiveNote
-                  mode="note"
-                  key={note.code}
-                  data={note}
-                  hasData
-                  modalOptions={modalNoteOptions}
-                  selectedCode={note.code}
-                  setSelectedCode={() => {
-                    setSelectedCode(note.code);
-                    setSelectedNoteIndex(index);
-                  }}
-                />
-              );
-            })
-          ) : (
-            <ExpensiveNote hasData={false} mode="note" />
-          )}
-        </View>
+
+        {refreshing ? (
+          <ActivityIndicator size="large" color={colors.primary} />
+        ) : (
+          <View style={styles.noteContainer}>
+            {notes.length > 0 ? (
+              notes.map((note, index) => {
+                return (
+                  <ExpensiveNote
+                    mode="note"
+                    key={note.code}
+                    data={note}
+                    hasData
+                    modalOptions={modalNoteOptions}
+                    selectedCode={note.code}
+                    setSelectedCode={() => {
+                      setSelectedCode(note.code);
+                      setSelectedNoteIndex(index);
+                    }}
+                  />
+                );
+              })
+            ) : (
+              <ExpensiveNote hasData={false} mode="note" />
+            )}
+          </View>
+        )}
       </ScrollView>
     </View>
   );

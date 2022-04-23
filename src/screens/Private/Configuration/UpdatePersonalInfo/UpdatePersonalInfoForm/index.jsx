@@ -146,13 +146,13 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     handleSetState(defaultState);
   }, []);
 
-  const handleZipCode = () => {
+  const handleZipCode = async () => {
     setLoadingZipCode(true);
     const hasInternet = netInfo.isConnected;
 
     if (hasInternet) {
       const zipCode = formValues.zipCode.replace(/\D/g, '');
-      fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
+      await fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
         .then((res) => res.json())
         .then((data) => {
           setValue('city', data.localidade, {

@@ -63,32 +63,38 @@ function Address() {
       setIsSubmitting(true);
       const dateTime = getDateTime();
       const apiariId = `${uuid.v4()}-${params.name}`;
-      await setDoc(doc(db, `users/${userUuid}/apiaries`, apiariId), {
-        code: apiariId,
-        name: params.name,
-        owner: params.owner,
-        phone: params.phone,
-        totalPlaces: params.totalPlaces,
-        quantityFull: params.quantityFull,
-        ownerPercent: params.ownerPercent,
-        zipCode: value.zipCode,
-        coordinates: value.coordinates,
-        latitude: value.latitude,
-        longitude: value.longitude,
-        city: value.city,
-        state: value.state,
-        quantityEmpty: (
-          parseInt(params.totalPlaces, 10) - parseInt(params.quantityFull, 10)
-        ).toString(),
-        lastModify: dateTime,
-      })
-        .then(() => {
-          toast.success(t('createApiary:success'));
-          navigation.navigate('ApiariesHome');
-        })
-        .catch((error) => {
-          toast.error(error.code);
+      const createdAt = Date();
+      try {
+        await setDoc(doc(db, `users/${userUuid}/apiaries`, apiariId), {
+          code: apiariId,
+          name: params.name,
+          owner: params.owner,
+          phone: params.phone || '',
+          totalPlaces: params.totalPlaces,
+          quantityFull: params.quantityFull,
+          ownerPercent: params.ownerPercent || '',
+          zipCode: value.zipCode || '',
+          coordinates: value.coordinates || '',
+          latitude: value.latitude || '',
+          longitude: value.longitude || '',
+          city: value.city,
+          state: value.state,
+          createdAt: createdAt.toString(),
+          type: 'apiary',
+          mortality: 'false',
+          mortalityId: '',
+          quantityEmpty: (
+            parseInt(params.totalPlaces, 10) - parseInt(params.quantityFull, 10)
+          ).toString(),
+          lastModify: dateTime,
         });
+        toast.success(t('createApiary:success'));
+        navigation.navigate('PrivateNavigator', {
+          screen: 'ApiariesHome',
+        });
+      } catch (error) {
+        toast.error(error.code);
+      }
       setIsSubmitting(false);
     } else {
       toast.error(t('createApiary:noInternet'));

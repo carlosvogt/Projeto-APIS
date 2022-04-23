@@ -7,14 +7,18 @@ import {
   PermissionsAndroid,
   Platform,
   ToastAndroid,
+  Text,
 } from 'react-native';
 import { useTheme } from '@theme';
-import MapView, { Circle } from 'react-native-maps';
+import MapView, { Callout, Circle, Marker } from 'react-native-maps';
 import { Header } from '@components/layout';
 import { useTranslation } from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
 import { Title1 } from '@components/typography';
-import { Modal } from '@components';
+import { Modal, useToast } from '@components';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { getDocs, collection, query } from 'firebase/firestore';
+import { db } from '@services/firebase';
 
 function MortalityMap() {
   const { t } = useTranslation();
@@ -22,8 +26,12 @@ function MortalityMap() {
   const [permission, setPermission] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState('');
-
+  const netInfo = useNetInfo();
+  const [apiaries, setApiaries] = useState([]);
+  const toast = useToast();
+  const [refreshing, setRefreshing] = useState(false);
   const [userLocalization, setUserLocalization] = useState({});
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -40,34 +48,25 @@ function MortalityMap() {
     },
   });
 
-  // Dados mocados
-  const data = [
-    {
-      cod: '0',
-      latitude: '-29.541942',
-      longitude: '-52.514808',
-    },
-    {
-      cod: '1',
-      latitude: '-29.544985',
-      longitude: '-52.512835',
-    },
-    {
-      cod: '2',
-      latitude: '-29.543594',
-      longitude: '-52.502483',
-    },
-    {
-      cod: '3',
-      latitude: '-29.544390',
-      longitude: '-52.488364',
-    },
-    {
-      cod: '4',
-      latitude: '-29.566150',
-      longitude: '-52.575366',
-    },
-  ];
+  const getData = async () => {
+    setRefreshing(true);
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      try {
+        const querySnapshot = query(collection(db, 'mortalityData'));
+        const docsSnap = await getDocs(querySnapshot);
+        setApiaries([]);
+        docsSnap.forEach((item) => {
+          setApiaries((oldArray) => [...oldArray, item.data()]);
+        });
+      } catch (error) {
+        toast.error(error.code);
+      }
+    } else {
+      toast.error(t('mortalityMap:noInternet'));
+    }
+    setRefreshing(false);
+  };
 
   const hasLocationPermission = async () => {
     if (Platform.OS === 'android' && Platform.Version < 23) {
@@ -141,8 +140,12 @@ function MortalityMap() {
   };
 
   useEffect(() => {
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet !== null) {
+      getData();
+    }
     getLocation();
-  }, [data]);
+  }, [netInfo]);
 
   function onRegionChange(region) {
     setUserLocalization(region);
@@ -158,7 +161,12 @@ function MortalityMap() {
         mode="alert"
         showModal={showModal}
       />
-      <Header title={t('mortalityMap:name')} />
+      <Header
+        title={t('mortalityMap:name')}
+        showRefreshButton
+        handleRefresh={() => getData()}
+        isRefreshing={refreshing}
+      />
       {permission ? (
         <View style={styles.container}>
           {userLocalization.latitude && (
@@ -169,19 +177,35 @@ function MortalityMap() {
               onRegionChange={onRegionChange}
               moveOnMarkerPress={false}
             >
-              {data.map((item) => {
+              {apiaries.map((item) => {
                 return (
-                  <View key={item.cod}>
-                    <Circle
-                      center={{
-                        latitude: parseFloat(item.latitude),
-                        longitude: parseFloat(item.longitude),
-                      }}
-                      radius={1500}
-                      fillColor={colors.errorLight}
-                      strokeColor={colors.error}
-                    />
-                  </View>
+                  item.latitude !== '' &&
+                  item.longitude !== '' && (
+                    <View key={item.code}>
+                      <Marker
+                        coordinate={{
+                          latitude: parseFloat(item.latitude),
+                          longitude: parseFloat(item.longitude),
+                        }}
+                        pinColor={colors.error}
+                      >
+                        <Callout>
+                          <Text style={{ color: colors.primary }}>
+                            {`${t('mortalityMap:addDate')}${item.createdAt}`}
+                          </Text>
+                        </Callout>
+                      </Marker>
+                      <Circle
+                        center={{
+                          latitude: parseFloat(item.latitude),
+                          longitude: parseFloat(item.longitude),
+                        }}
+                        radius={1500}
+                        fillColor={colors.errorLight}
+                        strokeColor={colors.error}
+                      />
+                    </View>
+                  )
                 );
               })}
             </MapView>

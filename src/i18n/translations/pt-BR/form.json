@@ -7,6 +7,7 @@
     "addNote" : "Adicionar nota",
     "cancel" : "Cancelar",
     "save" : "Salvar",
+    "saving" : "Salvando",
     "addProduction" : "Adicionar produção",
     "harvest" : "Safra *",
     "harvestPlaceholder" : "Digite a safra referência",

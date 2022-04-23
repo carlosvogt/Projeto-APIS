@@ -37,5 +37,6 @@
   "gpsPermission" : "Você precisa habilitar a permissão de localização para poder executar esta ação!",
   "code" : "Código",
   "success" : "Sucesso! Apiário criado.",
-  "noInternet" : "Atenção, você não está conectado a internet!"
+  "noInternet" : "Atenção, você não está conectado a internet!",
+  "not" : "Não"
 }

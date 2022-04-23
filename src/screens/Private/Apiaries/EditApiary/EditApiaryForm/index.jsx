@@ -31,7 +31,6 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
   const [selectedMortality, setSelectedMortality] = useState(false);
   const [loadingZipCode, setLoadingZipCode] = useState(false);
   const [loadingCoordinates, setLoadingCoordinates] = useState(false);
-  const defaultMortality = defaultData?.mortality || '';
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState('');
   const netInfo = useNetInfo();
@@ -161,16 +160,24 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
   });
 
   const formValues = getValues();
-
-  const [defaultState, setDefaultState] = useState(
-    formValues.state.toLocaleLowerCase(),
-  );
+  const defaultState = formValues.state.toLocaleLowerCase();
+  const defaultMortality = formValues.mortality;
 
   const handleSetState = (value) => {
     setSelectedState(value);
-    setDefaultState(null);
+
     if (value) {
       setValue('state', value.toLocaleUpperCase(), {
+        shouldValidate: true,
+      });
+    }
+  };
+
+  const handleSetMortality = (value) => {
+    setSelectedMortality(value);
+
+    if (value) {
+      setValue('mortality', value, {
         shouldValidate: true,
       });
     }
@@ -184,23 +191,17 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
 
   useEffect(() => {
     handleSetState(defaultState);
+    handleSetMortality(defaultMortality);
   }, []);
 
-  const handleSetMortality = (value) => {
-    setSelectedMortality(value);
-    setValue('mortality', value, {
-      shouldValidate: true,
-    });
-  };
-
-  const handleZipCode = () => {
+  const handleZipCode = async () => {
     setLoadingZipCode(true);
 
     const hasInternet = netInfo.isConnected;
 
     if (hasInternet) {
       const zipCode = formValues.zipCode.replace(/\D/g, '');
-      fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
+      await fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
         .then((res) => res.json())
         .then((data) => {
           setValue('city', data.localidade, {
@@ -293,8 +294,8 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
   };
 
   const options = [
-    { label: t('editApiary:yes'), value: t('editApiary:yes') },
-    { label: t('editApiary:yes'), value: t('editApiary:yes') },
+    { label: t('editApiary:yes'), value: 'true' },
+    { label: t('editApiary:not'), value: 'false' },
   ];
 
   return (

@@ -1,15 +1,16 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { initializeFirestore } from 'firebase/firestore';
+import env from '@config/env';
 
 const firebaseApp = initializeApp({
-  apiKey: 'AIzaSyB8Tq7msEK_PU1jx1gk0NQ0rNbd3ryp48g',
-  authDomain: 'projeto-apis-cb67d.firebaseapp.com',
-  projectId: 'projeto-apis-cb67d',
-  storageBucket: 'projeto-apis-cb67d.appspot.com',
-  messagingSenderId: '112581464124',
-  appId: '1:112581464124:web:3775337d78223b4f407339',
-  measurementId: 'G-H3P9JTDCCH',
+  apiKey: env.FIREBASE_API_KEY,
+  authDomain: env.FIREBASE_AUTH_DOMAIN,
+  projectId: env.FIREBASE_PROJECT_ID,
+  storageBucket: env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: env.FIREBASE_MESSAAGING_SENDER_ID,
+  appId: env.FIREBASE_APP_ID,
+  measurementId: env.FIREBASE_MEASUREMENT_ID,
 });
 
 export const db = initializeFirestore(firebaseApp, {

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { Modal, ExpensiveNote } from '@components';
+import { Modal, ExpensiveNote, useToast } from '@components';
 import {
   ScrollView,
   StyleSheet,
@@ -13,6 +13,8 @@ import {
   PermissionsAndroid,
   Platform,
   Dimensions,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import { Header } from '@components/layout';
 import { Add } from '@assets';
@@ -20,6 +22,20 @@ import { useTheme } from '@theme';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import MapView, { Circle, Marker } from 'react-native-maps';
+import {
+  doc,
+  collection,
+  setDoc,
+  getDocs,
+  query,
+  orderBy,
+  updateDoc,
+  deleteDoc,
+} from 'firebase/firestore';
+import { userUid } from '@store/auth';
+import { db } from '@services/firebase';
+import { useNetInfo } from '@react-native-community/netinfo';
+import uuid from 'react-native-uuid';
 
 function ApiaryHome() {
   const { t } = useTranslation();
@@ -41,8 +57,17 @@ function ApiaryHome() {
   const { ...data } = params.params;
   const navigation = useNavigation();
   const darkMode = useSelector((state) => state.mode.darkMode);
-
+  const userUuid = useSelector(userUid);
   const [permission, setPermission] = useState(false);
+  const [notes, setNotes] = useState([]);
+  const [productions, setProductions] = useState([]);
+  const netInfo = useNetInfo();
+  const toast = useToast();
+  const apiaryRef = doc(db, `users/${userUuid}/apiaries`, data.code);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isPullRefreshing, setIsPullRefreshing] = useState(false);
+  const [qtdTotalPayed, setQtdTotalPayed] = useState(0);
+  const [qtdTotal, setQtdTotal] = useState(0);
 
   const styles = StyleSheet.create({
     container: {
@@ -131,37 +156,238 @@ function ApiaryHome() {
     },
   });
 
-  // Dado mocado
-  const handlePositiveAction = (value) => {
-    setIsSubmitting(true);
-    if (modalOption === 0) {
-      setConfirmButton(t('apiaries:home.deleting'));
-      console.log('Apiário apagado');
-      navigation.navigate('ApiariesHome');
+  const getDateTime = () => {
+    const day = new Date().getDate();
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+    const hours = new Date().getHours();
+    const minutes = new Date().getMinutes();
+    const newDay = day < 10 ? `0${day}` : day;
+    const newMonth = month < 10 ? `0${month}` : month;
+    const newHour = hours < 10 ? `0${hours}` : hours;
+    const newMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    return `${newDay}/${newMonth}/${year} - ${newHour}:${newMinutes}`;
+  };
+
+  const getNotesData = async () => {
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      try {
+        const queryNotesSnapshot = query(
+          collection(apiaryRef, 'notes'),
+          orderBy('lastModify', 'desc'),
+        );
+        const docsNotesSnap = await getDocs(queryNotesSnapshot);
+        setNotes([]);
+        docsNotesSnap.forEach((item) => {
+          setNotes((oldArray) => [...oldArray, item.data()]);
+        });
+      } catch (error) {
+        toast.error(error.code);
+      }
+    } else {
+      toast.error(t('apiaries:home.noInternet'));
     }
-    if (modalOption === 1) {
-      setConfirmButton(t('apiaries:home.saving'));
-      console.log('Editar nota', value, selectedNoteCode);
+  };
+
+  const getProductionsData = async () => {
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      try {
+        const queryProductionsSnapshot = query(
+          collection(apiaryRef, 'productions'),
+          orderBy('lastModify', 'desc'),
+        );
+        const docsProductionsSnap = await getDocs(queryProductionsSnapshot);
+        setQtdTotal(0);
+        setQtdTotalPayed(0);
+        setProductions([]);
+        docsProductionsSnap.forEach((item) => {
+          setProductions((oldArray) => [...oldArray, item.data()]);
+          setQtdTotal(
+            (value) => parseInt(value, 10) + parseInt(item.data().qtd, 10),
+          );
+          if (item.data().payedQtd !== '') {
+            setQtdTotalPayed(
+              (value) =>
+                parseInt(value, 10) + parseInt(item.data().payedQtd, 10),
+            );
+          }
+        });
+      } catch (error) {
+        toast.error(error.code);
+      }
+    } else {
+      toast.error(t('apiaries:home.noInternet'));
     }
-    if (modalOption === 2) {
-      setConfirmButton(t('apiaries:home.deleting'));
-      console.log('Apagar nota', selectedNoteCode);
+  };
+
+  const getData = async () => {
+    setRefreshing(true);
+    await getNotesData();
+    await getProductionsData();
+    setRefreshing(false);
+    setIsPullRefreshing(false);
+  };
+
+  useEffect(() => {
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet !== null) {
+      getData();
     }
-    if (modalOption === 3) {
-      setConfirmButton(t('apiaries:home.saving'));
-      console.log('Editar produção', value, selectedProductionCode);
+  }, [netInfo]);
+
+  const deleteNotes = async () => {
+    try {
+      const queryNotesSnapshot = query(collection(apiaryRef, 'notes'));
+      const docsNotesSnap = await getDocs(queryNotesSnapshot);
+      docsNotesSnap.forEach((item) => {
+        deleteDoc(doc(apiaryRef, 'notes', item.data().code));
+      });
+    } catch (error) {
+      toast.error(error.code);
     }
-    if (modalOption === 4) {
-      setConfirmButton(t('apiaries:home.deleting'));
-      console.log('Apagar produção', selectedProductionCode);
+  };
+
+  const deleteProductions = async () => {
+    try {
+      const queryNotesSnapshot = query(collection(apiaryRef, 'productions'));
+      const docsNotesSnap = await getDocs(queryNotesSnapshot);
+      docsNotesSnap.forEach((item) => {
+        deleteDoc(doc(apiaryRef, 'productions', item.data().code));
+      });
+    } catch (error) {
+      toast.error(error.code);
     }
-    if (modalOption === 5) {
-      setConfirmButton(t('apiaries:home.deleting'));
-      console.log('Adicionar nota', value);
+  };
+
+  const deleteApiary = async () => {
+    try {
+      await deleteDoc(doc(db, `users/${userUuid}/apiaries`, data.code));
+    } catch (error) {
+      toast.error(error.code);
     }
-    if (modalOption === 6) {
-      setConfirmButton(t('apiaries:home.deleting'));
-      console.log('Adicionar produção', value);
+  };
+
+  const handlePositiveAction = async (value) => {
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      setIsSubmitting(true);
+      if (modalOption === 0) {
+        setConfirmButton(t('apiaries:home.deleting'));
+        try {
+          await deleteNotes();
+          await deleteProductions();
+          await deleteApiary();
+          toast.success(t('apiaries:home.successApiaryDeletes'));
+          navigation.navigate('PrivateNavigator', {
+            screen: 'ApiariesHome',
+          });
+        } catch (error) {
+          toast.error(error.code);
+        }
+      }
+      if (modalOption === 1) {
+        setConfirmButton(t('apiaries:home.saving'));
+        const dateTime = getDateTime();
+        try {
+          await updateDoc(doc(apiaryRef, 'notes', selectedNoteCode), {
+            title: value.title || '',
+            description: value.description,
+            lastModify: dateTime,
+          });
+          await getNotesData();
+          toast.success(t('apiaries:home.noteUpdated'));
+        } catch (error) {
+          toast.error(error.code);
+        }
+      }
+      if (modalOption === 2) {
+        setConfirmButton(t('apiaries:home.deleting'));
+        try {
+          await deleteDoc(doc(apiaryRef, 'notes', selectedNoteCode));
+          await getNotesData();
+          toast.success(t('apiaries:home.noteDeleted'));
+        } catch (error) {
+          toast.error(error.code);
+        }
+      }
+      if (modalOption === 3) {
+        setConfirmButton(t('apiaries:home.saving'));
+        const dateTime = getDateTime();
+        try {
+          await updateDoc(
+            doc(apiaryRef, 'productions', selectedProductionCode),
+            {
+              name: value.name,
+              payed: value.payed || t('apiaries:home.not'),
+              payedQtd: value.payedQtd,
+              qtd: value.qtd || '',
+              date: value.date,
+              lastModify: dateTime,
+            },
+          );
+          await getProductionsData();
+          toast.success(t('apiaries:home.productionUpdated'));
+        } catch (error) {
+          toast.error(error.code);
+        }
+      }
+      if (modalOption === 4) {
+        setConfirmButton(t('apiaries:home.deleting'));
+        try {
+          await deleteDoc(
+            doc(apiaryRef, 'productions', selectedProductionCode),
+          );
+          await getProductionsData();
+          toast.success(t('apiaries:home.productionDeleted'));
+        } catch (error) {
+          toast.error(error.code);
+        }
+      }
+      if (modalOption === 5) {
+        setConfirmButton(t('apiaries:home.deleting'));
+        const dateTime = getDateTime();
+        const createdAt = Date();
+        const noteId = `${uuid.v4()}-${value.title}`;
+        try {
+          await setDoc(doc(apiaryRef, 'notes', noteId), {
+            code: noteId,
+            title: value.title || '',
+            description: value.description,
+            lastModify: dateTime,
+            createdAt: createdAt.toString(),
+          });
+          await getNotesData();
+          toast.success(t('apiaries:home.noteSuccessCreated'));
+        } catch (error) {
+          toast.error(error.code);
+        }
+      }
+      if (modalOption === 6) {
+        setConfirmButton(t('apiaries:home.deleting'));
+        const dateTime = getDateTime();
+        const createdAt = Date();
+        const productionId = `${uuid.v4()}-${value.name}`;
+        try {
+          await setDoc(doc(apiaryRef, 'productions', productionId), {
+            code: productionId,
+            name: value.name,
+            payed: value.payed || 'Não',
+            payedQtd: value.payedQtd,
+            qtd: value.qtd || '',
+            date: value.date,
+            lastModify: dateTime,
+            createdAt: createdAt.toString(),
+          });
+          await getProductionsData();
+          toast.success(t('apiaries:home.productionSuccessCreated'));
+        } catch (error) {
+          toast.error(error.code);
+        }
+      }
+    } else {
+      toast.error(t('apiaries:home.noInternet'));
     }
     setIsSubmitting(false);
     setShowModal(false);
@@ -206,7 +432,7 @@ function ApiaryHome() {
     setModalTitle(t('apiaries:home.editNoteTitle'));
     setCancelButton(t('apiaries:home.cancel'));
     setConfirmButton(t('apiaries:home.save'));
-    setDefaultData(data.notes[selectedNoteIndex]);
+    setDefaultData(notes[selectedNoteIndex]);
     setShowModal(true);
   };
 
@@ -226,7 +452,7 @@ function ApiaryHome() {
     setModalTitle(t('apiaries:home.editProductionTitle'));
     setCancelButton(t('apiaries:home.cancel'));
     setConfirmButton(t('apiaries:home.save'));
-    setDefaultData(data.production[selectedProductionIndex]);
+    setDefaultData(productions[selectedProductionIndex]);
     setShowModal(true);
   };
 
@@ -356,6 +582,17 @@ function ApiaryHome() {
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            colors={[colors.primary]}
+            progressBackgroundColor={colors.secondary}
+            refreshing={isPullRefreshing}
+            onRefresh={() => {
+              setIsPullRefreshing(true);
+              getData();
+            }}
+          />
+        }
       >
         <View style={styles.infoContainer}>
           <ExpensiveNote
@@ -364,147 +601,158 @@ function ApiaryHome() {
             mode="apiaryDescription"
           />
         </View>
-        <View style={styles.add}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleAddNote()}
-          >
-            <Add size={40} color={colors.secondary} />
-          </TouchableOpacity>
-          <Title1 centered color={colors.primary}>
-            {t('apiaries:home.notes')}
-          </Title1>
-        </View>
-        <View
-          style={data.notes.length > 0 ? styles.listContainer : styles.noData}
-        >
-          {data.notes.length > 0 ? (
-            data.notes.map((note, index) => {
-              return (
-                <ExpensiveNote
-                  key={note.code}
-                  data={note}
-                  hasData
-                  modalOptions={noteOptions}
-                  mode="noteList"
-                  selectedCode={note.code}
-                  setSelectedCode={() => {
-                    setSelectedNoteCode(note.code);
-                    setSelectedNoteIndex(index);
-                  }}
-                />
-              );
-            })
-          ) : (
-            <ExpensiveNote hasData={false} mode="noteList" />
-          )}
-        </View>
-        <View style={styles.add}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleAddProduction()}
-          >
-            <Add size={40} color={colors.secondary} />
-          </TouchableOpacity>
-          <Title1 centered color={colors.primary}>
-            {t('apiaries:home.production')}
-          </Title1>
-        </View>
-        <View
-          style={
-            data.notes.length > 0
-              ? styles.listProductionContainer
-              : styles.noData
-          }
-        >
-          {data.production.length > 0 ? (
-            <>
-              <View style={styles.quantity}>
-                <Title2 color={colors.primary} family="medium">
-                  {`${t('apiaries:home.productionTotal')} ${data.total} ${t(
-                    'apiaries:home.kg',
-                  )}`}
-                </Title2>
-                <Title2 color={colors.primary} family="medium">
-                  {`${t('apiaries:home.totalPayed')} ${data.totalPayed} ${t(
-                    'apiaries:home.kg',
-                  )}`}
-                </Title2>
-              </View>
-              {data.production.map((production, index) => {
-                return (
-                  <ExpensiveNote
-                    key={production.code}
-                    hasData
-                    modalOptions={productionOptions}
-                    mode="production"
-                    selectedCode={production.code}
-                    setSelectedCode={() => {
-                      setSelectedProductionCode(production.code);
-                      setSelectedProductionIndex(index);
-                    }}
-                    data={production}
-                  />
-                );
-              })}
-            </>
-          ) : (
-            <ExpensiveNote hasData={false} mode="production" />
-          )}
-        </View>
-        <View>
-          {permission && data.latitude ? (
-            <View style={styles.containerMap}>
-              <MapView
-                style={styles.map}
-                showsUserLocation
-                initialRegion={{
-                  latitude: parseFloat(data.latitude),
-                  longitude: parseFloat(data.longitude),
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
-                }}
+        {refreshing ? (
+          <ActivityIndicator size="large" color={colors.primary} />
+        ) : (
+          <>
+            <View style={styles.add}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleAddNote()}
               >
-                <View>
-                  <Marker
-                    coordinate={{
-                      latitude: parseFloat(data.latitude),
-                      longitude: parseFloat(data.longitude),
-                    }}
-                    pinColor={
-                      data.type === 'apiary'
-                        ? colors.primary
-                        : data.type === 'home'
-                        ? colors.success
-                        : colors.error
-                    }
-                  />
-                  <Circle
-                    center={{
-                      latitude: parseFloat(data.latitude),
-                      longitude: parseFloat(data.longitude),
-                    }}
-                    radius={1500}
-                    fillColor={
-                      data.type === 'apiary'
-                        ? colors.primaryLight
-                        : colors.errorLight
-                    }
-                    strokeColor={
-                      data.type === 'apiary' ? colors.primary : colors.error
-                    }
-                  />
-                </View>
-              </MapView>
-            </View>
-          ) : (
-            <View style={styles.view}>
-              <Title1 centered color={colors.error} family="medium">
-                {t('apiaries:home.noPermission')}
+                <Add size={40} color={colors.secondary} />
+              </TouchableOpacity>
+              <Title1 centered color={colors.primary}>
+                {t('apiaries:home.notes')}
               </Title1>
             </View>
-          )}
-        </View>
+            <View
+              style={notes.length > 0 ? styles.listContainer : styles.noData}
+            >
+              {notes.length > 0 ? (
+                notes.map((note, index) => {
+                  return (
+                    <ExpensiveNote
+                      key={note.code}
+                      data={note}
+                      hasData
+                      modalOptions={noteOptions}
+                      mode="noteList"
+                      selectedCode={note.code}
+                      setSelectedCode={() => {
+                        setSelectedNoteCode(note.code);
+                        setSelectedNoteIndex(index);
+                      }}
+                    />
+                  );
+                })
+              ) : (
+                <ExpensiveNote hasData={false} mode="noteList" />
+              )}
+            </View>
+            <View style={styles.add}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleAddProduction()}
+              >
+                <Add size={40} color={colors.secondary} />
+              </TouchableOpacity>
+              <Title1 centered color={colors.primary}>
+                {t('apiaries:home.production')}
+              </Title1>
+            </View>
+            <View
+              style={
+                productions.length > 0
+                  ? styles.listProductionContainer
+                  : styles.noData
+              }
+            >
+              {productions.length > 0 ? (
+                <>
+                  <View style={styles.quantity}>
+                    <Title2 color={colors.primary} family="medium">
+                      {`${t('apiaries:home.productionTotal')} ${qtdTotal} ${t(
+                        'apiaries:home.kg',
+                      )}`}
+                    </Title2>
+                    <Title2 color={colors.primary} family="medium">
+                      {`${t('apiaries:home.totalPayed')} ${qtdTotalPayed} ${t(
+                        'apiaries:home.kg',
+                      )}`}
+                    </Title2>
+                  </View>
+                  {productions.map((production, index) => {
+                    return (
+                      <ExpensiveNote
+                        key={production.code}
+                        hasData
+                        modalOptions={productionOptions}
+                        mode="production"
+                        selectedCode={production.code}
+                        setSelectedCode={() => {
+                          setSelectedProductionCode(production.code);
+                          setSelectedProductionIndex(index);
+                        }}
+                        data={production}
+                      />
+                    );
+                  })}
+                </>
+              ) : (
+                <ExpensiveNote hasData={false} mode="production" />
+              )}
+            </View>
+
+            {data.latitude !== '' && (
+              <View>
+                {permission ? (
+                  <View style={styles.containerMap}>
+                    <MapView
+                      style={styles.map}
+                      showsUserLocation
+                      initialRegion={{
+                        latitude: parseFloat(data.latitude),
+                        longitude: parseFloat(data.longitude),
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                      }}
+                    >
+                      <View>
+                        <Marker
+                          coordinate={{
+                            latitude: parseFloat(data.latitude),
+                            longitude: parseFloat(data.longitude),
+                          }}
+                          pinColor={
+                            data.type === 'apiary'
+                              ? colors.primary
+                              : data.type === 'home'
+                              ? colors.success
+                              : colors.error
+                          }
+                        />
+                        <Circle
+                          center={{
+                            latitude: parseFloat(data.latitude),
+                            longitude: parseFloat(data.longitude),
+                          }}
+                          radius={1500}
+                          fillColor={
+                            data.type === 'apiary'
+                              ? colors.primaryLight
+                              : colors.errorLight
+                          }
+                          strokeColor={
+                            data.type === 'apiary'
+                              ? colors.primary
+                              : colors.error
+                          }
+                        />
+                      </View>
+                    </MapView>
+                  </View>
+                ) : (
+                  <View style={styles.view}>
+                    <Title1 centered color={colors.error} family="medium">
+                      {t('apiaries:home.noPermission')}
+                    </Title1>
+                  </View>
+                )}
+              </View>
+            )}
+          </>
+        )}
       </ScrollView>
     </>
   );

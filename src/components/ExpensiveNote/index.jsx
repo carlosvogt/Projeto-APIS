@@ -175,7 +175,7 @@ function ExpensiveNote({
               <Title1 centered color={colors.primary} family="medium">
                 {`${t('form:expensiveNote.apiary')} ${data.name}`}
               </Title1>
-              {data.phone && (
+              {data.phone !== '' && (
                 <Title2 centered color={colors.primary}>
                   {`${t('form:expensiveNote.ownerPhone')} ${data.phone}`}
                 </Title2>
@@ -206,7 +206,7 @@ function ExpensiveNote({
             <View style={styles.closedContainer}>
               <View style={styles.leftContainer}>
                 <Title1 color={colors.primary} family="medium">
-                  {data.name || t('form:expensiveNote.noTitle')}
+                  {data.title || t('form:expensiveNote.noTitle')}
                 </Title1>
                 <View style={styles.lastModify}>
                   <Title6 family="medium" color={colors.primary}>
@@ -215,7 +215,7 @@ function ExpensiveNote({
                 </View>
                 <View style={styles.marginTop}>
                   <Title2 color={colors.primary}>
-                    {data.note || t('form:expensiveNote.noTitle')}
+                    {data.description || t('form:expensiveNote.noTitle')}
                   </Title2>
                 </View>
               </View>
@@ -249,7 +249,7 @@ function ExpensiveNote({
               <View style={styles.leftContainer}>
                 <View style={styles.marginTop}>
                   <Title1 color={colors.primary} family="medium">
-                    {data.name || t('form:expensiveNote.noTitle')}
+                    {data.title || t('form:expensiveNote.noTitle')}
                   </Title1>
                 </View>
                 <View style={styles.lastModify}>
@@ -260,7 +260,7 @@ function ExpensiveNote({
 
                 <View style={styles.marginTop}>
                   <Title2 color={colors.primary}>
-                    {data.note || t('form:expensiveNote.noTitle')}
+                    {data.description || t('form:expensiveNote.noTitle')}
                   </Title2>
                 </View>
               </View>
@@ -310,16 +310,12 @@ function ExpensiveNote({
                       {`${t('form:expensiveNote.qtd')} ${data.qtd}`}
                       {t('form:expensiveNote.kg')}
                     </Title2>
-                    {data.payed || data.payedQtd ? (
-                      <Title2 color={colors.primary}>
-                        {`${t('form:expensiveNote.payed')} ${
-                          data.payed || t('form:expensiveNote.notInformed')
-                        }`}
-                        {`${t('form:expensiveNote.qtd')} ${
-                          data.payedQtd || t('form:expensiveNote.notInformed')
-                        } ${t('form:expensiveNote.kg')}`}
-                      </Title2>
-                    ) : null}
+                    <Title2 color={colors.primary}>
+                      {`${t('form:expensiveNote.payed')} ${data.payed}`}
+                      {`${t('form:expensiveNote.qtd')} ${
+                        data.payedQtd || '0'
+                      } ${t('form:expensiveNote.kg')}`}
+                    </Title2>
                   </>
                 </View>
               </View>
@@ -356,14 +352,18 @@ function ExpensiveNote({
                 <Title2 color={colors.primary} family="medium" centered>
                   {`${t('form:expensiveNote.owner')} ${data.owner}`}
                 </Title2>
-                <Title2 color={colors.primary} family="medium" centered>
-                  {`${t('form:expensiveNote.ownerPercent')} ${
-                    data.ownerPercent
-                  }%`}
-                </Title2>
-                <Title2 color={colors.primary} family="medium" centered>
-                  {`${t('form:expensiveNote.ownerPhone')} ${data.phone}`}
-                </Title2>
+                {data.ownerPercent !== '' && (
+                  <Title2 color={colors.primary} family="medium" centered>
+                    {`${t('form:expensiveNote.ownerPercent')} ${
+                      data.ownerPercent
+                    }%`}
+                  </Title2>
+                )}
+                {data.phone !== '' && (
+                  <Title2 color={colors.primary} family="medium" centered>
+                    {`${t('form:expensiveNote.ownerPhone')} ${data.phone}`}
+                  </Title2>
+                )}
                 <Title2 color={colors.primary} family="medium" centered>
                   {`${t('form:expensiveNote.address')} ${data.city} - ${
                     data.state

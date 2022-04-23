@@ -60,70 +60,74 @@ function UpdatePersonalInfo() {
   const updateAccountData = async (form) => {
     const dateTime = getDateTime();
     const oldEmail = userInformation.email;
-    await updateDoc(doc(db, `users/${uuid}/accountData`, uuid), {
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      zipCode: form.zipCode,
-      coordinates: form.coordinates,
-      latitude: form.latitude,
-      longitude: form.longitude,
-      city: form.city,
-      state: form.state,
-      lastModify: dateTime,
-    })
-      .then(() => {
-        AsyncStorage.setItem('account', JSON.stringify(form));
-        dispatch({
-          type: 'SET_ACCOUNT_DATA',
-          payload: form,
-        });
-        if (form.email === oldEmail) {
-          toast.success(t('updatePersonalInfo:success'));
-          navigation.navigate('Profile');
-        } else {
-          toast.success(t('updatePersonalInfo:emailVerification'));
-          handleSignOut();
-        }
-      })
-      .catch((error) => {
-        toast.error(error.code);
+
+    try {
+      await updateDoc(doc(db, `users/${uuid}/accountData`, uuid), {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        zipCode: form.zipCode || '',
+        coordinates: form.coordinates || '',
+        latitude: form.latitude || '',
+        longitude: form.longitude || '',
+        city: form.city,
+        state: form.state,
+        lastModify: dateTime,
       });
+      AsyncStorage.setItem('account', JSON.stringify(form));
+      dispatch({
+        type: 'SET_ACCOUNT_DATA',
+        payload: form,
+      });
+      if (form.email === oldEmail) {
+        toast.success(t('updatePersonalInfo:success'));
+        navigation.navigate('Profile');
+      } else {
+        toast.success(t('updatePersonalInfo:emailVerification'));
+        handleSignOut();
+      }
+    } catch (error) {
+      toast.error(error.code);
+    }
   };
 
   const updateAccountEmail = async () => {
-    await updateEmail(auth.currentUser, newData.email)
-      .then(() => {
-        sendEmailVerification(auth.currentUser);
-      })
-      .catch((error) => {
-        toast.error(error.code);
-      });
+    try {
+      await updateEmail(auth.currentUser, newData.email);
+      await sendEmailVerification(auth.currentUser);
+    } catch (error) {
+      toast.error(error.code);
+    }
   };
 
   const handleUpdateUser = async (form) => {
     setShowConfirmationModal(false);
-    await signInWithEmailAndPassword(auth, userInformation.email, form.password)
-      .then(() => {
-        updateAccountEmail();
-        updateAccountData(newData);
-      })
-      .catch((error) => {
-        if (error.code === 'auth/wrong-password') {
-          toast.error(t('updatePersonalInfo:invalidPassword'));
-        } else {
-          toast.error(error.code);
-        }
-      });
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        auth.currentUser.email,
+        form.password,
+      );
+      await updateAccountEmail();
+      await updateAccountData(newData);
+    } catch (error) {
+      if (error.code === 'auth/wrong-password') {
+        toast.error(t('updatePersonalInfo:invalidPassword'));
+      } else {
+        toast.error(error.code);
+      }
+    }
+    setLoading(false);
   };
 
-  const handleUpdatePersonalInfo = (form) => {
+  const handleUpdatePersonalInfo = async (form) => {
     setNewData(form);
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
       setLoading(true);
       if (form.email === userInformation.email) {
-        updateAccountData(form);
+        await updateAccountData(form);
       } else {
         setShowConfirmationModal(true);
       }
@@ -143,6 +147,7 @@ function UpdatePersonalInfo() {
         cancelFunction={() => setShowConfirmationModal(false)}
         positiveAction={(value) => handleUpdateUser(value)}
         showModal={showConfirmationModal}
+        isSubmitting={loading}
       />
       <Header title={t('updatePersonalInfo:header')} />
       <ScrollView

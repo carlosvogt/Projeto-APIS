@@ -64,52 +64,58 @@ function Address() {
 
   const handleCreateAccountData = async (form, userCredencial) => {
     const dateTime = getDateTime();
-    await setDoc(
-      doc(
-        db,
-        `users/${userCredencial.user.uid}/accountData`,
-        userCredencial.user.uid,
-      ),
-      {
-        name: params.name,
-        email: params.email,
-        phone: params.phone,
-        zipCode: form.zipCode,
-        coordinates: form.coordinates,
-        latitude: form.latitude,
-        longitude: form.longitude,
-        city: form.city,
-        state: form.state,
-        lastModify: dateTime,
-      },
-    )
-      .then(() => {
-        toast.success(t('createAccount:success'));
-        navigation.navigate('SignIn');
-        sendEmailVerification(auth.currentUser);
-      })
-      .catch((error) => {
-        handleDeleteUserAccess();
-        toast.error(error.code);
-      });
+    const createdAt = Date();
+
+    try {
+      await setDoc(
+        doc(
+          db,
+          `users/${userCredencial.user.uid}/accountData`,
+          userCredencial.user.uid,
+        ),
+        {
+          name: params.name,
+          email: params.email,
+          phone: params.phone,
+          zipCode: form.zipCode || '',
+          coordinates: form.coordinates || '',
+          latitude: form.latitude || '',
+          longitude: form.longitude || '',
+          city: form.city,
+          state: form.state,
+          type: 'home',
+          lastModify: dateTime,
+          createdAt: createdAt.toString(),
+        },
+      );
+      await sendEmailVerification(auth.currentUser);
+      toast.success(t('createAccount:success'));
+      navigation.navigate('SignIn');
+    } catch (error) {
+      await handleDeleteUserAccess();
+      toast.error(error.code);
+    }
   };
 
   const handleCreateUser = async (form) => {
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
       setLoading(true);
-      await createUserWithEmailAndPassword(auth, params.email, params.password)
-        .then((userCredencial) => {
-          handleCreateAccountData(form, userCredencial);
-        })
-        .catch((error) => {
-          console.log(error);
-          if (error.code === 'auth/email-already-in-use') {
-            toast.error(t('createAccount:emailInUse'));
-          } else {
-            toast.error(error.code);
-          }
-        });
+      try {
+        const user = await createUserWithEmailAndPassword(
+          auth,
+          params.email,
+          params.password,
+        );
+        await handleCreateAccountData(form, user);
+      } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+          toast.error(t('createAccount:emailInUse'));
+        } else {
+          toast.error(error.code);
+        }
+      }
+
       setLoading(false);
     } else {
       toast.error(t('createAccount:noInternetLogin'));

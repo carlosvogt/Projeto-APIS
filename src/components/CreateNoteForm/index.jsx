@@ -58,8 +58,8 @@ function CreateNoteForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
     defaultValues: {
-      title: defaultData?.name || '',
-      description: defaultData?.note || '',
+      title: defaultData?.title || '',
+      description: defaultData?.description || '',
     },
   });
 
@@ -105,7 +105,7 @@ function CreateNoteForm({
           viewStyle={styles.viewStyle}
         />
         <Button
-          title={t('form:label.save')}
+          title={isSubmitting ? t('form:label.saving') : t('form:label.save')}
           loading={isSubmitting}
           onPress={handleSubmit(positiveAction)}
           viewStyle={styles.viewStyle}

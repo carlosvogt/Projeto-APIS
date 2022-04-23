@@ -16,7 +16,12 @@ import { useTranslation } from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
 import { useNavigation } from '@react-navigation/native';
 import { Title1 } from '@components/typography';
-import { Modal } from '@components';
+import { Modal, useToast } from '@components';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { userUid } from '@store/auth';
+import { useSelector } from 'react-redux';
+import { getDocs, collection, query } from 'firebase/firestore';
+import { db } from '@services/firebase';
 
 function ApiariesMapScreen() {
   const { t } = useTranslation();
@@ -26,6 +31,11 @@ function ApiariesMapScreen() {
   const [permission, setPermission] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState('');
+  const netInfo = useNetInfo();
+  const userUuid = useSelector(userUid);
+  const [apiaries, setApiaries] = useState([]);
+  const toast = useToast();
+  const [refreshing, setRefreshing] = useState(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -60,156 +70,34 @@ function ApiariesMapScreen() {
     },
   });
 
-  // Dados mocados
-  const apiaries = [
-    {
-      code: 0,
-      type: 'home',
-      name: 'Casa do mel',
-      latitude: '-29.541942',
-      longitude: '-52.514808',
-    },
-    {
-      code: 1,
-      type: 'apiary',
-      name: 'Erni',
-      latitude: '-29.544985',
-      longitude: '-52.512835',
-      city: 'Sinimbu',
-      coordinates: '1000000019000',
-      zipCode: '96890000',
-      state: 'RS',
-      quantityFull: '50',
-      totalPlaces: '55',
-      owner: 'Carlos Vogt',
-      phone: '(51) 9 9999-9999',
-      ownerPercent: '5',
-      total: '2000',
-      totalPayed: '300',
-      mortality: 'Sim',
-      notes: [
-        {
-          code: 1,
-          name: 'Anotação 1',
-          note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-        },
-        {
-          code: 2,
-          name: 'Anotação 2',
-          note: 'Aqui o texto será escrito de forma integral',
-        },
-        {
-          code: 3,
-          name: '',
-          note: 'Aqui o texto será escrito de forma integral aaa',
-        },
-      ],
-      production: [
-        {
-          code: 1,
-          name: 'Safra 2019',
-          date: '15/01/2020',
-          qtd: '500',
-          payed: 'Sim',
-          payedQtd: '150',
-        },
-        {
-          code: 2,
-          name: 'Safra 2020',
-          date: '15/01/2020',
-          qtd: '1500',
-          payed: 'Sim',
-          payedQtd: '150',
-        },
-      ],
-    },
-    {
-      code: 2,
-      type: 'death',
-      name: 'Valdir',
-      latitude: '-29.543594',
-      longitude: '-52.502483',
-      city: 'Sinimbu',
-      coordinates: '1000000019000',
-      zipCode: '96890000',
-      state: 'RS',
-      quantityFull: '50',
-      totalPlaces: '55',
-      owner: 'Carlos Vogt',
-      phone: '(51) 9 9999-9999',
-      ownerPercent: '5',
-      total: '1000',
-      totalPayed: '50',
-      mortality: 'Sim',
-      notes: [
-        {
-          code: 1,
-          name: 'Anotação 1',
-          note: 'Aqui o texto será escrito de forma integral para facilitar a vida do apicultor',
-        },
-      ],
-      production: [
-        {
-          code: 1,
-          name: 'Safra 2019',
-          date: '15/01/2020',
-          qtd: '500',
-          payed: '',
-          payedQtd: '50',
-        },
-        {
-          code: 2,
-          name: 'Safra 2020',
-          date: '15/01/2020',
-          qtd: '500',
-          payed: 'Sim',
-          payedQtd: '',
-        },
-      ],
-    },
-    {
-      code: 3,
-      type: 'apiary',
-      name: 'Nelson',
-      latitude: '-29.544390',
-      longitude: '-52.488364',
-      city: 'Sinimbu',
-      coordinates: '1000000019000',
-      zipCode: '96890000',
-      state: 'RS',
-      quantityFull: '50',
-      totalPlaces: '55',
-      owner: 'Carlos Vogt',
-      phone: '(51) 9 9999-9999',
-      ownerPercent: '5',
-      total: '0',
-      totalPayed: '0',
-      mortality: 'Não',
-      notes: [],
-      production: [],
-    },
-    {
-      code: 4,
-      type: 'apiary',
-      name: 'Klein',
-      latitude: '-29.566150',
-      longitude: '-52.575366',
-      city: 'Sinimbu',
-      coordinates: '1000000019000',
-      zipCode: '96890000',
-      state: 'RS',
-      quantityFull: '50',
-      totalPlaces: '55',
-      owner: 'Carlos Vogt',
-      phone: '(51) 9 9999-9999',
-      ownerPercent: '5',
-      total: '0',
-      totalPayed: '0',
-      mortality: 'Não',
-      notes: [],
-      production: [],
-    },
-  ];
+  const getData = async () => {
+    setRefreshing(true);
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      try {
+        const querySnapshot = query(
+          collection(db, `users/${userUuid}/apiaries`),
+        );
+        const docsSnap = await getDocs(querySnapshot);
+        setApiaries([]);
+        docsSnap.forEach((item) => {
+          setApiaries((oldArray) => [...oldArray, item.data()]);
+        });
+      } catch (error) {
+        toast.error(error.code);
+      }
+    } else {
+      toast.error(t('apiariesMap:noInternet'));
+    }
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet !== null) {
+      getData();
+    }
+  }, [netInfo]);
 
   const handleToApiary = (type, index) => {
     if (type === 'home') {
@@ -313,7 +201,12 @@ function ApiariesMapScreen() {
         mode="alert"
         showModal={showModal}
       />
-      <Header title={t('apiariesMap:name')} />
+      <Header
+        title={t('apiariesMap:name')}
+        showRefreshButton
+        handleRefresh={() => getData()}
+        isRefreshing={refreshing}
+      />
 
       {permission ? (
         <>
@@ -327,48 +220,51 @@ function ApiariesMapScreen() {
               >
                 {apiaries.map((item, index) => {
                   return (
-                    <View key={item.code}>
-                      <Marker
-                        coordinate={{
-                          latitude: parseFloat(item.latitude),
-                          longitude: parseFloat(item.longitude),
-                        }}
-                        pinColor={
-                          item.type === 'apiary'
-                            ? colors.primary
-                            : item.type === 'home'
-                            ? colors.success
-                            : colors.error
-                        }
-                      >
-                        <Callout
-                          onPress={() => handleToApiary(item.type, index)}
-                        >
-                          <Text style={{ color: colors.primary }}>
-                            {item.name}
-                          </Text>
-                        </Callout>
-                      </Marker>
-                      {item.type !== 'home' && (
-                        <Circle
-                          center={{
+                    item.latitude !== '' &&
+                    item.longitude !== '' && (
+                      <View key={item.code}>
+                        <Marker
+                          coordinate={{
                             latitude: parseFloat(item.latitude),
                             longitude: parseFloat(item.longitude),
                           }}
-                          radius={1500}
-                          fillColor={
-                            item.type === 'apiary'
-                              ? colors.primaryLight
-                              : colors.errorLight
-                          }
-                          strokeColor={
+                          pinColor={
                             item.type === 'apiary'
                               ? colors.primary
+                              : item.type === 'home'
+                              ? colors.success
                               : colors.error
                           }
-                        />
-                      )}
-                    </View>
+                        >
+                          <Callout
+                            onPress={() => handleToApiary(item.type, index)}
+                          >
+                            <Text style={{ color: colors.primary }}>
+                              {item.name}
+                            </Text>
+                          </Callout>
+                        </Marker>
+                        {item.type !== 'home' && (
+                          <Circle
+                            center={{
+                              latitude: parseFloat(item.latitude),
+                              longitude: parseFloat(item.longitude),
+                            }}
+                            radius={1500}
+                            fillColor={
+                              item.type === 'apiary'
+                                ? colors.primaryLight
+                                : colors.errorLight
+                            }
+                            strokeColor={
+                              item.type === 'apiary'
+                                ? colors.primary
+                                : colors.error
+                            }
+                          />
+                        )}
+                      </View>
+                    )
                   );
                 })}
               </MapView>

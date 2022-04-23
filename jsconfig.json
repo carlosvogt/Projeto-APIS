@@ -15,6 +15,12 @@
       "@assets/*": [
         "src/assets/*"
       ],
+      "@config": [
+        "src/config/index",
+      ],
+      "@config/*": [
+        "src/config/*"
+      ],
       "@i18n": [
         "src/i18n/index"
       ],

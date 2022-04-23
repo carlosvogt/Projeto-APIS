@@ -108,6 +108,7 @@ const ModalCenter = ({
                       onPress={positiveAction}
                       viewStyle={styles.viewStyle}
                       style={styles.buttonStyle}
+                      loading={isSubmitting}
                     />
                   </View>
                 </>

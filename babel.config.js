@@ -4,6 +4,7 @@ const ModuleResolverPlugin = [
     root: ['./src'],
     extensions: ['.js', '.jsx', '.ios.js', '.android.js', '.json'],
     alias: {
+      '@config': './src/config',
       '@components': './src/components',
       '@i18n': './src/i18n',
       '@screens': './src/screens',
@@ -23,7 +24,7 @@ module.exports = {
   plugins: [ModuleResolverPlugin],
   env: {
     production: {
-      plugins: ['react-native-paper/babel'],
+      plugins: ['react-native-paper/babel', 'transform-remove-console'],
     },
   },
 };

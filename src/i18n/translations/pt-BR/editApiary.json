@@ -40,5 +40,6 @@
   "noInternet" : "Você está sem acesso a internet! Informe a cidade e o estado manualmente.",
   "ok" : "Ok",
   "gpsPermission" : "Você precisa habilitar a permissão de localização para poder executar esta ação!",
-  "code" : "Código"
+  "code" : "Código",
+  "success" : "Sucesso! Apiário atualizado."
 }

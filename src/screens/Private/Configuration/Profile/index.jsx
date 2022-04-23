@@ -178,30 +178,93 @@ function HomeScreen() {
   };
 
   const deleteHomeNotes = async () => {
-    const q = query(collection(db, `users/${uuid}/homeNotes`));
-    const docsSnap = await getDocs(q);
-    docsSnap.forEach((item) => {
-      deleteDoc(doc(db, `users/${uuid}/homeNotes`, item.data().code));
-    });
-    deleteDoc(doc(db, 'users', uuid));
+    try {
+      const q = query(collection(db, `users/${uuid}/homeNotes`));
+      const docsSnap = await getDocs(q);
+      docsSnap.forEach((item) => {
+        deleteDoc(doc(db, `users/${uuid}/homeNotes`, item.data().code));
+      });
+    } catch (error) {
+      toast.error(error.code);
+    }
   };
 
   const deleteAccountData = async () => {
-    deleteDoc(doc(db, `users/${uuid}/accountData`, uuid));
+    try {
+      await deleteDoc(doc(db, `users/${uuid}/accountData`, uuid));
+    } catch (error) {
+      toast.error(error.code);
+    }
   };
 
-  // Dado mocado - Esta excluindo apenas o account data, não o resto
-  const handleDeleteAccount = async () => {
-    await deleteUser(auth.currentUser)
-      .then(() => {
-        deleteHomeNotes();
-        deleteAccountData();
-        toast.success(t('profile:successDelete'));
-        handleSignOut();
-      })
-      .catch((error) => {
-        toast.error(error.code);
+  const deleteNotes = async (item) => {
+    try {
+      const apiaryRef = doc(db, `users/${uuid}/apiaries`, item.code);
+      const queryNotesSnapshot = query(collection(apiaryRef, 'notes'));
+      const docsNotesSnap = await getDocs(queryNotesSnapshot);
+      docsNotesSnap.forEach((note) => {
+        deleteDoc(doc(apiaryRef, 'notes', note.data().code));
       });
+    } catch (error) {
+      toast.error(error.code);
+    }
+  };
+
+  const deleteProductions = async (item) => {
+    try {
+      const apiaryRef = doc(db, `users/${uuid}/apiaries`, item.code);
+      const queryNotesSnapshot = query(collection(apiaryRef, 'productions'));
+      const docsNotesSnap = await getDocs(queryNotesSnapshot);
+      docsNotesSnap.forEach((production) => {
+        deleteDoc(doc(apiaryRef, 'productions', production.data().code));
+      });
+    } catch (error) {
+      toast.error(error.code);
+    }
+  };
+
+  const deleteApiary = async (item) => {
+    try {
+      await deleteDoc(doc(db, `users/${uuid}/apiaries`, item.code));
+    } catch (error) {
+      toast.error(error.code);
+    }
+  };
+
+  const deleteApiaries = async () => {
+    try {
+      const querySnapshot = query(collection(db, `users/${uuid}/apiaries`));
+      const docsSnap = await getDocs(querySnapshot);
+      docsSnap.forEach((item) => {
+        deleteNotes(item.data());
+        deleteProductions(item.data());
+        deleteApiary(item.data());
+      });
+    } catch (error) {
+      toast.error(error.code);
+    }
+  };
+
+  const deleteUuid = async () => {
+    try {
+      await deleteDoc(doc(db, 'users', uuid));
+    } catch (error) {
+      toast.error(error.code);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteUser(auth.currentUser);
+      await deleteHomeNotes();
+      await deleteAccountData();
+      await deleteApiaries();
+      await deleteUuid();
+      toast.success(t('profile:successDelete'));
+      handleSignOut();
+    } catch (error) {
+      toast.error(error.code);
+    }
   };
 
   const handleModalConfirmation = async (form) => {
@@ -219,17 +282,16 @@ function HomeScreen() {
       const hasInternet = netInfo.isConnected;
       if (hasInternet) {
         setIsSubmitting(true);
-        await signInWithEmailAndPassword(auth, email, form.password)
-          .then(() => {
-            handleDeleteAccount();
-          })
-          .catch((error) => {
-            if (error.code === 'auth/wrong-password') {
-              toast.error(t('form:login.invalidPassword'));
-            } else {
-              toast.error(error.code);
-            }
-          });
+        try {
+          await signInWithEmailAndPassword(auth, email, form.password);
+          await handleDeleteAccount();
+        } catch (error) {
+          if (error.code === 'auth/wrong-password') {
+            toast.error(t('form:login.invalidPassword'));
+          } else {
+            toast.error(error.code);
+          }
+        }
         setIsSubmitting(false);
       } else {
         toast.error(t('form:login.noInternet'));

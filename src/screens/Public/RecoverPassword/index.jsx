@@ -37,18 +37,17 @@ function RecoverPassword() {
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
       setLoading(true);
-      sendPasswordResetEmail(auth, form.email)
-        .then(() => {
-          toast.success(t('recoverPassword:success'));
-          setEmailSended(true);
-        })
-        .catch((error) => {
-          if (error.code === 'auth/user-not-found') {
-            toast.error(t('recoverPassword:invalidUser'));
-          } else {
-            toast.error(error.code);
-          }
-        });
+      try {
+        await sendPasswordResetEmail(auth, form.email);
+        setEmailSended(true);
+        toast.success(t('recoverPassword:success'));
+      } catch (error) {
+        if (error.code === 'auth/user-not-found') {
+          toast.error(t('recoverPassword:invalidUser'));
+        } else {
+          toast.error(error.code);
+        }
+      }
       setLoading(false);
     } else {
       toast.error(t('recoverPassword:noInternet'));

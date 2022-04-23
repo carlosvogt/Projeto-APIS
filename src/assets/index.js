@@ -22,3 +22,4 @@ export { default as ShareIcon } from './ShareIcon';
 export { default as Trash } from './Trash';
 export { default as VisibilityOff } from './VisibilityOff';
 export { default as VisibilityOn } from './VisibilityOn';
+export { default as Refresh } from './Refresh';

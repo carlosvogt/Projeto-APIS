@@ -6,6 +6,7 @@
   "nothingFound" : "Nenhum resultado encontrado!",
   "addNote" : "Adicionar nota",
   "seeApiary" : "Informações do apiário",
+  "noInternet" : "Atenção, você não está conectado a internet!",
   "home" : {
     "header" : "Informações do apiário",
     "editNote" : "Editar nota",
@@ -36,6 +37,15 @@
     "deleteProductionDescription" : "Você quer realmente apagar a produção?",
     "locationDenied" : "Permissão de localização negada pelo usuário",
     "revokedPermission" : "Permissão de localização revogada pelo usuário",
-    "noPermission" : "Atenção, para visualizar o mapa você deve habilitar a permissão de localização!"
+    "noPermission" : "Atenção, para visualizar o mapa você deve habilitar a permissão de localização!",
+    "noteSuccessCreated" : "Nota criada!",
+    "productionSuccessCreated" : "Produção adicionada!",
+    "noteDeleted" : "Nota deletada!",
+    "productionDeleted" : "Produção deletada!",
+    "noteUpdated" : "Nota atualizada!",
+    "productionUpdated" : "Produção atualizada!",
+    "noInternet" : "Atenção, você não está conectado a internet!",
+    "not" : "Não",
+    "successApiaryDeletes" : "Sucesso! Apiário apagado."
   }
 }

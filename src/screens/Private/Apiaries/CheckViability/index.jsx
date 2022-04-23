@@ -31,7 +31,6 @@ function CheckViability() {
   // Dado mocado
   const handleViability = (form) => {
     setIsSubmitting(true);
-    console.log('form', form);
     navigation.navigate('CheckViabilityResponse', form);
     setIsSubmitting(false);
   };

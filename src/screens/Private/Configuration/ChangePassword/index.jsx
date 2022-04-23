@@ -38,35 +38,33 @@ function ChangePassword() {
   });
 
   const handleChangePassword = async (form) => {
-    await updatePassword(auth.currentUser, form.newPassword)
-      .then(() => {
-        toast.success(t('changePassword:success'));
-        navigation.navigate('Profile');
-      })
-      .catch((error) => {
-        toast.error(error.code);
-      });
+    try {
+      await updatePassword(auth.currentUser, form.newPassword);
+      toast.success(t('changePassword:success'));
+      navigation.navigate('Profile');
+    } catch (error) {
+      toast.error(error.code);
+    }
   };
 
   const handleConfirmUser = async (form) => {
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
       setLoading(true);
-      await signInWithEmailAndPassword(
-        auth,
-        userInformation.email,
-        form.oldPassword,
-      )
-        .then(() => {
-          handleChangePassword(form);
-        })
-        .catch((error) => {
-          if (error.code === 'auth/wrong-password') {
-            toast.error(t('changePassword:invalidPassword'));
-          } else {
-            toast.error(error.code);
-          }
-        });
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          userInformation.email,
+          form.oldPassword,
+        );
+        await handleChangePassword(form);
+      } catch (error) {
+        if (error.code === 'auth/wrong-password') {
+          toast.error(t('changePassword:invalidPassword'));
+        } else {
+          toast.error(error.code);
+        }
+      }
       setLoading(false);
     } else {
       toast.error(t('changePassword:noInternet'));
