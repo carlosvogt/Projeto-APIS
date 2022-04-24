@@ -173,21 +173,21 @@ function ExpensiveNote({
           <View style={styles.apiaryListContainer}>
             <TouchableOpacity onPress={() => onPress()}>
               <Title1 centered color={colors.primary} family="medium">
-                {`${t('form:expensiveNote.apiary')} ${data.name}`}
+                {`${t('translations:textApiary')} ${data.name}`}
               </Title1>
               {data.phone !== '' && (
                 <Title2 centered color={colors.primary}>
-                  {`${t('form:expensiveNote.ownerPhone')} ${data.phone}`}
+                  {`${t('translations:textOwnerPhone')} ${data.phone}`}
                 </Title2>
               )}
               <View style={styles.subContainer}>
                 <TitleHeader color={colors.secondary} family="medium" centered>
-                  {`${t('form:expensiveNote.capacity')} ${data.totalPlaces}`}
+                  {`${t('translations:textCapacity')} ${data.totalPlaces}`}
                 </TitleHeader>
                 <Title2 color={colors.secondary} family="medium" centered>
-                  {`${t('form:expensiveNote.installed')} ${
+                  {`${t('translations:textInstalled')} ${
                     data.quantityFull
-                  }  |  ${t('form:expensiveNote.available')} ${emptyPlaces}`}
+                  }  |  ${t('translations:textAvailable')} ${emptyPlaces}`}
                 </Title2>
               </View>
             </TouchableOpacity>
@@ -195,7 +195,7 @@ function ExpensiveNote({
         ) : (
           <View style={styles.apiaryContainerNoData}>
             <TitleHeader centered family="medium" color={colors.primary}>
-              {t('form:expensiveNote.noApiari')}
+              {t('translations:noApiari')}
             </TitleHeader>
           </View>
         ))}
@@ -206,7 +206,7 @@ function ExpensiveNote({
             <View style={styles.closedContainer}>
               <View style={styles.leftContainer}>
                 <Title1 color={colors.primary} family="medium">
-                  {data.title || t('form:expensiveNote.noTitle')}
+                  {data.title || t('translations:noTitle')}
                 </Title1>
                 <View style={styles.lastModify}>
                   <Title6 family="medium" color={colors.primary}>
@@ -215,7 +215,7 @@ function ExpensiveNote({
                 </View>
                 <View style={styles.marginTop}>
                   <Title2 color={colors.primary}>
-                    {data.description || t('form:expensiveNote.noTitle')}
+                    {data.description || t('translations:noTitle')}
                   </Title2>
                 </View>
               </View>
@@ -237,7 +237,7 @@ function ExpensiveNote({
         ) : (
           <View style={styles.apiaryContainerNoData}>
             <TitleHeader centered family="medium" color={colors.primary}>
-              {t('form:expensiveNote.noNoteTitle')}
+              {t('translations:noNoteTitle')}
             </TitleHeader>
           </View>
         ))}
@@ -249,7 +249,7 @@ function ExpensiveNote({
               <View style={styles.leftContainer}>
                 <View style={styles.marginTop}>
                   <Title1 color={colors.primary} family="medium">
-                    {data.title || t('form:expensiveNote.noTitle')}
+                    {data.title || t('translations:noTitle')}
                   </Title1>
                 </View>
                 <View style={styles.lastModify}>
@@ -260,7 +260,7 @@ function ExpensiveNote({
 
                 <View style={styles.marginTop}>
                   <Title2 color={colors.primary}>
-                    {data.description || t('form:expensiveNote.noTitle')}
+                    {data.description || t('translations:noTitle')}
                   </Title2>
                 </View>
               </View>
@@ -282,7 +282,7 @@ function ExpensiveNote({
         ) : (
           <View style={styles.apiaryContainerNoData}>
             <TitleHeader family="medium" color={colors.primary}>
-              {t('form:expensiveNote.noNoteTitle')}
+              {t('translations:noNoteTitle')}
             </TitleHeader>
           </View>
         ))}
@@ -294,7 +294,7 @@ function ExpensiveNote({
               <View style={styles.leftContainer}>
                 <View style={styles.marginTop}>
                   <Title1 color={colors.primary} family="medium">
-                    {data.name || t('apiaries:home.noTitle')}
+                    {data.name || t('translations:noTitle')}
                   </Title1>
                 </View>
                 <View style={styles.lastModify}>
@@ -306,15 +306,15 @@ function ExpensiveNote({
                 <View style={styles.marginTop}>
                   <>
                     <Title2 color={colors.primary}>
-                      {`${t('form:expensiveNote.date')} ${data.date}`}
-                      {`${t('form:expensiveNote.qtd')} ${data.qtd}`}
-                      {t('form:expensiveNote.kg')}
+                      {`${t('translations:textDate')} ${data.date}`}
+                      {`${t('translations:textQtd')} ${data.qtd}`}
+                      {t('translations:textKg')}
                     </Title2>
                     <Title2 color={colors.primary}>
-                      {`${t('form:expensiveNote.payed')} ${data.payed}`}
-                      {`${t('form:expensiveNote.qtd')} ${
+                      {`${t('translations:textPayed')} ${data.payed}`}
+                      {`${t('translations:textQtd')} ${
                         data.payedQtd || '0'
-                      } ${t('form:expensiveNote.kg')}`}
+                      } ${t('translations:textKg')}`}
                     </Title2>
                   </>
                 </View>
@@ -337,7 +337,7 @@ function ExpensiveNote({
         ) : (
           <View style={styles.apiaryContainerNoData}>
             <TitleHeader family="medium" color={colors.primary}>
-              {t('form:expensiveNote.noProduction')}
+              {t('translations:noProduction')}
             </TitleHeader>
           </View>
         ))}
@@ -346,37 +346,37 @@ function ExpensiveNote({
           <View style={styles.closedContainer}>
             <View style={styles.leftContainer}>
               <Title1 color={colors.primary} family="medium" centered>
-                {`${t('form:expensiveNote.apiary')} ${data.name}`}
+                {`${t('translations:textApiary')} ${data.name}`}
               </Title1>
               <View style={styles.apiaryInfo}>
                 <Title2 color={colors.primary} family="medium" centered>
-                  {`${t('form:expensiveNote.owner')} ${data.owner}`}
+                  {`${t('translations:textOwner')} ${data.owner}`}
                 </Title2>
                 {data.ownerPercent !== '' && (
                   <Title2 color={colors.primary} family="medium" centered>
-                    {`${t('form:expensiveNote.ownerPercent')} ${
+                    {`${t('translations:textOwnerPercent')} ${
                       data.ownerPercent
                     }%`}
                   </Title2>
                 )}
                 {data.phone !== '' && (
                   <Title2 color={colors.primary} family="medium" centered>
-                    {`${t('form:expensiveNote.ownerPhone')} ${data.phone}`}
+                    {`${t('translations:textOwnerPhone')} ${data.phone}`}
                   </Title2>
                 )}
                 <Title2 color={colors.primary} family="medium" centered>
-                  {`${t('form:expensiveNote.address')} ${data.city} - ${
+                  {`${t('translations:textAddress')} ${data.city} - ${
                     data.state
                   }`}
                 </Title2>
               </View>
               <TitleHeader color={colors.primary} family="medium" centered>
-                {`${t('form:expensiveNote.capacity')} ${data.totalPlaces}`}
+                {`${t('translations:textCapacity')} ${data.totalPlaces}`}
               </TitleHeader>
               <Title2 color={colors.primary} family="medium" centered>
-                {`${t('form:expensiveNote.installed')} ${
+                {`${t('translations:textInstalled')} ${
                   data.quantityFull
-                }  |  ${t('form:expensiveNote.available')} ${emptyPlaces}`}
+                }  |  ${t('translations:textAvailable')} ${emptyPlaces}`}
               </Title2>
             </View>
             <TouchableOpacity style={styles.noteListRightContainer}>

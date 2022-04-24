@@ -23,24 +23,24 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
   }
 
   const schema = Yup.object().shape({
-    name: Yup.string().required(t('formErrors:required')),
+    name: Yup.string().required(t('translations:requiredError')),
     email: Yup.string()
-      .email(t('formErrors:email'))
-      .required(t('formErrors:required')),
+      .email(t('translations:emailError'))
+      .required(t('translations:requiredError')),
     phone: Yup.string()
-      .required(t('formErrors:required'))
-      .test('validPhone', t('formErrors:phone'), (value) => {
+      .required(t('translations:requiredError'))
+      .test('validPhone', t('translations:phoneError'), (value) => {
         if (value) {
           return validPhone(value);
         }
         return true;
       }),
     password: Yup.string()
-      .required(t('formErrors:required'))
-      .min(6, t('formErrors:passwordLength')),
+      .required(t('translations:requiredError'))
+      .min(6, t('translations:passwordLengthError')),
     confirmPassword: Yup.string()
-      .required(t('formErrors:required'))
-      .oneOf([Yup.ref('password'), null], t('formErrors:password')),
+      .required(t('translations:requiredError'))
+      .oneOf([Yup.ref('password'), null], t('translations:passwordError')),
   });
 
   const {
@@ -53,8 +53,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
     <>
       <Form.TextInput
         name="name"
-        label={t('createAccount:name')}
-        placeholder={t('createAccount:namePlaceholder')}
+        label={t('translations:requiredName')}
+        placeholder={t('translations:namePlaceholder')}
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
@@ -63,8 +63,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
       <Form.TextInput
         inputRef={email}
         name="email"
-        label={t('createAccount:email')}
-        placeholder={t('createAccount:emailPlaceholder')}
+        label={t('translations:requiredEmail')}
+        placeholder={t('translations:emailPlaceholder')}
         errorMessage={errors.email?.message}
         control={control}
         returnKeyType="next"
@@ -76,8 +76,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         inputRef={phone}
         maskType="phone"
         maxLength={15}
-        label={t('createAccount:phone')}
-        placeholder={t('createAccount:phonePlaceholder')}
+        label={t('translations:requiredPhone')}
+        placeholder={t('translations:phonePlaceholder')}
         errorMessage={errors.phone?.message}
         control={control}
         keyboardType="numeric"
@@ -89,8 +89,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         name="password"
         keyboardType="numeric"
         returnKeyType="next"
-        label={t('createAccount:password')}
-        placeholder={t('createAccount:passwordPlaceholder')}
+        label={t('translations:requiredPassword')}
+        placeholder={t('translations:passwordPlaceholder')}
         errorMessage={errors.password?.message}
         control={control}
         onSubmitEditing={() => confirmPassword.current.focus()}
@@ -100,8 +100,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         name="confirmPassword"
         keyboardType="numeric"
         returnKeyType="done"
-        label={t('createAccount:confirmPassword')}
-        placeholder={t('createAccount:confirmPasswordPlaceholder')}
+        label={t('translations:requiredConfirmPassword')}
+        placeholder={t('translations:confirmPasswordPlaceholder')}
         errorMessage={errors.confirmPassword?.message}
         control={control}
       />
@@ -110,7 +110,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
-          title={t('createAccount:buttonContinue')}
+          title={t('translations:buttonContinue')}
         />
         <Steps total={2} active={0} />
       </Footer>

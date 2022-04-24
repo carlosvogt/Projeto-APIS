@@ -96,7 +96,7 @@ function ApiariesHome() {
         toast.error(error.code);
       }
     } else {
-      toast.error(t('apiaries:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
     setRefreshing(false);
     setIsPullRefreshing(false);
@@ -167,7 +167,7 @@ function ApiariesHome() {
 
   return (
     <View style={styles.container}>
-      <Header title={t('apiaries:name')} onGoBack={handleHome} />
+      <Header title={t('translations:apiaries')} onGoBack={handleHome} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -192,7 +192,7 @@ function ApiariesHome() {
               <Add size={25} color={colors.secondary} />
             </View>
             <Title1 centered color={colors.secondary}>
-              {t('apiaries:add')}
+              {t('translations:add')}
             </Title1>
           </TouchableOpacity>
           <TouchableOpacity
@@ -204,7 +204,7 @@ function ApiariesHome() {
             </View>
 
             <Title1 centered color={colors.secondary}>
-              {t('apiaries:viability')}
+              {t('translations:viability')}
             </Title1>
           </TouchableOpacity>
         </View>
@@ -219,7 +219,7 @@ function ApiariesHome() {
                   value={searchText}
                   name="search"
                   placeholderTextColor={colors.primary}
-                  placeholder={t('apiaries:placeholder')}
+                  placeholder={t('translations:searchApiary')}
                 />
               </View>
             )}
@@ -234,7 +234,7 @@ function ApiariesHome() {
               editedText.map((apiary, index) => handleApiaries(apiary, index))
             ) : (
               <Title2 centered color={colors.primary}>
-                {t('apiaries:nothingFound')}
+                {t('translations:nothingFound')}
               </Title2>
             )}
           </>

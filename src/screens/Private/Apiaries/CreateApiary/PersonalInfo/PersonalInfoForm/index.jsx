@@ -40,18 +40,18 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
   }
 
   const schema = Yup.object().shape({
-    name: Yup.string().required(t('formErrors:required')),
-    owner: Yup.string().required(t('formErrors:required')),
-    phone: Yup.string().test('validPhone', t('formErrors:phone'), (value) => {
+    name: Yup.string().required(t('translations:requiredError')),
+    owner: Yup.string().required(t('translations:requiredError')),
+    phone: Yup.string().test('validPhone', t('translations:phone'), (value) => {
       if (value) {
         return validPhone(value);
       }
       return true;
     }),
-    totalPlaces: Yup.string().required(t('formErrors:required')),
+    totalPlaces: Yup.string().required(t('translations:requiredError')),
     quantityFull: Yup.string()
-      .required(t('formErrors:required'))
-      .test('validQuantity', t('formErrors:quantity'), (value) => {
+      .required(t('translations:requiredError'))
+      .test('validQuantity', t('translations:quantityError'), (value) => {
         if (value) {
           return validQuantity(value);
         }
@@ -59,7 +59,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
       }),
     ownerPercent: Yup.string().test(
       'validPercent',
-      t('formErrors:percentage'),
+      t('translations:percentageError'),
       (value) => {
         if (value) {
           return validPercentage(value);
@@ -91,8 +91,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
     <>
       <Form.TextInput
         name="name"
-        label={t('createApiary:apiaryName')}
-        placeholder={t('createApiary:apiaryNamePlaceholder')}
+        label={t('translations:requiredApiaryName')}
+        placeholder={t('translations:apiaryNamePlaceholder')}
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
@@ -101,8 +101,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
       <Form.TextInput
         inputRef={owner}
         name="owner"
-        label={t('createApiary:owner')}
-        placeholder={t('createApiary:ownerPlaceholder')}
+        label={t('translations:requiredOwnerName')}
+        placeholder={t('translations:ownerPlaceholder')}
         errorMessage={errors.owner?.message}
         control={control}
         returnKeyType="next"
@@ -113,8 +113,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         inputRef={phone}
         maskType="phone"
         maxLength={15}
-        label={t('createApiary:phone')}
-        placeholder={t('createApiary:phonePlaceholder')}
+        label={t('translations:ownerPhone')}
+        placeholder={t('translations:ownerPhonePlaceholder')}
         errorMessage={errors.phone?.message}
         control={control}
         keyboardType="numeric"
@@ -126,8 +126,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         name="totalPlaces"
         keyboardType="numeric"
         returnKeyType="next"
-        label={t('createApiary:quantity')}
-        placeholder={t('createApiary:quantityPlaceholder')}
+        label={t('translations:requiredQuantity')}
+        placeholder={t('translations:quantityPlaceholder')}
         errorMessage={errors.totalPlaces?.message}
         control={control}
         onSubmitEditing={() => quantityFull.current.focus()}
@@ -137,8 +137,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         name="quantityFull"
         keyboardType="numeric"
         returnKeyType="next"
-        label={t('createApiary:quantityFull')}
-        placeholder={t('createApiary:quantityFullPlaceholder')}
+        label={t('translations:requiredQuantityFull')}
+        placeholder={t('translations:quantityFullPlaceholder')}
         errorMessage={errors.quantityFull?.message}
         control={control}
         onSubmitEditing={() => ownerPercent.current.focus()}
@@ -149,8 +149,8 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         keyboardType="numeric"
         returnKeyType="done"
         maxLength={3}
-        label={t('createApiary:ownerPercent')}
-        placeholder={t('createApiary:ownerPercentPlaceholder')}
+        label={t('translations:ownerPercent')}
+        placeholder={t('translations:ownerPercentPlaceholder')}
         errorMessage={errors.ownerPercent?.message}
         control={control}
       />
@@ -159,7 +159,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
-          title={t('createApiary:continue')}
+          title={t('translations:continue')}
         />
         <Steps total={2} active={0} />
       </Footer>

@@ -13,13 +13,13 @@ function ChangePasswordForm({ onSubmit, isSubmitting }) {
   const confirmPassword = useRef();
 
   const schema = Yup.object().shape({
-    oldPassword: Yup.string().required(t('formErrors:required')),
+    oldPassword: Yup.string().required(t('translations:requiredError')),
     newPassword: Yup.string()
-      .required(t('formErrors:required'))
-      .min(6, t('formErrors:passwordLength')),
+      .required(t('translations:requiredError'))
+      .min(6, t('translations:passwordLengthError')),
     confirmPassword: Yup.string()
-      .required(t('formErrors:required'))
-      .oneOf([Yup.ref('newPassword'), null], t('formErrors:password')),
+      .required(t('translations:requiredError'))
+      .oneOf([Yup.ref('newPassword'), null], t('translations:passwordError')),
   });
 
   const {
@@ -32,8 +32,8 @@ function ChangePasswordForm({ onSubmit, isSubmitting }) {
     <>
       <Form.PasswordInput
         name="oldPassword"
-        label={t('changePassword:oldPassword')}
-        placeholder={t('changePassword:oldPasswordPlaceholder')}
+        label={t('translations:oldPassword')}
+        placeholder={t('translations:oldPasswordPlaceholder')}
         returnKeyType="next"
         errorMessage={errors.oldPassword?.message}
         control={control}
@@ -42,8 +42,8 @@ function ChangePasswordForm({ onSubmit, isSubmitting }) {
       <Form.PasswordInput
         inputRef={newPassword}
         name="newPassword"
-        label={t('changePassword:newPassword')}
-        placeholder={t('changePassword:newPasswordPlaceholder')}
+        label={t('translations:newPassword')}
+        placeholder={t('translations:newPasswordPlaceholder')}
         returnKeyType="next"
         errorMessage={errors.newPassword?.message}
         control={control}
@@ -52,8 +52,8 @@ function ChangePasswordForm({ onSubmit, isSubmitting }) {
       <Form.PasswordInput
         inputRef={confirmPassword}
         name="confirmPassword"
-        label={t('changePassword:confirmPassword')}
-        placeholder={t('changePassword:confirmPasswordPlaceholder')}
+        label={t('translations:confirmPassword')}
+        placeholder={t('translations:confirmPasswordPlaceholder')}
         returnKeyType="done"
         errorMessage={errors.confirmPassword?.message}
         control={control}
@@ -62,7 +62,7 @@ function ChangePasswordForm({ onSubmit, isSubmitting }) {
       <Footer>
         <Button
           title={
-            isSubmitting ? t('changePassword:saving') : t('changePassword:save')
+            isSubmitting ? t('translations:saving') : t('translations:save')
           }
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}

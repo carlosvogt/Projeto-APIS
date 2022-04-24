@@ -40,23 +40,23 @@ function RecoverPassword() {
       try {
         await sendPasswordResetEmail(auth, form.email);
         setEmailSended(true);
-        toast.success(t('recoverPassword:success'));
+        toast.success(t('translations:emailSuccess'));
       } catch (error) {
         if (error.code === 'auth/user-not-found') {
-          toast.error(t('recoverPassword:invalidUser'));
+          toast.error(t('translations:invalidUser'));
         } else {
           toast.error(error.code);
         }
       }
       setLoading(false);
     } else {
-      toast.error(t('recoverPassword:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
   return (
     <>
-      <Header title={t('recoverPassword:header')} />
+      <Header title={t('translations:recoverPasswordHeader')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -64,12 +64,12 @@ function RecoverPassword() {
         <Container>
           <View style={styles.viewTitle}>
             <Title1 centered family="medium" color={colors.primary}>
-              {t('recoverPassword:question')}
+              {t('translations:recoverPasswordQuestion')}
             </Title1>
           </View>
           <View style={styles.viewInstruction}>
             <Title2 color={colors.primary} centered>
-              {t('recoverPassword:body')}
+              {t('translations:recoverPasswordBody')}
             </Title2>
           </View>
 

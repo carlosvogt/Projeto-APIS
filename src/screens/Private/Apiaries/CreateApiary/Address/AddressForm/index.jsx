@@ -37,7 +37,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
   const schema = Yup.object().shape({
     zipCode: Yup.string().test(
       'validZipCode',
-      t('formErrors:zipCode'),
+      t('translations:zipCodeError'),
       (value) => {
         if (value) {
           return validZipCode(value);
@@ -48,8 +48,8 @@ function AddressForm({ onSubmit, isSubmitting }) {
     coordinates: Yup.string(),
     latitude: Yup.string(),
     longitude: Yup.string(),
-    city: Yup.string().required(t('formErrors:required')),
-    state: Yup.string().required(t('formErrors:required')),
+    city: Yup.string().required(t('translations:requiredError')),
+    state: Yup.string().required(t('translations:requiredError')),
   });
 
   const styles = StyleSheet.create({
@@ -113,7 +113,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
           handleSetState(data.uf.toLocaleLowerCase());
         });
     } else {
-      setDescription(t('updatePersonalInfo:noInternet'));
+      setDescription(t('translations:noInternet'));
       setShowModal(true);
     }
     setLoadingZipCode(false);
@@ -141,9 +141,9 @@ function AddressForm({ onSubmit, isSubmitting }) {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('createApiary:locationDenied'), ToastAndroid.LONG);
+      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('createApiary:revokedPermission'), ToastAndroid.LONG);
+      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
     }
 
     return false;
@@ -154,10 +154,10 @@ function AddressForm({ onSubmit, isSubmitting }) {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
-      setValue('coordinates', t('createApiary:noPermission'));
+      setValue('coordinates', t('translations:noPermission'));
       setValue('latitude', '');
       setValue('longitude', '');
-      setDescription(t('createApiary:gpsPermission'));
+      setDescription(t('translations:gpsPermission'));
       setLoadingCoordinates(false);
       setShowModal(true);
       return;
@@ -167,8 +167,8 @@ function AddressForm({ onSubmit, isSubmitting }) {
       (position) => {
         setValue(
           'coordinates',
-          `${t('createApiary:lat')}${position.coords.latitude} ${t(
-            'createApiary:long',
+          `${t('translations:lat')}${position.coords.latitude} ${t(
+            'translations:long',
           )}${position.coords.longitude}`,
         );
         setValue('latitude', position.coords.latitude);
@@ -176,7 +176,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
       },
       (error) => {
         setDescription(
-          `${t('createApiary:code')} ${error.code} - ${error.message}`,
+          `${t('translations:code')} ${error.code} - ${error.message}`,
         );
         setShowModal(true);
       },
@@ -199,9 +199,9 @@ function AddressForm({ onSubmit, isSubmitting }) {
   return (
     <>
       <Modal
-        title={t('createAccount:attention')}
+        title={t('translations:attention')}
         cancelFunction={() => setShowModal(false)}
-        cancelText={t('createAccount:ok')}
+        cancelText={t('translations:ok')}
         description={description}
         mode="alert"
         showModal={showModal}
@@ -210,8 +210,8 @@ function AddressForm({ onSubmit, isSubmitting }) {
         <View style={styles.input}>
           <Form.TextInput
             name="zipCode"
-            label={t('createApiary:zipCode')}
-            placeholder={t('createApiary:zipCodePlaceholder')}
+            label={t('translations:zipCode')}
+            placeholder={t('translations:zipCodePlaceholder')}
             errorMessage={errors.zipCode?.message}
             control={control}
             keyboardType="numeric"
@@ -225,7 +225,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
           disabled={formValues?.zipCode.length !== 10}
           loading={loadingZipCode}
           onPress={() => handleZipCode()}
-          title={loadingZipCode ? '' : t('createApiary:research')}
+          title={loadingZipCode ? '' : t('translations:research')}
         />
       </View>
 
@@ -233,7 +233,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
         <View style={styles.input}>
           <Form.TextInput
             name="coordinates"
-            label={t('createApiary:coordinates')}
+            label={t('translations:coordinates')}
             errorMessage={errors.coordinates?.message}
             control={control}
             editable={false}
@@ -244,27 +244,27 @@ function AddressForm({ onSubmit, isSubmitting }) {
           style={styles.button}
           loading={loadingCoordinates}
           onPress={() => handleCoordinates()}
-          title={loadingCoordinates ? '' : t('createApiary:research')}
+          title={loadingCoordinates ? '' : t('translations:research')}
         />
       </View>
 
       <Dropdown
         name="state"
-        label={t('createApiary:state')}
+        label={t('translations:requiredState')}
         value={selectedOption}
         setValue={(value) => handleSetState(value)}
         data={states}
         error={errors.state?.message}
         control={control}
         search
-        searchPlaceholder={t('createApiary:search')}
+        searchPlaceholder={t('translations:searchState')}
         mode="top"
       />
 
       <Form.TextInput
         name="city"
-        label={t('createApiary:city')}
-        placeholder={t('createApiary:cityPlaceholder')}
+        label={t('translations:requiredCity')}
+        placeholder={t('translations:cityPlaceholder')}
         errorMessage={errors.city?.message}
         control={control}
         returnKeyType="next"
@@ -275,7 +275,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
           title={
-            isSubmitting ? t('createApiary:creating') : t('createApiary:create')
+            isSubmitting ? t('translations:creating') : t('translations:create')
           }
         />
         <Steps total={2} active={1} />

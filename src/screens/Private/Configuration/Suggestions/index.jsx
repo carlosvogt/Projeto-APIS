@@ -36,7 +36,7 @@ function Suggestions() {
 
   return (
     <>
-      <Header title={t('suggestions:header')} />
+      <Header title={t('translations:suggestionsHeader')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -44,7 +44,7 @@ function Suggestions() {
         <Container>
           <View style={styles.viewTitle}>
             <Title1 color={colors.primary} family="medium">
-              {t('suggestions:instruction')}
+              {t('translations:suggestionsInstruction')}
             </Title1>
           </View>
 

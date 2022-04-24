@@ -186,7 +186,7 @@ function ApiaryHome() {
         toast.error(error.code);
       }
     } else {
-      toast.error(t('apiaries:home.noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
@@ -218,7 +218,7 @@ function ApiaryHome() {
         toast.error(error.code);
       }
     } else {
-      toast.error(t('apiaries:home.noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
@@ -274,12 +274,12 @@ function ApiaryHome() {
     if (hasInternet) {
       setIsSubmitting(true);
       if (modalOption === 0) {
-        setConfirmButton(t('apiaries:home.deleting'));
+        setConfirmButton(t('translations:deleting'));
         try {
           await deleteNotes();
           await deleteProductions();
           await deleteApiary();
-          toast.success(t('apiaries:home.successApiaryDeletes'));
+          toast.success(t('translations:successApiaryDeleted'));
           navigation.navigate('PrivateNavigator', {
             screen: 'ApiariesHome',
           });
@@ -288,7 +288,7 @@ function ApiaryHome() {
         }
       }
       if (modalOption === 1) {
-        setConfirmButton(t('apiaries:home.saving'));
+        setConfirmButton(t('translations:saving'));
         const dateTime = getDateTime();
         try {
           await updateDoc(doc(apiaryRef, 'notes', selectedNoteCode), {
@@ -297,30 +297,30 @@ function ApiaryHome() {
             lastModify: dateTime,
           });
           await getNotesData();
-          toast.success(t('apiaries:home.noteUpdated'));
+          toast.success(t('translations:noteUpdated'));
         } catch (error) {
           toast.error(error.code);
         }
       }
       if (modalOption === 2) {
-        setConfirmButton(t('apiaries:home.deleting'));
+        setConfirmButton(t('translations:deleting'));
         try {
           await deleteDoc(doc(apiaryRef, 'notes', selectedNoteCode));
           await getNotesData();
-          toast.success(t('apiaries:home.noteDeleted'));
+          toast.success(t('translations:noteDeleted'));
         } catch (error) {
           toast.error(error.code);
         }
       }
       if (modalOption === 3) {
-        setConfirmButton(t('apiaries:home.saving'));
+        setConfirmButton(t('translations:saving'));
         const dateTime = getDateTime();
         try {
           await updateDoc(
             doc(apiaryRef, 'productions', selectedProductionCode),
             {
               name: value.name,
-              payed: value.payed || t('apiaries:home.not'),
+              payed: value.payed || t('translations:not'),
               payedQtd: value.payedQtd,
               qtd: value.qtd || '',
               date: value.date,
@@ -328,25 +328,25 @@ function ApiaryHome() {
             },
           );
           await getProductionsData();
-          toast.success(t('apiaries:home.productionUpdated'));
+          toast.success(t('translations:productionUpdated'));
         } catch (error) {
           toast.error(error.code);
         }
       }
       if (modalOption === 4) {
-        setConfirmButton(t('apiaries:home.deleting'));
+        setConfirmButton(t('translations:deleting'));
         try {
           await deleteDoc(
             doc(apiaryRef, 'productions', selectedProductionCode),
           );
           await getProductionsData();
-          toast.success(t('apiaries:home.productionDeleted'));
+          toast.success(t('translations:productionDeleted'));
         } catch (error) {
           toast.error(error.code);
         }
       }
       if (modalOption === 5) {
-        setConfirmButton(t('apiaries:home.deleting'));
+        setConfirmButton(t('translations:deleting'));
         const dateTime = getDateTime();
         const createdAt = Date();
         const noteId = `${uuid.v4()}-${value.title}`;
@@ -359,13 +359,13 @@ function ApiaryHome() {
             createdAt: createdAt.toString(),
           });
           await getNotesData();
-          toast.success(t('apiaries:home.noteSuccessCreated'));
+          toast.success(t('translations:noteSuccessCreated'));
         } catch (error) {
           toast.error(error.code);
         }
       }
       if (modalOption === 6) {
-        setConfirmButton(t('apiaries:home.deleting'));
+        setConfirmButton(t('translations:deleting'));
         const dateTime = getDateTime();
         const createdAt = Date();
         const productionId = `${uuid.v4()}-${value.name}`;
@@ -381,13 +381,13 @@ function ApiaryHome() {
             createdAt: createdAt.toString(),
           });
           await getProductionsData();
-          toast.success(t('apiaries:home.productionSuccessCreated'));
+          toast.success(t('translations:productionSuccessCreated'));
         } catch (error) {
           toast.error(error.code);
         }
       }
     } else {
-      toast.error(t('apiaries:home.noInternet'));
+      toast.error(t('translations:noInternet'));
     }
     setIsSubmitting(false);
     setShowModal(false);
@@ -419,19 +419,19 @@ function ApiaryHome() {
   const handleDeleteApiary = () => {
     setModalOption(0);
     setModalMode('question');
-    setModalTitle(t('apiaries:home.deleteApiaryTitle'));
-    setDescription(t('apiaries:home.deleteApiaryDescription'));
-    setCancelButton(t('apiaries:home.cancel'));
-    setConfirmButton(t('apiaries:home.delete'));
+    setModalTitle(t('translations:deleteApiaryTitle'));
+    setDescription(t('translations:deleteApiaryDescription'));
+    setCancelButton(t('translations:cancel'));
+    setConfirmButton(t('translations:delete'));
     setShowModal(true);
   };
 
   const handleEditNote = () => {
     setModalOption(1);
     setModalMode('note');
-    setModalTitle(t('apiaries:home.editNoteTitle'));
-    setCancelButton(t('apiaries:home.cancel'));
-    setConfirmButton(t('apiaries:home.save'));
+    setModalTitle(t('translations:editNoteTitle'));
+    setCancelButton(t('translations:cancel'));
+    setConfirmButton(t('translations:save'));
     setDefaultData(notes[selectedNoteIndex]);
     setShowModal(true);
   };
@@ -439,19 +439,19 @@ function ApiaryHome() {
   const handleDeleteNote = () => {
     setModalOption(2);
     setModalMode('question');
-    setModalTitle(t('apiaries:home.deleteNoteTitle'));
-    setDescription(t('apiaries:home.deleteNoteDescription'));
-    setCancelButton(t('apiaries:home.cancel'));
-    setConfirmButton(t('apiaries:home.delete'));
+    setModalTitle(t('translations:deleteNoteTitle'));
+    setDescription(t('translations:deleteNoteDescription'));
+    setCancelButton(t('translations:cancel'));
+    setConfirmButton(t('translations:delete'));
     setShowModal(true);
   };
 
   const handleEditProduction = () => {
     setModalOption(3);
     setModalMode('production');
-    setModalTitle(t('apiaries:home.editProductionTitle'));
-    setCancelButton(t('apiaries:home.cancel'));
-    setConfirmButton(t('apiaries:home.save'));
+    setModalTitle(t('translations:editProductionTitle'));
+    setCancelButton(t('translations:cancel'));
+    setConfirmButton(t('translations:save'));
     setDefaultData(productions[selectedProductionIndex]);
     setShowModal(true);
   };
@@ -459,39 +459,39 @@ function ApiaryHome() {
   const handleDeleteProduction = () => {
     setModalOption(4);
     setModalMode('question');
-    setModalTitle(t('apiaries:home.deleteProductionTitle'));
-    setDescription(t('apiaries:home.deleteProductionDescription'));
-    setCancelButton(t('apiaries:home.cancel'));
-    setConfirmButton(t('apiaries:home.delete'));
+    setModalTitle(t('translations:deleteProductionTitle'));
+    setDescription(t('translations:deleteProductionDescription'));
+    setCancelButton(t('translations:cancel'));
+    setConfirmButton(t('translations:delete'));
     setShowModal(true);
   };
 
   const handleAddNote = () => {
     setModalOption(5);
     setModalMode('note');
-    setModalTitle(t('apiaries:addNote'));
-    setCancelButton(t('apiaries:home.cancel'));
-    setConfirmButton(t('apiaries:home.delete'));
+    setModalTitle(t('translations:addNote'));
+    setCancelButton(t('translations:cancel'));
+    setConfirmButton(t('translations:delete'));
     setShowModal(true);
   };
 
   const handleAddProduction = () => {
     setModalOption(6);
     setModalMode('production');
-    setModalTitle(t('apiaries:home.production'));
-    setCancelButton(t('apiaries:home.cancel'));
-    setConfirmButton(t('apiaries:home.delete'));
+    setModalTitle(t('translations:production'));
+    setCancelButton(t('translations:cancel'));
+    setConfirmButton(t('translations:delete'));
     setShowModal(true);
   };
 
   const apiaryOptions = [
     {
-      option: t('apiaries:home.editApiary'),
+      option: t('translations:editApiary'),
       delete: false,
       onClick: handleEditApiary,
     },
     {
-      option: t('apiaries:home.deleteApiary'),
+      option: t('translations:deleteApiary'),
       delete: true,
       onClick: handleDeleteApiary,
     },
@@ -499,12 +499,12 @@ function ApiaryHome() {
 
   const noteOptions = [
     {
-      option: t('apiaries:home.editNote'),
+      option: t('translations:editNote'),
       delete: false,
       onClick: handleEditNote,
     },
     {
-      option: t('apiaries:home.deleteNote'),
+      option: t('translations:deleteNote'),
       delete: true,
       onClick: handleDeleteNote,
     },
@@ -512,12 +512,12 @@ function ApiaryHome() {
 
   const productionOptions = [
     {
-      option: t('apiaries:home.editProduction'),
+      option: t('translations:editProduction'),
       delete: false,
       onClick: handleEditProduction,
     },
     {
-      option: t('apiaries:home.deleteProduction'),
+      option: t('translations:deleteProduction'),
       delete: true,
       onClick: handleDeleteProduction,
     },
@@ -547,9 +547,9 @@ function ApiaryHome() {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('apiariesMap:locationDenied'), ToastAndroid.LONG);
+      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('apiariesMap:revokedPermission'), ToastAndroid.LONG);
+      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
     }
 
     return false;
@@ -565,7 +565,7 @@ function ApiaryHome() {
 
   return (
     <>
-      <Header title={t('apiaries:home:header')} />
+      <Header title={t('translations:apiaries')} />
       <Modal
         title={modalTitle}
         mode={modalMode}
@@ -613,7 +613,7 @@ function ApiaryHome() {
                 <Add size={40} color={colors.secondary} />
               </TouchableOpacity>
               <Title1 centered color={colors.primary}>
-                {t('apiaries:home.notes')}
+                {t('translations:notes')}
               </Title1>
             </View>
             <View
@@ -648,7 +648,7 @@ function ApiaryHome() {
                 <Add size={40} color={colors.secondary} />
               </TouchableOpacity>
               <Title1 centered color={colors.primary}>
-                {t('apiaries:home.production')}
+                {t('translations:production')}
               </Title1>
             </View>
             <View
@@ -662,13 +662,13 @@ function ApiaryHome() {
                 <>
                   <View style={styles.quantity}>
                     <Title2 color={colors.primary} family="medium">
-                      {`${t('apiaries:home.productionTotal')} ${qtdTotal} ${t(
-                        'apiaries:home.kg',
+                      {`${t('translations:productionTotal')} ${qtdTotal} ${t(
+                        'translations:textKg',
                       )}`}
                     </Title2>
                     <Title2 color={colors.primary} family="medium">
-                      {`${t('apiaries:home.totalPayed')} ${qtdTotalPayed} ${t(
-                        'apiaries:home.kg',
+                      {`${t('translations:totalPayed')} ${qtdTotalPayed} ${t(
+                        'translations:textKg',
                       )}`}
                     </Title2>
                   </View>
@@ -745,7 +745,7 @@ function ApiaryHome() {
                 ) : (
                   <View style={styles.view}>
                     <Title1 centered color={colors.error} family="medium">
-                      {t('apiaries:home.noPermission')}
+                      {t('translations:noPermission')}
                     </Title1>
                   </View>
                 )}

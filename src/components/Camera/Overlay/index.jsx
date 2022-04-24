@@ -25,7 +25,7 @@ function Overlay({ hideOverlay }) {
         { backgroundColor: hideOverlay ? 'none' : colors.black },
       ]}
     >
-      <Header title={t('components:camera.takePicture')} />
+      <Header title={t('translations:takePicture')} />
       {!hideOverlay && <Center />}
     </View>
   );

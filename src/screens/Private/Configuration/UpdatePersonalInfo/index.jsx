@@ -80,10 +80,10 @@ function UpdatePersonalInfo() {
         payload: form,
       });
       if (form.email === oldEmail) {
-        toast.success(t('updatePersonalInfo:success'));
+        toast.success(t('translations:dataUpdatedSuccess'));
         navigation.navigate('Profile');
       } else {
-        toast.success(t('updatePersonalInfo:emailVerification'));
+        toast.success(t('translations:emailVerification'));
         handleSignOut();
       }
     } catch (error) {
@@ -113,7 +113,7 @@ function UpdatePersonalInfo() {
       await updateAccountData(newData);
     } catch (error) {
       if (error.code === 'auth/wrong-password') {
-        toast.error(t('updatePersonalInfo:invalidPassword'));
+        toast.error(t('translations:invalidPassword'));
       } else {
         toast.error(error.code);
       }
@@ -133,7 +133,7 @@ function UpdatePersonalInfo() {
       }
       setLoading(false);
     } else {
-      toast.error(t('updatePersonalInfo:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
@@ -141,15 +141,15 @@ function UpdatePersonalInfo() {
     <>
       <Modal
         mode="login"
-        title={t('updatePersonalInfo:confirmUser')}
-        cancelText={t('updatePersonalInfo:cancel')}
-        positiveText={t('updatePersonalInfo:confirm')}
+        title={t('translations:confirmUser')}
+        cancelText={t('translations:cancel')}
+        positiveText={t('translations:confirm')}
         cancelFunction={() => setShowConfirmationModal(false)}
         positiveAction={(value) => handleUpdateUser(value)}
         showModal={showConfirmationModal}
         isSubmitting={loading}
       />
-      <Header title={t('updatePersonalInfo:header')} />
+      <Header title={t('translations:personalInformationHeader')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}

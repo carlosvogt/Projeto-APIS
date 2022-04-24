@@ -88,18 +88,22 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
   }
 
   const schema = Yup.object().shape({
-    name: Yup.string().required(t('formErrors:required')),
-    owner: Yup.string().required(t('formErrors:required')),
-    phone: Yup.string().test('validPhone', t('formErrors:phone'), (value) => {
-      if (value) {
-        return validPhone(value);
-      }
-      return true;
-    }),
-    totalPlaces: Yup.string().required(t('formErrors:required')),
+    name: Yup.string().required(t('translations:requiredError')),
+    owner: Yup.string().required(t('translations:requiredError')),
+    phone: Yup.string().test(
+      'validPhone',
+      t('translations:phoneError'),
+      (value) => {
+        if (value) {
+          return validPhone(value);
+        }
+        return true;
+      },
+    ),
+    totalPlaces: Yup.string().required(t('translations:requiredError')),
     quantityFull: Yup.string()
-      .required(t('formErrors:required'))
-      .test('validQuantity', t('formErrors:quantity'), (value) => {
+      .required(t('translations:requiredError'))
+      .test('validQuantity', t('translations:quantityError'), (value) => {
         if (value) {
           return validQuantity(value);
         }
@@ -107,7 +111,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       }),
     ownerPercent: Yup.string().test(
       'validPercent',
-      t('formErrors:percentage'),
+      t('translations:percentageError'),
       (value) => {
         if (value) {
           return validPercentage(value);
@@ -117,7 +121,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
     ),
     zipCode: Yup.string().test(
       'validZipCode',
-      t('formErrors:zipCode'),
+      t('translations:zipCodeError'),
       (value) => {
         if (value) {
           return validZipCode(value);
@@ -129,8 +133,8 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
     latitude: Yup.string(),
     longitude: Yup.string(),
     mortality: Yup.string(),
-    city: Yup.string().required(t('formErrors:required')),
-    state: Yup.string().required(t('formErrors:required')),
+    city: Yup.string().required(t('translations:requiredError')),
+    state: Yup.string().required(t('translations:requiredError')),
   });
 
   const {
@@ -210,7 +214,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
           handleSetState(data.uf.toLocaleLowerCase());
         });
     } else {
-      setDescription(t('updatePersonalInfo:noInternet'));
+      setDescription(t('translations:noInternet'));
       setShowModal(true);
     }
     setLoadingZipCode(false);
@@ -238,9 +242,9 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('editApiary:locationDenied'), ToastAndroid.LONG);
+      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('editApiary:revokedPermission'), ToastAndroid.LONG);
+      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
     }
 
     return false;
@@ -251,10 +255,10 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
-      setValue('coordinates', t('editApiary:noPermission'));
+      setValue('coordinates', t('translations:noPermission'));
       setValue('latitude', '');
       setValue('longitude', '');
-      setDescription(t('editApiary:gpsPermission'));
+      setDescription(t('translations:gpsPermission'));
       setLoadingCoordinates(false);
       setShowModal(true);
       return;
@@ -264,8 +268,8 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       (position) => {
         setValue(
           'coordinates',
-          `${t('editApiary:lat')}${position.coords.latitude} ${t(
-            'editApiary:long',
+          `${t('translations:lat')}${position.coords.latitude} ${t(
+            'translations:long',
           )}${position.coords.longitude}`,
         );
         setValue('latitude', position.coords.latitude);
@@ -273,7 +277,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       },
       (error) => {
         setDescription(
-          `${t('editApiary:code')} ${error.code} - ${error.message}`,
+          `${t('translations:code')} ${error.code} - ${error.message}`,
         );
         setShowModal(true);
       },
@@ -294,24 +298,24 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
   };
 
   const options = [
-    { label: t('editApiary:yes'), value: 'true' },
-    { label: t('editApiary:not'), value: 'false' },
+    { label: t('translations:yes'), value: 'true' },
+    { label: t('translations:not'), value: 'false' },
   ];
 
   return (
     <>
       <Modal
-        title={t('updatePersonalInfo:attention')}
+        title={t('translations:attention')}
         cancelFunction={() => setShowModal(false)}
-        cancelText={t('updatePersonalInfo:ok')}
+        cancelText={t('translations:ok')}
         description={description}
         mode="alert"
         showModal={showModal}
       />
       <Form.TextInput
         name="name"
-        label={t('editApiary:apiaryName')}
-        placeholder={t('editApiary:apiaryNamePlaceholder')}
+        label={t('translations:requiredApiaryName')}
+        placeholder={t('translations:apiaryNamePlaceholder')}
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
@@ -320,8 +324,8 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       <Form.TextInput
         inputRef={owner}
         name="owner"
-        label={t('editApiary:owner')}
-        placeholder={t('editApiary:ownerPlaceholder')}
+        label={t('translations:requiredOwnerName')}
+        placeholder={t('translations:ownerPlaceholder')}
         errorMessage={errors.owner?.message}
         control={control}
         returnKeyType="next"
@@ -332,8 +336,8 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         inputRef={phone}
         maskType="phone"
         maxLength={15}
-        label={t('editApiary:phone')}
-        placeholder={t('editApiary:phonePlaceholder')}
+        label={t('translations:ownerPhone')}
+        placeholder={t('translations:ownerPhonePlaceholder')}
         errorMessage={errors.phone?.message}
         control={control}
         keyboardType="numeric"
@@ -345,8 +349,8 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         name="totalPlaces"
         keyboardType="numeric"
         returnKeyType="next"
-        label={t('editApiary:quantity')}
-        placeholder={t('editApiary:quantityPlaceholder')}
+        label={t('translations:requiredQuantity')}
+        placeholder={t('translations:quantityPlaceholder')}
         errorMessage={errors.totalPlaces?.message}
         control={control}
         onSubmitEditing={() => quantityFull.current.focus()}
@@ -356,8 +360,8 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         name="quantityFull"
         keyboardType="numeric"
         returnKeyType="next"
-        label={t('editApiary:quantityFull')}
-        placeholder={t('editApiary:quantityFullPlaceholder')}
+        label={t('translations:requiredQuantityFull')}
+        placeholder={t('translations:quantityFullPlaceholder')}
         errorMessage={errors.quantityFull?.message}
         control={control}
         onSubmitEditing={() => ownerPercent.current.focus()}
@@ -368,14 +372,14 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         keyboardType="numeric"
         returnKeyType="done"
         maxLength={3}
-        label={t('editApiary:ownerPercent')}
-        placeholder={t('editApiary:ownerPercentPlaceholder')}
+        label={t('translations:ownerPercent')}
+        placeholder={t('translations:ownerPercentPlaceholder')}
         errorMessage={errors.ownerPercent?.message}
         control={control}
       />
       <Dropdown
         name="mortality"
-        label={t('editApiary:mortality')}
+        label={t('translations:mortality')}
         value={selectedMortality}
         setValue={(value) => handleSetMortality(value)}
         data={options}
@@ -387,15 +391,15 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
 
       <View style={styles.viewTitle}>
         <Title1 color={colors.primary} family="medium">
-          {t('editApiary:address')}
+          {t('translations:address')}
         </Title1>
       </View>
       <View style={styles.view}>
         <View style={styles.input}>
           <Form.TextInput
             name="zipCode"
-            label={t('editApiary:zipCode')}
-            placeholder={t('editApiary:zipCodePlaceholder')}
+            label={t('translations:zipCode')}
+            placeholder={t('translations:zipCodePlaceholder')}
             errorMessage={errors.zipCode?.message}
             control={control}
             keyboardType="numeric"
@@ -409,7 +413,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
           loading={loadingZipCode}
           disabled={formValues?.zipCode.length !== 10}
           onPress={() => handleZipCode()}
-          title={loadingZipCode ? '' : t('editApiary:research')}
+          title={loadingZipCode ? '' : t('translations:research')}
         />
       </View>
 
@@ -417,7 +421,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         <View style={styles.input}>
           <Form.TextInput
             name="coordinates"
-            label={t('editApiary:coordinates')}
+            label={t('translations:coordinates')}
             errorMessage={errors.coordinates?.message}
             control={control}
             editable={false}
@@ -428,28 +432,28 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
           style={styles.button}
           loading={loadingCoordinates}
           onPress={() => handleCoordinates()}
-          title={loadingCoordinates ? '' : t('editApiary:research')}
+          title={loadingCoordinates ? '' : t('translations:research')}
         />
       </View>
 
       <Dropdown
         name="state"
-        label={t('editApiary:state')}
+        label={t('translations:requiredState')}
         value={selectedState}
         setValue={(value) => handleSetState(value)}
         data={states}
         error={errors.state?.message}
         control={control}
         search
-        searchPlaceholder={t('editApiary:search')}
+        searchPlaceholder={t('translations:searchState')}
         mode="top"
         defaultValue={defaultState}
       />
 
       <Form.TextInput
         name="city"
-        label={t('editApiary:city')}
-        placeholder={t('editApiary:cityPlaceholder')}
+        label={t('translations:requiredCity')}
+        placeholder={t('translations:cityPlaceholder')}
         errorMessage={errors.city?.message}
         control={control}
         returnKeyType="next"
@@ -459,7 +463,9 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
-          title={isSubmitting ? t('editApiary:saving') : t('editApiary:save')}
+          title={
+            isSubmitting ? t('translations:saving') : t('translations:save')
+          }
         />
       </Footer>
     </>

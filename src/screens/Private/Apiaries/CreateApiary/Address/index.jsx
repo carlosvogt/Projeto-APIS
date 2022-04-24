@@ -88,7 +88,7 @@ function Address() {
           ).toString(),
           lastModify: dateTime,
         });
-        toast.success(t('createApiary:success'));
+        toast.success(t('translations:createdApiarySuccess'));
         navigation.navigate('PrivateNavigator', {
           screen: 'ApiariesHome',
         });
@@ -97,13 +97,13 @@ function Address() {
       }
       setIsSubmitting(false);
     } else {
-      toast.error(t('createApiary:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
   return (
     <>
-      <Header title={t('createApiary:header')} />
+      <Header title={t('translations:createApiaryHeader')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -111,12 +111,12 @@ function Address() {
         <Container>
           <View style={styles.viewTitle}>
             <Title1 color={colors.primary} family="medium">
-              {t('createApiary:address')}
+              {t('translations:address')}
             </Title1>
           </View>
           <View style={styles.viewInstruction}>
             <Title2 color={colors.primary}>
-              {t('createApiary:mandatoryData')}
+              {t('translations:requiredInfo')}
             </Title2>
           </View>
 

@@ -52,13 +52,13 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   }
 
   const schema = Yup.object().shape({
-    name: Yup.string().required(t('formErrors:required')),
+    name: Yup.string().required(t('translations:requiredError')),
     email: Yup.string()
-      .email(t('formErrors:email'))
-      .required(t('formErrors:required')),
+      .email(t('translations:emailError'))
+      .required(t('translations:requiredError')),
     phone: Yup.string()
-      .required(t('formErrors:required'))
-      .test('validPhone', t('formErrors:phone'), (value) => {
+      .required(t('translations:requiredError'))
+      .test('validPhone', t('translations:phoneError'), (value) => {
         if (value) {
           return validPhone(value);
         }
@@ -66,7 +66,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       }),
     zipCode: Yup.string().test(
       'validZipCode',
-      t('formErrors:zipCode'),
+      t('translations:zipCodeError'),
       (value) => {
         if (value) {
           return validZipCode(value);
@@ -77,8 +77,8 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     coordinates: Yup.string(),
     latitude: Yup.string(),
     longitude: Yup.string(),
-    city: Yup.string().required(t('formErrors:required')),
-    state: Yup.string().required(t('formErrors:required')),
+    city: Yup.string().required(t('translations:requiredError')),
+    state: Yup.string().required(t('translations:requiredError')),
   });
 
   const styles = StyleSheet.create({
@@ -161,7 +161,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           handleSetState(data.uf.toLocaleLowerCase());
         });
     } else {
-      setDescription(t('updatePersonalInfo:noInternet'));
+      setDescription(t('translations:noInternet'));
       setShowModal(true);
     }
     setLoadingZipCode(false);
@@ -189,15 +189,9 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(
-        t('updatePersonalInfo:locationDenied'),
-        ToastAndroid.LONG,
-      );
+      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(
-        t('updatePersonalInfo:revokedPermission'),
-        ToastAndroid.LONG,
-      );
+      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
     }
 
     return false;
@@ -208,10 +202,10 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
-      setValue('coordinates', t('updatePersonalInfo:noPermission'));
+      setValue('coordinates', t('translations:noPermission'));
       setValue('latitude', '');
       setValue('longitude', '');
-      setDescription(t('updatePersonalInfo:gpsPermission'));
+      setDescription(t('translations:gpsPermission'));
       setLoadingCoordinates(false);
       setShowModal(true);
       return;
@@ -221,8 +215,8 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       (position) => {
         setValue(
           'coordinates',
-          `${t('updatePersonalInfo:lat')}${position.coords.latitude} ${t(
-            'updatePersonalInfo:long',
+          `${t('translations:lat')}${position.coords.latitude} ${t(
+            'translations:long',
           )}${position.coords.longitude}`,
         );
         setValue('latitude', position.coords.latitude);
@@ -230,7 +224,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       },
       (error) => {
         setDescription(
-          `${t('updatePersonalInfo:code')} ${error.code} - ${error.message}`,
+          `${t('translations:code')} ${error.code} - ${error.message}`,
         );
         setShowModal(true);
       },
@@ -253,28 +247,26 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   return (
     <>
       <Modal
-        title={t('updatePersonalInfo:attention')}
+        title={t('translations:attention')}
         cancelFunction={() => setShowModal(false)}
-        cancelText={t('updatePersonalInfo:ok')}
+        cancelText={t('translations:ok')}
         description={description}
         mode="alert"
         showModal={showModal}
       />
       <View style={styles.viewTitle}>
         <Title1 color={colors.primary} family="medium">
-          {t('updatePersonalInfo:personalData')}
+          {t('translations:personalInfo')}
         </Title1>
       </View>
       <View style={styles.viewInstruction}>
-        <Title2 color={colors.primary}>
-          {t('updatePersonalInfo:requiredInfo')}
-        </Title2>
+        <Title2 color={colors.primary}>{t('translations:requiredInfo')}</Title2>
       </View>
 
       <Form.TextInput
         name="name"
-        label={t('updatePersonalInfo:name')}
-        placeholder={t('updatePersonalInfo:namePlaceholder')}
+        label={t('translations:requiredName')}
+        placeholder={t('translations:namePlaceholder')}
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
@@ -283,8 +275,8 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       <Form.TextInput
         inputRef={email}
         name="email"
-        label={t('updatePersonalInfo:email')}
-        placeholder={t('updatePersonalInfo:emailPlaceholder')}
+        label={t('translations:requiredEmail')}
+        placeholder={t('translations:emailPlaceholder')}
         errorMessage={errors.email?.message}
         control={control}
         returnKeyType="next"
@@ -297,8 +289,8 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
         maskType="phone"
         maxLength={15}
         keyboardType="numeric"
-        label={t('updatePersonalInfo:phone')}
-        placeholder={t('updatePersonalInfo:phonePlaceholder')}
+        label={t('translations:requiredPhone')}
+        placeholder={t('translations:phonePlaceholder')}
         errorMessage={errors.phone?.message}
         control={control}
         returnKeyType="next"
@@ -306,7 +298,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       />
       <View style={styles.viewTitle}>
         <Title1 color={colors.primary} family="medium">
-          {t('updatePersonalInfo:address')}
+          {t('translations:address')}
         </Title1>
       </View>
 
@@ -315,8 +307,8 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           <Form.TextInput
             inputRef={zipCodeRef}
             name="zipCode"
-            label={t('updatePersonalInfo:zipCode')}
-            placeholder={t('updatePersonalInfo:zipCodePlaceholder')}
+            label={t('translations:zipCode')}
+            placeholder={t('translations:zipCodePlaceholder')}
             errorMessage={errors.zipCode?.message}
             control={control}
             keyboardType="numeric"
@@ -330,7 +322,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           disabled={formValues?.zipCode.length !== 10}
           loading={loadingZipCode}
           onPress={() => handleZipCode()}
-          title={loadingZipCode ? '' : t('updatePersonalInfo:research')}
+          title={loadingZipCode ? '' : t('translations:research')}
         />
       </View>
 
@@ -338,7 +330,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
         <View style={styles.input}>
           <Form.TextInput
             name="coordinates"
-            label={t('updatePersonalInfo:coordinates')}
+            label={t('translations:coordinates')}
             errorMessage={errors.coordinates?.message}
             control={control}
             editable={false}
@@ -349,28 +341,28 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           style={styles.button}
           loading={loadingCoordinates}
           onPress={() => handleCoordinates()}
-          title={loadingCoordinates ? '' : t('updatePersonalInfo:research')}
+          title={loadingCoordinates ? '' : t('translations:research')}
         />
       </View>
 
       <Dropdown
         name="state"
-        label={t('updatePersonalInfo:state')}
+        label={t('translations:requiredState')}
         value={selectedOption}
         setValue={(value) => handleSetState(value)}
         data={states}
         error={errors.state?.message}
         control={control}
         search
-        searchPlaceholder={t('updatePersonalInfo:search')}
+        searchPlaceholder={t('translations:searchState')}
         mode="top"
         defaultValue={defaultState}
       />
 
       <Form.TextInput
         name="city"
-        label={t('updatePersonalInfo:city')}
-        placeholder={t('updatePersonalInfo:cityPlaceholder')}
+        label={t('translations:requiredCity')}
+        placeholder={t('translations:cityPlaceholder')}
         errorMessage={errors.city?.message}
         control={control}
         returnKeyType="next"
@@ -381,9 +373,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
           title={
-            isSubmitting
-              ? t('updatePersonalInfo:saving')
-              : t('updatePersonalInfo:save')
+            isSubmitting ? t('translations:saving') : t('translations:save')
           }
         />
       </Footer>

@@ -21,8 +21,8 @@ function RecoverPasswordForm({ onSubmit, isSubmitting, emailSended }) {
 
   const schema = Yup.object().shape({
     email: Yup.string()
-      .email(t('formErrors:email'))
-      .required(t('formErrors:required')),
+      .email(t('translations:emailError'))
+      .required(t('translations:requiredError')),
   });
 
   const {
@@ -35,8 +35,8 @@ function RecoverPasswordForm({ onSubmit, isSubmitting, emailSended }) {
     <>
       <Form.TextInput
         name="email"
-        label={t('recoverPassword:email')}
-        placeholder={t('recoverPassword:emailPlaceholder')}
+        label={t('translations:email')}
+        placeholder={t('translations:emailPlaceholder')}
         errorMessage={errors.email?.message}
         control={control}
         returnKeyType="done"
@@ -47,10 +47,10 @@ function RecoverPasswordForm({ onSubmit, isSubmitting, emailSended }) {
         <Button
           title={
             isSubmitting
-              ? t('recoverPassword:sending')
+              ? t('translations:sending')
               : !isSubmitting && emailSended
-              ? t('recoverPassword:resend')
-              : t('recoverPassword:send')
+              ? t('translations:resend')
+              : t('translations:send')
           }
           style={{
             backgroundColor: emailSended ? colors.success : colors.primary,

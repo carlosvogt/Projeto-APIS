@@ -51,7 +51,7 @@ function SignIn() {
     if (hasInternet) {
       navigation.navigate('RecoverPassword');
     } else {
-      toast.error(t('login:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
@@ -60,7 +60,7 @@ function SignIn() {
     if (hasInternet) {
       navigation.navigate('CreateAccountPersonalInfo');
     } else {
-      toast.error(t('login:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
@@ -73,7 +73,7 @@ function SignIn() {
         payload: userCredencial,
       });
     } else {
-      toast.error(t('login:emailVerifiedError'));
+      toast.error(t('translations:emailVerifiedError'));
     }
   };
 
@@ -105,16 +105,16 @@ function SignIn() {
         handleUserData(user);
       } catch (error) {
         if (error.code === 'auth/user-not-found') {
-          toast.error(t('login:invalidUser'));
+          toast.error(t('translations:invalidUser'));
         } else if (error.code === 'auth/wrong-password') {
-          toast.error(t('login:invalidPassword'));
+          toast.error(t('translations:invalidPassword'));
         } else {
           toast.error(error.code);
         }
       }
       setLoading(false);
     } else {
-      toast.error(t('login:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
@@ -134,11 +134,13 @@ function SignIn() {
       <Container>
         <View style={styles.viewTitle}>
           <Title1 color={colors.primary} centered family="medium">
-            {t('login:welcome')}
+            {t('translations:welcome')}
           </Title1>
         </View>
         <View style={styles.viewInstruction}>
-          <Title2 color={colors.primary}>{t('login:instruction')}</Title2>
+          <Title2 color={colors.primary}>
+            {t('translations:loginInstruction')}
+          </Title2>
         </View>
 
         <SignInForm
@@ -147,13 +149,13 @@ function SignIn() {
         />
 
         <Button
-          title={t('login:createAccount')}
+          title={t('translations:createAccount')}
           style={styles.createAccount}
           onPress={() => handleCreateAccount()}
         />
 
         <Button
-          title={t('login:forgotPassword')}
+          title={t('translations:forgotPassword')}
           onPress={() => handleForgotPassword()}
           mode="outlined"
           textColor={colors.primary}

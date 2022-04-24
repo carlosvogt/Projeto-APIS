@@ -17,8 +17,8 @@ function CreateNoteForm({ isSubmitting, positiveAction, cancelFunction }) {
 
   const schema = Yup.object().shape({
     password: Yup.string()
-      .required(t('formErrors:required'))
-      .min(6, t('formErrors:passwordLength')),
+      .required(t('translations:requiredError'))
+      .min(6, t('translations:passwordLengthError')),
   });
 
   const styles = StyleSheet.create({
@@ -61,21 +61,21 @@ function CreateNoteForm({ isSubmitting, positiveAction, cancelFunction }) {
     >
       <View style={styles.question}>
         <Title1 color={colors.primary} family="medium">
-          {t('form:login.title')}
+          {t('translations:confirmUser')}
         </Title1>
       </View>
 
       <Form.PasswordInput
         name="password"
-        label={t('form:login.password')}
-        placeholder={t('form:login.passwordPlaceholder')}
+        label={t('translations:password')}
+        placeholder={t('translations:passwordPlaceholder')}
         errorMessage={errors.password?.message}
         control={control}
       />
 
       <Footer withBorder={false} style={styles.footer}>
         <Button
-          title={t('form:login.cancel')}
+          title={t('translations:cancel')}
           onPress={cancelFunction}
           mode="outlined"
           textColor="red"
@@ -84,7 +84,7 @@ function CreateNoteForm({ isSubmitting, positiveAction, cancelFunction }) {
         />
         <Button
           title={
-            isSubmitting ? t('form:login.deleting') : t('form:login.delete')
+            isSubmitting ? t('translations:deleting') : t('translations:delete')
           }
           loading={isSubmitting}
           onPress={handleSubmit(positiveAction)}

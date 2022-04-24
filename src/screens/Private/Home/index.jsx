@@ -119,7 +119,7 @@ function HomeScreen() {
         toast.error(error.code);
       }
     } else {
-      toast.error(t('home:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
     setRefreshing(false);
     setIsPullRefreshing(false);
@@ -147,7 +147,7 @@ function HomeScreen() {
 
   const handleEditModal = () => {
     setModalType(2);
-    setModalTitle(t('home:editNote'));
+    setModalTitle(t('translations:editNote'));
     setDefaultData(notes[selectedNoteIndex]);
     setShowModal(true);
   };
@@ -157,8 +157,16 @@ function HomeScreen() {
   };
 
   const modalNoteOptions = [
-    { option: t('home:editNote'), delete: false, onClick: handleEditModal },
-    { option: t('home:deleteNote'), delete: true, onClick: handleDeleteModal },
+    {
+      option: t('translations:editNote'),
+      delete: false,
+      onClick: handleEditModal,
+    },
+    {
+      option: t('translations:deleteNote'),
+      delete: true,
+      onClick: handleDeleteModal,
+    },
   ];
 
   const handleGoProfile = () => {
@@ -170,7 +178,7 @@ function HomeScreen() {
   const handleAddNote = () => {
     setModalType(1);
     setDefaultData(null);
-    setModalTitle(t('home:addNote'));
+    setModalTitle(t('translations:addNote'));
     setShowModal(true);
   };
 
@@ -202,13 +210,13 @@ function HomeScreen() {
         });
         await getData();
         setShowModal(false);
-        toast.success(t('home:noteSuccessCreated'));
+        toast.success(t('translations:noteSuccessCreated'));
       } catch (error) {
         toast.error(error.code);
       }
       setIsSubmitting(false);
     } else {
-      toast.error(t('home:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
@@ -225,13 +233,13 @@ function HomeScreen() {
         });
         await getData();
         setShowModal(false);
-        toast.success(t('home:noteUpdated'));
+        toast.success(t('translations:noteUpdated'));
       } catch (error) {
-        toast.error(t('home:noInternet'));
+        toast.error(t('translations:noInternet'));
       }
       setIsSubmitting(false);
     } else {
-      toast.error(t('home:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
@@ -241,7 +249,7 @@ function HomeScreen() {
       await deleteDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode));
       await getData();
       setShowDeleteModal(false);
-      toast.success(t('home:noteDeleted'));
+      toast.success(t('translations:noteDeleted'));
     } catch (error) {
       toast.error(error.code);
     }
@@ -274,11 +282,13 @@ function HomeScreen() {
       />
 
       <Modal
-        title={t('home:deleteNote')}
-        description={t('home:deleteNoteQuestion')}
-        cancelText={t('home:cancel')}
+        title={t('translations:deleteNote')}
+        description={t('translations:deleteNoteQuestion')}
+        cancelText={t('translations:cancel')}
         positiveText={
-          isSubmittingDelete ? t('home:deleting') : t('home:delete')
+          isSubmittingDelete
+            ? t('translations:deleting')
+            : t('translations:delete')
         }
         cancelFunction={() => dismissDeleteModal()}
         positiveAction={() => handleDeleteNote()}
@@ -323,7 +333,7 @@ function HomeScreen() {
             <Add size={40} color={colors.secondary} />
           </TouchableOpacity>
           <Title1 centered color={colors.primary} family="medium">
-            {t('home:notes')}
+            {t('translations:notes')}
           </Title1>
         </View>
 

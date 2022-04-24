@@ -39,30 +39,30 @@ function CreateProductionForm({
 
   const options = [
     {
-      label: 'Sim',
-      value: 'Sim',
+      label: t('translations:yes'),
+      value: t('translations:yes'),
     },
     {
-      label: 'Não',
-      value: 'Não',
+      label: t('translations:not'),
+      value: t('translations:not'),
     },
   ];
 
   const schema = Yup.object().shape({
-    name: Yup.string().required(t('formErrors:required')),
+    name: Yup.string().required(t('translations:requiredError')),
     date: Yup.string()
-      .required(t('formErrors:required'))
-      .test('date', t('form:label.date'), (value) => {
+      .required(t('translations:requiredError'))
+      .test('date', t('translations:dateError'), (value) => {
         if (value) {
           const newSchema = Yup.string().matches(
             validateDate,
-            t('form:label.date'),
+            t('translations:dateError'),
           );
           return newSchema.isValidSync(value);
         }
         return true;
       }),
-    qtd: Yup.string().required(t('formErrors:required')),
+    qtd: Yup.string().required(t('translations:requiredError')),
     payedQtd: Yup.string(),
     payed: Yup.string(),
   });
@@ -133,14 +133,14 @@ function CreateProductionForm({
     >
       <View style={styles.question}>
         <Title1 color={colors.primary} family="medium">
-          {title || t('form:label.addProduction')}
+          {title || t('translations:addProduction')}
         </Title1>
       </View>
 
       <Form.TextInput
         name="name"
-        label={t('form:label.harvest')}
-        placeholder={t('form:label.harvestPlaceholder')}
+        label={t('translations:requiredHarvest')}
+        placeholder={t('translations:harvestPlaceholder')}
         control={control}
         returnKeyType="next"
         keyboardType="numeric"
@@ -151,8 +151,8 @@ function CreateProductionForm({
         name="date"
         inputRef={date}
         icon="calendar-range"
-        label={t('form:label.harvestDate')}
-        placeholder={t('form:label.harvestDatePlaceholder')}
+        label={t('translations:requiredHarvestDate')}
+        placeholder={t('translations:harvestDatePlaceholder')}
         control={control}
         maxLength={10}
         iconColor={colors.primary}
@@ -172,8 +172,8 @@ function CreateProductionForm({
       <Form.TextInput
         name="qtd"
         inputRef={qtd}
-        label={t('form:label.amount')}
-        placeholder={t('form:label.amountPlaceholder')}
+        label={t('translations:requiredAmount')}
+        placeholder={t('translations:amountPlaceholder')}
         control={control}
         returnKeyType="next"
         keyboardType="numeric"
@@ -185,14 +185,14 @@ function CreateProductionForm({
         name="payedQtd"
         inputRef={payedQtd}
         keyboardType="numeric"
-        label={t('form:label.payedOwner')}
+        label={t('translations:payedOwner')}
         control={control}
         errorMessage={errors.payedQtd?.message}
       />
 
       <DropdownComponent
         name="payed"
-        label={t('form:label.payed')}
+        label={t('translations:payed')}
         value={selectedOption}
         setValue={(value) => handleSetOption(value)}
         data={options}
@@ -202,7 +202,7 @@ function CreateProductionForm({
 
       <Footer withBorder={false} style={styles.footer}>
         <Button
-          title={t('form:label.cancel')}
+          title={t('translations:cancel')}
           onPress={cancelFunction}
           mode="outlined"
           textColor="red"
@@ -210,7 +210,9 @@ function CreateProductionForm({
           viewStyle={styles.viewStyle}
         />
         <Button
-          title={isSubmitting ? t('form:label.saving') : t('form:label.save')}
+          title={
+            isSubmitting ? t('translations:saving') : t('translations:save')
+          }
           loading={isSubmitting}
           onPress={handleSubmit(positiveAction)}
           viewStyle={styles.viewStyle}

@@ -23,7 +23,7 @@ function CreateNoteForm({
   const deviceWidth = Dimensions.get('window').width;
 
   const schema = Yup.object().shape({
-    description: Yup.string().required(t('formErrors:required')),
+    description: Yup.string().required(t('translations:requiredError')),
   });
 
   const styles = StyleSheet.create({
@@ -70,14 +70,14 @@ function CreateNoteForm({
     >
       <View style={styles.question}>
         <Title1 color={colors.primary} family="medium">
-          {title || t('form:label.addNote')}
+          {title || t('translations:addNote')}
         </Title1>
       </View>
 
       <Form.TextInput
         name="title"
-        placeholder={t('form:label.titlePlaceholder')}
-        label={t('form:label.title')}
+        placeholder={t('translations:titlePlaceholder')}
+        label={t('translations:title')}
         control={control}
         returnKeyType="next"
         onSubmitEditing={() => description.current.focus()}
@@ -85,19 +85,19 @@ function CreateNoteForm({
 
       <Form.TextInput
         name="description"
-        placeholder={t('form:label.descriptionPlaceholder')}
+        placeholder={t('translations:descriptionPlaceholder')}
         inputRef={description}
         multiline
         clearButtonMode="disabled"
         height={200}
-        label={t('form:label.description')}
+        label={t('translations:requiredDescription')}
         errorMessage={errors.description?.message}
         control={control}
       />
 
       <Footer withBorder={false} style={styles.footer}>
         <Button
-          title={t('form:label.cancel')}
+          title={t('translations:cancel')}
           onPress={cancelFunction}
           mode="outlined"
           textColor="red"
@@ -105,7 +105,9 @@ function CreateNoteForm({
           viewStyle={styles.viewStyle}
         />
         <Button
-          title={isSubmitting ? t('form:label.saving') : t('form:label.save')}
+          title={
+            isSubmitting ? t('translations:saving') : t('translations:save')
+          }
           loading={isSubmitting}
           onPress={handleSubmit(positiveAction)}
           viewStyle={styles.viewStyle}

@@ -38,7 +38,7 @@ function PrivateNavigator() {
               return (
                 <>
                   <Home color={color} />
-                  <Title5 color={color}>{t('home:name')}</Title5>
+                  <Title5 color={color}>{t('translations:home')}</Title5>
                 </>
               );
             case 'ApiariesHome':
@@ -46,7 +46,7 @@ function PrivateNavigator() {
                 <>
                   <Bee color={color} />
                   <View style={{ marginTop: -6 }}>
-                    <Title5 color={color}>{t('apiaries:name')}</Title5>
+                    <Title5 color={color}>{t('translations:apiaries')}</Title5>
                   </View>
                 </>
               );
@@ -54,14 +54,16 @@ function PrivateNavigator() {
               return (
                 <>
                   <Location color={color} />
-                  <Title5 color={color}>{t('apiariesMap:name')}</Title5>
+                  <Title5 color={color}>{t('translations:apiariesMap')}</Title5>
                 </>
               );
             case 'MortalityMapScreen':
               return (
                 <>
                   <Gps color={color} />
-                  <Title5 color={color}>{t('mortalityMap:name')}</Title5>
+                  <Title5 color={color}>
+                    {t('translations:mortalityMap')}
+                  </Title5>
                 </>
               );
             default:

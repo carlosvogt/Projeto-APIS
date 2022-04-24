@@ -124,13 +124,13 @@ function Camera({ onBack, types, photos, hideOverlay, header }) {
         >
           <View style={styles.view}>
             <Title1 color={colors.primary}>
-              {t('components:camera.imageConfirmation')}
+              {t('translations:imageConfirmation')}
             </Title1>
           </View>
 
           <View style={styles.view}>
             <Title2 color={colors.primary}>
-              {t('components:camera.imageBody')}
+              {t('translations:imageBody')}
             </Title2>
           </View>
         </ScrollView>
@@ -138,14 +138,14 @@ function Camera({ onBack, types, photos, hideOverlay, header }) {
           <View style={styles.button}>
             <Button
               onPress={() => setImagePreview(undefined)}
-              title={t('components:camera.takeAnother')}
+              title={t('translations:takeAnother')}
             />
           </View>
           <View style={styles.button}>
             <Button
               mode="contained"
               onPress={() => handleConfirmTake()}
-              title={t('components:camera.conclusion')}
+              title={t('translations:conclusion')}
             />
           </View>
         </Footer>

@@ -19,15 +19,15 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
   const [selectedQuestionEight, setSelectedQuestionEight] = useState(false);
 
   const schema = Yup.object().shape({
-    questionOne: Yup.string().required(t('formErrors:required')),
-    questionTwo: Yup.string().required(t('formErrors:required')),
-    questionTree: Yup.string().required(t('formErrors:required')),
-    questionFour: Yup.string().required(t('formErrors:required')),
-    questionFive: Yup.string().required(t('formErrors:required')),
-    questionSix: Yup.string().required(t('formErrors:required')),
-    questionSeven: Yup.string().required(t('formErrors:required')),
-    questionEight: Yup.string().required(t('formErrors:required')),
-    questionNine: Yup.string().required(t('formErrors:required')),
+    questionOne: Yup.string().required(t('translations:requiredError')),
+    questionTwo: Yup.string().required(t('translations:requiredError')),
+    questionTree: Yup.string().required(t('translations:requiredError')),
+    questionFour: Yup.string().required(t('translations:requiredError')),
+    questionFive: Yup.string().required(t('translations:requiredError')),
+    questionSix: Yup.string().required(t('translations:requiredError')),
+    questionSeven: Yup.string().required(t('translations:requiredError')),
+    questionEight: Yup.string().required(t('translations:requiredError')),
+    questionNine: Yup.string().required(t('translations:requiredError')),
   });
 
   const {
@@ -39,59 +39,59 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
 
   const yesNotOptions = [
     {
-      label: t('checkViability:yes'),
-      value: t('checkViability:yes'),
+      label: t('translations:yes'),
+      value: t('translations:yes'),
     },
     {
-      label: t('checkViability:not'),
-      value: t('checkViability:not'),
+      label: t('translations:not'),
+      value: t('translations:not'),
     },
   ];
   const vegetation = [
     {
-      label: t('checkViability:trip'),
-      value: t('checkViability:trip'),
+      label: t('translations:trip'),
+      value: t('translations:trip'),
     },
     {
-      label: t('checkViability:woods'),
-      value: t('checkViability:woods'),
+      label: t('translations:woods'),
+      value: t('translations:woods'),
     },
   ];
   const distancy = [
     {
-      label: t('checkViability:less300'),
-      value: t('checkViability:less300'),
+      label: t('translations:less300'),
+      value: t('translations:less300'),
     },
     {
-      label: t('checkViability:between300and400'),
-      value: t('checkViability:between300and400'),
+      label: t('translations:between300and400'),
+      value: t('translations:between300and400'),
     },
     {
-      label: t('checkViability:more400'),
-      value: t('checkViability:more400'),
+      label: t('translations:more400'),
+      value: t('translations:more400'),
     },
   ];
 
   const floraOptions = [
     {
-      label: t('checkViability:<=10'),
-      value: t('checkViability:<=10'),
+      label: t('translations:<=10'),
+      value: t('translations:<=10'),
     },
     {
-      label: t('checkViability:>10>=20'),
-      value: t('checkViability:>10>=20'),
+      label: t('translations:>10>=20'),
+      value: t('translations:>10>=20'),
     },
     {
-      label: t('checkViability:>20>=30'),
-      value: t('checkViability:>20>=30'),
+      label: t('translations:>20>=30'),
+      value: t('translations:>20>=30'),
     },
     {
-      label: t('checkViability:>30>=40'),
-      value: t('checkViability:>30>=40'),
+      label: t('translations:>30>=40'),
+      value: t('translations:>30>=40'),
     },
     {
-      label: t('checkViability:>40'),
-      value: t('checkViability:>40'),
+      label: t('translations:>40'),
+      value: t('translations:>40'),
     },
   ];
 
@@ -151,7 +151,7 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
     <>
       <Dropdown
         name="questionOne"
-        label={t('checkViability:questionOne')}
+        label={t('translations:questionOne')}
         value={selectedQuestionOne}
         setValue={(value) => handleSetOptionOne(value)}
         data={floraOptions}
@@ -161,7 +161,7 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
       />
       <Dropdown
         name="questionTwo"
-        label={t('checkViability:questionTwo')}
+        label={t('translations:questionTwo')}
         value={selectedQuestionTwo}
         setValue={(value) => handleSetOptionTwo(value)}
         data={yesNotOptions}
@@ -171,7 +171,7 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
       />
       <Dropdown
         name="questionTree"
-        label={t('checkViability:questionTree')}
+        label={t('translations:questionTree')}
         value={selectedQuestionTree}
         setValue={(value) => handleSetOptionTree(value)}
         data={yesNotOptions}
@@ -181,7 +181,7 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
       />
       <Dropdown
         name="questionFour"
-        label={t('checkViability:questionFour')}
+        label={t('translations:questionFour')}
         value={selectedQuestionFour}
         setValue={(value) => handleSetOptionFour(value)}
         data={vegetation}
@@ -191,7 +191,7 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
       />
       <Dropdown
         name="questionFive"
-        label={t('checkViability:questionFive')}
+        label={t('translations:questionFive')}
         value={selectedQuestionFive}
         setValue={(value) => handleSetOptionFive(value)}
         data={distancy}
@@ -201,7 +201,7 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
       />
       <Dropdown
         name="questionSix"
-        label={t('checkViability:questionSix')}
+        label={t('translations:questionSix')}
         value={selectedQuestionSix}
         setValue={(value) => handleSetOptionSix(value)}
         data={yesNotOptions}
@@ -211,7 +211,7 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
       />
       <Dropdown
         name="questionSeven"
-        label={t('checkViability:questionSeven')}
+        label={t('translations:questionSeven')}
         value={selectedQuestionSeven}
         setValue={(value) => handleSetOptionSeven(value)}
         data={yesNotOptions}
@@ -221,7 +221,7 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
       />
       <Dropdown
         name="questionEight"
-        label={t('checkViability:questionEight')}
+        label={t('translations:questionEight')}
         value={selectedQuestionEight}
         setValue={(value) => handleSetOptionEight(value)}
         data={yesNotOptions}
@@ -233,8 +233,8 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
         name="questionNine"
         keyboardType="numeric"
         returnKeyType="done"
-        label={t('checkViability:questionNine')}
-        placeholder={t('checkViability:questionNinePlaceholder')}
+        label={t('translations:questionNine')}
+        placeholder={t('translations:questionNinePlaceholder')}
         errorMessage={errors.questionNine?.message}
         control={control}
       />
@@ -243,9 +243,7 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
           title={
-            isSubmitting
-              ? t('checkViability:checking')
-              : t('checkViability:check')
+            isSubmitting ? t('translations:checking') : t('translations:check')
           }
         />
       </Footer>

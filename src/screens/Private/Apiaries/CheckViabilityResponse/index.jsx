@@ -27,26 +27,26 @@ function CheckViabilityResponse() {
   // Adicionar retornos e regras de exibição
   return (
     <>
-      <Header title={t('checkViability:header')} />
+      <Header title={t('translations:viabilityHeader')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
         <Container>
           <Title1 family="medium" color={colors.success}>
-            {t('checkViability:success')}
+            {t('translations:success')}
           </Title1>
           <Title1 family="medium" color={colors.error}>
-            {t('checkViability:warn')}
+            {t('translations:warn')}
           </Title1>
           <Title2 family="medium" color={colors.primary}>
-            {t('checkViability:warnInstruction')}
+            {t('translations:warnInstruction')}
           </Title2>
         </Container>
         <Footer style={styles.footer}>
           <Button
             onPress={() => navigation.navigate('PersonalInfo')}
-            title={t('checkViability:register')}
+            title={t('translations:register')}
           />
         </Footer>
       </ScrollView>

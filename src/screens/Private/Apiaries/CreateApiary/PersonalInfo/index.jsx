@@ -33,7 +33,7 @@ function PersonalInfo() {
 
   return (
     <>
-      <Header title={t('createApiary:header')} />
+      <Header title={t('translations:createApiaryHeader')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -41,12 +41,12 @@ function PersonalInfo() {
         <Container>
           <View style={styles.viewTitle}>
             <Title1 color={colors.primary} family="medium">
-              {t('createApiary:personalInfo')}
+              {t('translations:informationData')}
             </Title1>
           </View>
           <View style={styles.viewInstruction}>
             <Title2 color={colors.primary}>
-              {t('createApiary:mandatoryData')}
+              {t('translations:requiredInfo')}
             </Title2>
           </View>
 

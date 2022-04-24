@@ -185,7 +185,7 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
 
                 <View style={styles.buttonContainer}>
                   <Button
-                    title={t('form:label.cancel')}
+                    title={t('translations:cancel')}
                     onPress={onDismiss}
                     mode="outlined"
                     textColor="red"
@@ -193,7 +193,7 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
                     viewStyle={styles.viewStyle}
                   />
                   <Button
-                    title={t('form:label.select')}
+                    title={t('translations:select')}
                     onPress={() => handleClick()}
                     viewStyle={styles.viewStyle}
                     style={styles.buttonStyle}

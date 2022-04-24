@@ -87,7 +87,7 @@ function ApiariesMapScreen() {
         toast.error(error.code);
       }
     } else {
-      toast.error(t('apiariesMap:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
     setRefreshing(false);
   };
@@ -136,9 +136,9 @@ function ApiariesMapScreen() {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('apiariesMap:locationDenied'), ToastAndroid.LONG);
+      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('apiariesMap:revokedPermission'), ToastAndroid.LONG);
+      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
     }
 
     return false;
@@ -148,7 +148,7 @@ function ApiariesMapScreen() {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
-      setDescription(t('apiariesMap:gpsPermission'));
+      setDescription(t('translations:gpsPermission'));
       return;
     }
 
@@ -163,7 +163,7 @@ function ApiariesMapScreen() {
       },
       (error) => {
         setDescription(
-          `${t('apiariesMap:code')} ${error.code} - ${error.message}`,
+          `${t('translations:code')} ${error.code} - ${error.message}`,
         );
         setShowModal(true);
         setUserLocalization({});
@@ -194,15 +194,15 @@ function ApiariesMapScreen() {
   return (
     <>
       <Modal
-        title={t('apiariesMap:attention')}
+        title={t('translations:attention')}
         cancelFunction={() => setShowModal(false)}
-        cancelText={t('apiariesMap:ok')}
+        cancelText={t('translations:ok')}
         description={description}
         mode="alert"
         showModal={showModal}
       />
       <Header
-        title={t('apiariesMap:name')}
+        title={t('translations:apiariesMap')}
         showRefreshButton
         handleRefresh={() => getData()}
         isRefreshing={refreshing}
@@ -276,7 +276,7 @@ function ApiariesMapScreen() {
                 style={[styles.legendIcon, { backgroundColor: colors.success }]}
               />
               <Text style={{ color: colors.success }}>
-                {t('apiariesMap:home')}
+                {t('translations:homeHouse')}
               </Text>
             </View>
             <View style={styles.legendItem}>
@@ -284,7 +284,7 @@ function ApiariesMapScreen() {
                 style={[styles.legendIcon, { backgroundColor: colors.primary }]}
               />
               <Text style={{ color: colors.primary }}>
-                {t('apiariesMap:apiary')}
+                {t('translations:apiary')}
               </Text>
             </View>
             <View style={styles.legendItem}>
@@ -292,7 +292,7 @@ function ApiariesMapScreen() {
                 style={[styles.legendIcon, { backgroundColor: colors.error }]}
               />
               <Text style={{ color: colors.error }}>
-                {t('apiariesMap:death')}
+                {t('translations:death')}
               </Text>
             </View>
           </View>
@@ -300,7 +300,7 @@ function ApiariesMapScreen() {
       ) : (
         <View style={styles.view}>
           <Title1 centered color={colors.error} family="medium">
-            {t('mortalityMap:noPermission')}
+            {t('translations:noPermission')}
           </Title1>
         </View>
       )}

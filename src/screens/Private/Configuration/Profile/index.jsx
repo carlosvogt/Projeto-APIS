@@ -148,13 +148,16 @@ function HomeScreen() {
   };
 
   const data = [
-    { option: t('form:modal.takePicture'), onClick: () => handleTakePicture() },
     {
-      option: t('form:modal.selectPicture'),
+      option: t('translations:takePicture'),
+      onClick: () => handleTakePicture(),
+    },
+    {
+      option: t('translations:selectPicture'),
       onClick: () => handleChoosePicture(),
     },
     {
-      option: t('form:modal.deletePicture'),
+      option: t('translations:deletePicture'),
       onClick: () => handleDelePicture(),
     },
   ];
@@ -260,7 +263,7 @@ function HomeScreen() {
       await deleteAccountData();
       await deleteApiaries();
       await deleteUuid();
-      toast.success(t('profile:successDelete'));
+      toast.success(t('translations:successDeleteAccount'));
       handleSignOut();
     } catch (error) {
       toast.error(error.code);
@@ -287,14 +290,14 @@ function HomeScreen() {
           await handleDeleteAccount();
         } catch (error) {
           if (error.code === 'auth/wrong-password') {
-            toast.error(t('form:login.invalidPassword'));
+            toast.error(t('translations:invalidPassword'));
           } else {
             toast.error(error.code);
           }
         }
         setIsSubmitting(false);
       } else {
-        toast.error(t('form:login.noInternet'));
+        toast.error(t('translations:noInternet'));
       }
       setModalMode('question');
       setShowConfirmationModal(false);
@@ -359,7 +362,7 @@ function HomeScreen() {
           types={types}
           onBack={handleOnBackTakePhoto}
           hideOverlay
-          header={t('profile:selfieScreen.takeSelfie.title')}
+          header={t('translations:takeSelfie')}
         />
       ) : (
         <View style={styles.container} radius={false}>
@@ -367,22 +370,22 @@ function HomeScreen() {
             mode={modalMode}
             title={
               modalType === 1
-                ? t('profile:checkout')
-                : t('profile:deleteAccount')
+                ? t('translations:checkout')
+                : t('translations:deleteAccount')
             }
             description={
               modalType === 1
-                ? t('profile:checkoutBody')
-                : t('profile:deleteBody')
+                ? t('translations:checkoutBody')
+                : t('translations:deleteBody')
             }
-            cancelText={t('home:cancel')}
+            cancelText={t('translations:cancel')}
             positiveText={
               modalType === 1
-                ? t('profile:getOut')
+                ? t('translations:getOut')
                 : modalType === 2 && !isSubmitting
-                ? t('profile:delete')
+                ? t('translations:delete')
                 : modalType === 2 && isSubmitting
-                ? t('profile:deleting')
+                ? t('translations:deleting')
                 : null
             }
             cancelFunction={() => dismissConfirmationModal()}
@@ -415,7 +418,9 @@ function HomeScreen() {
               <View style={styles.headerView}>
                 <NavBackButton />
               </View>
-              <TitleHeader>{t('profile:header')}</TitleHeader>
+              <TitleHeader>
+                {t('translations:configurationsHeader')}
+              </TitleHeader>
             </View>
 
             <View style={styles.picture}>
@@ -436,7 +441,9 @@ function HomeScreen() {
             >
               <Person color={iconColor} size={30} />
               <View style={styles.option}>
-                <Title1 family="medium">{t('profile:personalInfo')}</Title1>
+                <Title1 family="medium">
+                  {t('translations:personalInfo')}
+                </Title1>
               </View>
             </TouchableOpacity>
 
@@ -447,7 +454,9 @@ function HomeScreen() {
             >
               <Password color={iconColor} size={30} />
               <View style={styles.option}>
-                <Title1 family="medium">{t('profile:changePassword')}</Title1>
+                <Title1 family="medium">
+                  {t('translations:changePassword')}
+                </Title1>
               </View>
             </TouchableOpacity>
 
@@ -458,7 +467,7 @@ function HomeScreen() {
             >
               <ShareIcon color={iconColor} size={30} />
               <View style={styles.option}>
-                <Title1 family="medium">{t('profile:share')}</Title1>
+                <Title1 family="medium">{t('translations:share')}</Title1>
               </View>
             </TouchableOpacity>
 
@@ -469,7 +478,7 @@ function HomeScreen() {
             >
               <Send color={iconColor} size={30} />
               <View style={styles.option}>
-                <Title1 family="medium">{t('profile:suggestions')}</Title1>
+                <Title1 family="medium">{t('translations:suggestions')}</Title1>
               </View>
             </TouchableOpacity>
 
@@ -483,7 +492,7 @@ function HomeScreen() {
             >
               <Logout color={iconColor} size={30} />
               <View style={styles.option}>
-                <Title1 family="medium">{t('profile:checkout')}</Title1>
+                <Title1 family="medium">{t('translations:checkout')}</Title1>
               </View>
             </TouchableOpacity>
 
@@ -494,7 +503,9 @@ function HomeScreen() {
                 {!darkMode && <DarkMode color={colors.primary} size={30} />}
                 <View style={styles.option}>
                   <Title1 family="medium">
-                    {darkMode ? t('profile:lightMode') : t('profile:darkMode')}
+                    {darkMode
+                      ? t('translations:lightMode')
+                      : t('translations:darkMode')}
                   </Title1>
                 </View>
               </View>
@@ -515,7 +526,7 @@ function HomeScreen() {
               <Trash color={colors.error} size={30} />
               <View style={styles.option}>
                 <Title1 color={colors.error} family="medium">
-                  {t('profile:deleteAccount')}
+                  {t('translations:deleteAccount')}
                 </Title1>
               </View>
             </TouchableOpacity>

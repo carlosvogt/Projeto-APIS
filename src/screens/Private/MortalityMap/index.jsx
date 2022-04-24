@@ -63,7 +63,7 @@ function MortalityMap() {
         toast.error(error.code);
       }
     } else {
-      toast.error(t('mortalityMap:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
     setRefreshing(false);
   };
@@ -92,9 +92,9 @@ function MortalityMap() {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('mortalityMap:locationDenied'), ToastAndroid.LONG);
+      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('mortalityMap:revokedPermission'), ToastAndroid.LONG);
+      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
     }
 
     return false;
@@ -104,7 +104,7 @@ function MortalityMap() {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
-      setDescription(t('mortalityMap:gpsPermission'));
+      setDescription(t('translations:gpsPermission'));
       return;
     }
 
@@ -119,7 +119,7 @@ function MortalityMap() {
       },
       (error) => {
         setDescription(
-          `${t('mortalityMap:code')} ${error.code} - ${error.message}`,
+          `${t('translations:code')} ${error.code} - ${error.message}`,
         );
         setShowModal(true);
         setUserLocalization({});
@@ -154,15 +154,15 @@ function MortalityMap() {
   return (
     <>
       <Modal
-        title={t('apiariesMap:attention')}
+        title={t('translations:attention')}
         cancelFunction={() => setShowModal(false)}
-        cancelText={t('apiariesMap:ok')}
+        cancelText={t('translations:ok')}
         description={description}
         mode="alert"
         showModal={showModal}
       />
       <Header
-        title={t('mortalityMap:name')}
+        title={t('translations:mortalityMap')}
         showRefreshButton
         handleRefresh={() => getData()}
         isRefreshing={refreshing}
@@ -191,7 +191,7 @@ function MortalityMap() {
                       >
                         <Callout>
                           <Text style={{ color: colors.primary }}>
-                            {`${t('mortalityMap:addDate')}${item.createdAt}`}
+                            {`${t('translations:addDate')}${item.createdAt}`}
                           </Text>
                         </Callout>
                       </Marker>
@@ -214,7 +214,7 @@ function MortalityMap() {
       ) : (
         <View style={styles.view}>
           <Title1 centered color={colors.error} family="medium">
-            {t('mortalityMap:noPermission')}
+            {t('translations:noPermission')}
           </Title1>
         </View>
       )}

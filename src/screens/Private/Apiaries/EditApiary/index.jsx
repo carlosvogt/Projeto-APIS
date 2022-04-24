@@ -137,20 +137,20 @@ function EditApiary() {
           newData,
         );
         newData.code = data.code;
-        toast.success(t('editApiary:success'));
+        toast.success(t('translations:apiaryUpdatedSuccess'));
         navigation.navigate('ApiaryHome', newData);
       } catch (error) {
         toast.error(error.code);
       }
       setIsSubmitting(false);
     } else {
-      toast.error(t('editApiary:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
   return (
     <>
-      <Header title={t('editApiary:header')} />
+      <Header title={t('translations:editApiaryHeader')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -158,12 +158,12 @@ function EditApiary() {
         <Container>
           <View style={styles.viewTitle}>
             <Title1 color={colors.primary} family="medium">
-              {t('editApiary:personalInfo')}
+              {t('translations:informationData')}
             </Title1>
           </View>
           <View style={styles.viewInstruction}>
             <Title2 color={colors.primary}>
-              {t('editApiary:mandatoryData')}
+              {t('translations:requiredInfo')}
             </Title2>
           </View>
 

@@ -12,8 +12,8 @@ function SuggestionsForm({ onSubmit, isSubmitting }) {
   const message = useRef();
 
   const schema = Yup.object().shape({
-    subject: Yup.string().required(t('formErrors:required')),
-    message: Yup.string().required(t('formErrors:required')),
+    subject: Yup.string().required(t('translations:requiredError')),
+    message: Yup.string().required(t('translations:requiredError')),
   });
 
   const {
@@ -26,8 +26,8 @@ function SuggestionsForm({ onSubmit, isSubmitting }) {
     <>
       <Form.TextInput
         name="subject"
-        label={t('suggestions:subject')}
-        placeholder={t('suggestions:subjectPlaceholder')}
+        label={t('translations:subject')}
+        placeholder={t('translations:subjectPlaceholder')}
         returnKeyType="next"
         errorMessage={errors.subject?.message}
         control={control}
@@ -36,8 +36,8 @@ function SuggestionsForm({ onSubmit, isSubmitting }) {
       <Form.TextInput
         inputRef={message}
         name="message"
-        label={t('suggestions:message')}
-        placeholder={t('suggestions:messagePlaceholder')}
+        label={t('translations:message')}
+        placeholder={t('translations:messagePlaceholder')}
         returnKeyType="done"
         errorMessage={errors.message?.message}
         control={control}
@@ -48,7 +48,7 @@ function SuggestionsForm({ onSubmit, isSubmitting }) {
 
       <Footer>
         <Button
-          title={t('suggestions:send')}
+          title={t('translations:send')}
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
         />

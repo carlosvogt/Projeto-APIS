@@ -89,7 +89,7 @@ function Address() {
         },
       );
       await sendEmailVerification(auth.currentUser);
-      toast.success(t('createAccount:success'));
+      toast.success(t('translations:createAccountSuccess'));
       navigation.navigate('SignIn');
     } catch (error) {
       await handleDeleteUserAccess();
@@ -110,7 +110,7 @@ function Address() {
         await handleCreateAccountData(form, user);
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
-          toast.error(t('createAccount:emailInUse'));
+          toast.error(t('translations:emailInUse'));
         } else {
           toast.error(error.code);
         }
@@ -118,13 +118,13 @@ function Address() {
 
       setLoading(false);
     } else {
-      toast.error(t('createAccount:noInternetLogin'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
   return (
     <>
-      <Header title={t('createAccount:header')} />
+      <Header title={t('translations:createAccount')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -132,12 +132,12 @@ function Address() {
         <Container>
           <View style={styles.viewTitle}>
             <Title1 color={colors.primary} family="medium">
-              {t('createAccount:address')}
+              {t('translations:address')}
             </Title1>
           </View>
           <View style={styles.viewInstruction}>
             <Title2 color={colors.primary}>
-              {t('createAccount:requiredInfo')}
+              {t('translations:requiredInfo')}
             </Title2>
           </View>
 

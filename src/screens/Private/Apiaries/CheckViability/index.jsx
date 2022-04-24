@@ -37,7 +37,7 @@ function CheckViability() {
 
   return (
     <>
-      <Header title={t('checkViability:header')} />
+      <Header title={t('translations:viabilityHeader')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -45,12 +45,12 @@ function CheckViability() {
         <Container>
           <View style={styles.viewTitle}>
             <Title1 color={colors.primary} family="medium">
-              {t('checkViability:checkViability')}
+              {t('translations:checkViability')}
             </Title1>
           </View>
           <View style={styles.viewInstruction}>
             <Title2 color={colors.primary}>
-              {t('checkViability:checkInstruction')}
+              {t('translations:checkInstruction')}
             </Title2>
           </View>
 

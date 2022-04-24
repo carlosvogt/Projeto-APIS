@@ -40,7 +40,7 @@ function ChangePassword() {
   const handleChangePassword = async (form) => {
     try {
       await updatePassword(auth.currentUser, form.newPassword);
-      toast.success(t('changePassword:success'));
+      toast.success(t('translations:passwordUpdatedSuccess'));
       navigation.navigate('Profile');
     } catch (error) {
       toast.error(error.code);
@@ -60,20 +60,20 @@ function ChangePassword() {
         await handleChangePassword(form);
       } catch (error) {
         if (error.code === 'auth/wrong-password') {
-          toast.error(t('changePassword:invalidPassword'));
+          toast.error(t('translations:invalidPassword'));
         } else {
           toast.error(error.code);
         }
       }
       setLoading(false);
     } else {
-      toast.error(t('changePassword:noInternet'));
+      toast.error(t('translations:noInternet'));
     }
   };
 
   return (
     <>
-      <Header title={t('changePassword:header')} />
+      <Header title={t('translations:changePassword')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -81,7 +81,7 @@ function ChangePassword() {
         <Container>
           <View style={styles.viewTitle}>
             <Title1 color={colors.primary} family="medium">
-              {t('changePassword:body')}
+              {t('translations:updatePasswordBody')}
             </Title1>
           </View>
 

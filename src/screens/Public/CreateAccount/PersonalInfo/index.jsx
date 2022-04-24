@@ -32,7 +32,7 @@ function PersonalInfo() {
 
   return (
     <>
-      <Header title={t('createAccount:header')} />
+      <Header title={t('translations:createAccount')} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -40,12 +40,12 @@ function PersonalInfo() {
         <Container>
           <View style={styles.viewTitle}>
             <Title1 color={colors.primary} family="medium">
-              {t('createAccount:personalInfo')}
+              {t('translations:personalInfo')}
             </Title1>
           </View>
           <View style={styles.viewInstruction}>
             <Title2 color={colors.primary}>
-              {t('createAccount:requiredInfo')}
+              {t('translations:requiredInfo')}
             </Title2>
           </View>
 
