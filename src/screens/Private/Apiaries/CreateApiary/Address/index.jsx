@@ -91,6 +91,7 @@ function Address() {
         toast.success(t('translations:createdApiarySuccess'));
         navigation.navigate('PrivateNavigator', {
           screen: 'ApiariesHome',
+          params: { reload: true },
         });
       } catch (error) {
         toast.error(error.code);

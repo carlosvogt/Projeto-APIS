@@ -9,8 +9,6 @@ import { useTheme } from '@theme';
 import { signInWithEmailAndPassword, updatePassword } from 'firebase/auth';
 import { auth } from '@services/firebase';
 import { useNetInfo } from '@react-native-community/netinfo';
-import { useSelector } from 'react-redux';
-import { accountInfo } from '@store/accountData';
 import ChangePasswordForm from './ChangePasswordForm';
 
 function ChangePassword() {
@@ -18,7 +16,6 @@ function ChangePassword() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const { colors } = useTheme();
-  const userInformation = useSelector(accountInfo);
   const netInfo = useNetInfo();
   const toast = useToast();
 
@@ -54,7 +51,7 @@ function ChangePassword() {
       try {
         await signInWithEmailAndPassword(
           auth,
-          userInformation.email,
+          auth.currentUser.email,
           form.oldPassword,
         );
         await handleChangePassword(form);

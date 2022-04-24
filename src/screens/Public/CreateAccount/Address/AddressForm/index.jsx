@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { Button, Form, Steps, Dropdown, Modal } from '@components';
+import { Button, Form, Steps, Dropdown, useToast } from '@components';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -16,15 +16,17 @@ import {
 import states from '@utils/states';
 import Geolocation from 'react-native-geolocation-service';
 import { useNetInfo } from '@react-native-community/netinfo';
+import { Title2 } from '@components/typography';
+import { useTheme } from '@theme';
 
 function AddressForm({ onSubmit, isSubmitting }) {
   const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState(false);
   const [loadingZipCode, setLoadingZipCode] = useState(false);
   const [loadingCoordinates, setLoadingCoordinates] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [description, setDescription] = useState('');
   const netInfo = useNetInfo();
+  const toast = useToast();
+  const { colors } = useTheme();
 
   function validZipCode(value) {
     const zipCode = value.replace(/\D/g, '');
@@ -65,6 +67,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
       width: 120,
       marginTop: 16,
     },
+    marginButton: { marginBottom: 8 },
   });
 
   const {
@@ -111,8 +114,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
           handleSetState(data.uf.toLocaleLowerCase());
         });
     } else {
-      setDescription(t('translations:noInternet'));
-      setShowModal(true);
+      toast.error(t('translations:noInternet'));
     }
     setLoadingZipCode(false);
   };
@@ -155,9 +157,8 @@ function AddressForm({ onSubmit, isSubmitting }) {
       setValue('coordinates', t('translations:noPermission'));
       setValue('latitude', '');
       setValue('longitude', '');
-      setDescription(t('translations:gpsPermission'));
+      toast.error(t('translations:gpsPermission'));
       setLoadingCoordinates(false);
-      setShowModal(true);
       return;
     }
 
@@ -170,13 +171,12 @@ function AddressForm({ onSubmit, isSubmitting }) {
           )}${position.coords.longitude}`,
         );
         setValue('latitude', position.coords.latitude);
-        setValue('longitude', position.coords.latitude);
+        setValue('longitude', position.coords.longitude);
       },
       (error) => {
-        setDescription(
+        toast.error(
           `${t('translations:code')} ${error.code} - ${error.message}`,
         );
-        setShowModal(true);
       },
       {
         accuracy: {
@@ -196,14 +196,6 @@ function AddressForm({ onSubmit, isSubmitting }) {
 
   return (
     <>
-      <Modal
-        title={t('translations:attention')}
-        cancelFunction={() => setShowModal(false)}
-        cancelText={t('translations:ok')}
-        description={description}
-        mode="alert"
-        showModal={showModal}
-      />
       <View style={styles.view}>
         <View style={styles.input}>
           <Form.TextInput
@@ -245,10 +237,14 @@ function AddressForm({ onSubmit, isSubmitting }) {
           title={loadingCoordinates ? '' : t('translations:research')}
         />
       </View>
-
+      <View style={styles.marginButton}>
+        <Title2 color={colors.primary}>
+          {t('translations:houseCoordinates')}
+        </Title2>
+      </View>
       <Dropdown
         name="state"
-        label={t('translations:state')}
+        label={t('translations:requiredState')}
         value={selectedOption}
         setValue={(value) => handleSetState(value)}
         data={states}

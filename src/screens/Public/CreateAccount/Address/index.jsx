@@ -115,7 +115,6 @@ function Address() {
           toast.error(error.code);
         }
       }
-
       setLoading(false);
     } else {
       toast.error(t('translations:noInternet'));

@@ -13,7 +13,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import states from '@utils/states';
-import { Button, Form, Dropdown, Modal } from '@components';
+import { Button, Form, Dropdown, useToast } from '@components';
 import { Title1, Title2 } from '@components/typography';
 import Geolocation from 'react-native-geolocation-service';
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -29,11 +29,10 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   const [selectedOption, setSelectedOption] = useState(false);
   const [loadingZipCode, setLoadingZipCode] = useState(false);
   const [loadingCoordinates, setLoadingCoordinates] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [description, setDescription] = useState('');
   const netInfo = useNetInfo();
   const { colors } = useTheme();
   const userInfo = useSelector(accountInfo);
+  const toast = useToast();
 
   function validZipCode(value) {
     const zipCode = value.replace(/\D/g, '');
@@ -102,6 +101,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       marginBottom: 24,
     },
     marginTop: { marginTop: 8 },
+    marginButton: { marginBottom: 8 },
   });
 
   const {
@@ -161,8 +161,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           handleSetState(data.uf.toLocaleLowerCase());
         });
     } else {
-      setDescription(t('translations:noInternet'));
-      setShowModal(true);
+      toast.error(t('translations:noInternet'));
     }
     setLoadingZipCode(false);
   };
@@ -205,9 +204,8 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       setValue('coordinates', t('translations:noPermission'));
       setValue('latitude', '');
       setValue('longitude', '');
-      setDescription(t('translations:gpsPermission'));
+      toast.error(t('translations:gpsPermission'));
       setLoadingCoordinates(false);
-      setShowModal(true);
       return;
     }
 
@@ -220,13 +218,12 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           )}${position.coords.longitude}`,
         );
         setValue('latitude', position.coords.latitude);
-        setValue('longitude', position.coords.latitude);
+        setValue('longitude', position.coords.longitude);
       },
       (error) => {
-        setDescription(
+        toast.error(
           `${t('translations:code')} ${error.code} - ${error.message}`,
         );
-        setShowModal(true);
       },
       {
         accuracy: {
@@ -246,14 +243,6 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
 
   return (
     <>
-      <Modal
-        title={t('translations:attention')}
-        cancelFunction={() => setShowModal(false)}
-        cancelText={t('translations:ok')}
-        description={description}
-        mode="alert"
-        showModal={showModal}
-      />
       <View style={styles.viewTitle}>
         <Title1 color={colors.primary} family="medium">
           {t('translations:personalInfo')}
@@ -270,11 +259,13 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
+        autoCapitalize="words"
         onSubmitEditing={() => email.current.focus()}
       />
       <Form.TextInput
         inputRef={email}
         name="email"
+        autoCapitalize="none"
         label={t('translations:requiredEmail')}
         placeholder={t('translations:emailPlaceholder')}
         errorMessage={errors.email?.message}
@@ -344,7 +335,11 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
           title={loadingCoordinates ? '' : t('translations:research')}
         />
       </View>
-
+      <View style={styles.marginButton}>
+        <Title2 color={colors.primary}>
+          {t('translations:houseCoordinates')}
+        </Title2>
+      </View>
       <Dropdown
         name="state"
         label={t('translations:requiredState')}

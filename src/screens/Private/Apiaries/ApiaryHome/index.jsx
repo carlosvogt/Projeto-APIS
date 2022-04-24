@@ -15,6 +15,7 @@ import {
   Dimensions,
   RefreshControl,
   ActivityIndicator,
+  BackHandler,
 } from 'react-native';
 import { Header } from '@components/layout';
 import { Add } from '@assets';
@@ -280,9 +281,17 @@ function ApiaryHome() {
           await deleteProductions();
           await deleteApiary();
           toast.success(t('translations:successApiaryDeleted'));
-          navigation.navigate('PrivateNavigator', {
-            screen: 'ApiariesHome',
-          });
+
+          if (data.originMap === true) {
+            navigation.goBack();
+          } else {
+            navigation.navigate('PrivateNavigator', {
+              screen: 'ApiariesHome',
+              params: {
+                reload: true,
+              },
+            });
+          }
         } catch (error) {
           toast.error(error.code);
         }
@@ -386,18 +395,18 @@ function ApiaryHome() {
           toast.error(error.code);
         }
       }
+      setIsSubmitting(false);
+      setShowModal(false);
+      setModalOption(null);
+      setModalTitle('');
+      setModalMode('question');
+      setDescription('');
+      setCancelButton('');
+      setConfirmButton('');
+      setDefaultData(null);
     } else {
       toast.error(t('translations:noInternet'));
     }
-    setIsSubmitting(false);
-    setShowModal(false);
-    setModalOption(null);
-    setModalTitle('');
-    setModalMode('question');
-    setDescription('');
-    setCancelButton('');
-    setConfirmButton('');
-    setDefaultData(null);
   };
 
   const dismissModal = () => {
@@ -419,7 +428,7 @@ function ApiaryHome() {
   const handleDeleteApiary = () => {
     setModalOption(0);
     setModalMode('question');
-    setModalTitle(t('translations:deleteApiaryTitle'));
+    setModalTitle(t('translations:warn'));
     setDescription(t('translations:deleteApiaryDescription'));
     setCancelButton(t('translations:cancel'));
     setConfirmButton(t('translations:delete'));
@@ -429,7 +438,7 @@ function ApiaryHome() {
   const handleEditNote = () => {
     setModalOption(1);
     setModalMode('note');
-    setModalTitle(t('translations:editNoteTitle'));
+    setModalTitle(t('translations:editNote'));
     setCancelButton(t('translations:cancel'));
     setConfirmButton(t('translations:save'));
     setDefaultData(notes[selectedNoteIndex]);
@@ -439,8 +448,8 @@ function ApiaryHome() {
   const handleDeleteNote = () => {
     setModalOption(2);
     setModalMode('question');
-    setModalTitle(t('translations:deleteNoteTitle'));
-    setDescription(t('translations:deleteNoteDescription'));
+    setModalTitle(t('translations:warn'));
+    setDescription(t('translations:deleteNoteQuestion'));
     setCancelButton(t('translations:cancel'));
     setConfirmButton(t('translations:delete'));
     setShowModal(true);
@@ -459,7 +468,7 @@ function ApiaryHome() {
   const handleDeleteProduction = () => {
     setModalOption(4);
     setModalMode('question');
-    setModalTitle(t('translations:deleteProductionTitle'));
+    setModalTitle(t('translations:warn'));
     setDescription(t('translations:deleteProductionDescription'));
     setCancelButton(t('translations:cancel'));
     setConfirmButton(t('translations:delete'));
@@ -563,9 +572,34 @@ function ApiaryHome() {
     getLocation();
   }, []);
 
+  const handleHome = () => {
+    if (data.originMap === true) {
+      navigation.navigate('PrivateNavigator', {
+        screen: 'ApiariesMapScreen',
+        params: {
+          reload: data.reload,
+        },
+      });
+    } else {
+      navigation.navigate('PrivateNavigator', {
+        screen: 'ApiariesHome',
+        params: {
+          reload: data.reload,
+        },
+      });
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleHome);
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleHome);
+  });
+
   return (
     <>
-      <Header title={t('translations:apiaries')} />
+      <Header title={t('translations:apiaries')} onGoBack={handleHome} />
       <Modal
         title={modalTitle}
         mode={modalMode}

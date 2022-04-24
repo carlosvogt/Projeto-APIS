@@ -10,7 +10,12 @@ import Button from '../Button';
 import Form from '../Form';
 import Title1 from '../typography/Title1';
 
-function CreateNoteForm({ isSubmitting, positiveAction, cancelFunction }) {
+function CreateNoteForm({
+  isSubmitting,
+  positiveAction,
+  cancelFunction,
+  positiveText,
+}) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const deviceWidth = Dimensions.get('window').width;
@@ -83,9 +88,7 @@ function CreateNoteForm({ isSubmitting, positiveAction, cancelFunction }) {
           viewStyle={styles.viewStyle}
         />
         <Button
-          title={
-            isSubmitting ? t('translations:deleting') : t('translations:delete')
-          }
+          title={positiveText}
           loading={isSubmitting}
           onPress={handleSubmit(positiveAction)}
           viewStyle={styles.viewStyle}

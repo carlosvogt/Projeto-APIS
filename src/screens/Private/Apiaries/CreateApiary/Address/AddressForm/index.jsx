@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { Button, Form, Steps, Dropdown, Modal } from '@components';
+import { Button, Form, Steps, Dropdown, useToast } from '@components';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -22,8 +22,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
   const [selectedOption, setSelectedOption] = useState(false);
   const [loadingZipCode, setLoadingZipCode] = useState(false);
   const [loadingCoordinates, setLoadingCoordinates] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [description, setDescription] = useState('');
+  const toast = useToast();
   const netInfo = useNetInfo();
 
   function validZipCode(value) {
@@ -113,8 +112,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
           handleSetState(data.uf.toLocaleLowerCase());
         });
     } else {
-      setDescription(t('translations:noInternet'));
-      setShowModal(true);
+      toast.error(t('translations:noInternet'));
     }
     setLoadingZipCode(false);
   };
@@ -157,9 +155,8 @@ function AddressForm({ onSubmit, isSubmitting }) {
       setValue('coordinates', t('translations:noPermission'));
       setValue('latitude', '');
       setValue('longitude', '');
-      setDescription(t('translations:gpsPermission'));
+      toast.error(t('translations:gpsPermission'));
       setLoadingCoordinates(false);
-      setShowModal(true);
       return;
     }
 
@@ -172,13 +169,12 @@ function AddressForm({ onSubmit, isSubmitting }) {
           )}${position.coords.longitude}`,
         );
         setValue('latitude', position.coords.latitude);
-        setValue('longitude', position.coords.latitude);
+        setValue('longitude', position.coords.longitude);
       },
       (error) => {
-        setDescription(
+        toast.error(
           `${t('translations:code')} ${error.code} - ${error.message}`,
         );
-        setShowModal(true);
       },
       {
         accuracy: {
@@ -198,14 +194,6 @@ function AddressForm({ onSubmit, isSubmitting }) {
 
   return (
     <>
-      <Modal
-        title={t('translations:attention')}
-        cancelFunction={() => setShowModal(false)}
-        cancelText={t('translations:ok')}
-        description={description}
-        mode="alert"
-        showModal={showModal}
-      />
       <View style={styles.view}>
         <View style={styles.input}>
           <Form.TextInput
@@ -275,7 +263,9 @@ function AddressForm({ onSubmit, isSubmitting }) {
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
           title={
-            isSubmitting ? t('translations:creating') : t('translations:create')
+            isSubmitting
+              ? t('translations:registering')
+              : t('translations:register')
           }
         />
         <Steps total={2} active={1} />

@@ -42,12 +42,16 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
   const schema = Yup.object().shape({
     name: Yup.string().required(t('translations:requiredError')),
     owner: Yup.string().required(t('translations:requiredError')),
-    phone: Yup.string().test('validPhone', t('translations:phone'), (value) => {
-      if (value) {
-        return validPhone(value);
-      }
-      return true;
-    }),
+    phone: Yup.string().test(
+      'validPhone',
+      t('translations:phoneError'),
+      (value) => {
+        if (value) {
+          return validPhone(value);
+        }
+        return true;
+      },
+    ),
     totalPlaces: Yup.string().required(t('translations:requiredError')),
     quantityFull: Yup.string()
       .required(t('translations:requiredError'))
@@ -96,11 +100,13 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
+        autoCapitalize="words"
         onSubmitEditing={() => owner.current.focus()}
       />
       <Form.TextInput
         inputRef={owner}
         name="owner"
+        autoCapitalize="words"
         label={t('translations:requiredOwnerName')}
         placeholder={t('translations:ownerPlaceholder')}
         errorMessage={errors.owner?.message}

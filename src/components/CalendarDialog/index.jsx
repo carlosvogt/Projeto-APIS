@@ -14,6 +14,7 @@ import { useTheme } from '@theme';
 import { useTranslation } from 'react-i18next';
 import DataHelper from '@utils/date-helper';
 import { useSelector } from 'react-redux';
+import { Footer } from '@components/layout';
 import { TitleHeader, Title2 } from '../typography';
 import Button from '../Button';
 
@@ -57,7 +58,13 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
       marginVertical: 16,
     },
     viewStyle: { paddingHorizontal: 20 },
-    buttonStyle: { width: 200 },
+    buttonStyle: { width: deviceWidth * 0.45 },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 16,
+    },
   });
 
   function selectMonth(value) {
@@ -183,7 +190,7 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
                   }}
                 />
 
-                <View style={styles.buttonContainer}>
+                <Footer withBorder={false} style={styles.footer}>
                   <Button
                     title={t('translations:cancel')}
                     onPress={onDismiss}
@@ -198,7 +205,7 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
                     viewStyle={styles.viewStyle}
                     style={styles.buttonStyle}
                   />
-                </View>
+                </Footer>
               </ScrollView>
             </View>
           </TouchableWithoutFeedback>

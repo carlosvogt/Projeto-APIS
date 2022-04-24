@@ -165,6 +165,7 @@ const ModalCenter = ({
                     cancelFunction={cancelFunction}
                     positiveAction={positiveAction}
                     isSubmitting={isSubmitting}
+                    positiveText={positiveText}
                   />
                 </View>
               )}

@@ -39,7 +39,7 @@ import { auth, db } from '@services/firebase';
 import { deleteUser, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, deleteDoc, collection, query, getDocs } from 'firebase/firestore';
 import { useNetInfo } from '@react-native-community/netinfo';
-import { userEmail, userUid } from '@store/auth';
+import { userUid } from '@store/auth';
 import { userName } from '@store/accountData';
 
 function HomeScreen() {
@@ -61,7 +61,6 @@ function HomeScreen() {
   const iconColor = darkMode ? colors.secondary : colors.primary;
   const [modalMode, setModalMode] = useState('question');
   const netInfo = useNetInfo();
-  const email = useSelector(userEmail);
   const uuid = useSelector(userUid);
   const username = useSelector(userName);
   const toast = useToast();
@@ -286,7 +285,11 @@ function HomeScreen() {
       if (hasInternet) {
         setIsSubmitting(true);
         try {
-          await signInWithEmailAndPassword(auth, email, form.password);
+          await signInWithEmailAndPassword(
+            auth,
+            auth.currentUser.email,
+            form.password,
+          );
           await handleDeleteAccount();
         } catch (error) {
           if (error.code === 'auth/wrong-password') {
@@ -296,11 +299,11 @@ function HomeScreen() {
           }
         }
         setIsSubmitting(false);
+        setModalMode('question');
+        setShowConfirmationModal(false);
       } else {
         toast.error(t('translations:noInternet'));
       }
-      setModalMode('question');
-      setShowConfirmationModal(false);
     }
   };
 
@@ -368,11 +371,7 @@ function HomeScreen() {
         <View style={styles.container} radius={false}>
           <Modal
             mode={modalMode}
-            title={
-              modalType === 1
-                ? t('translations:checkout')
-                : t('translations:deleteAccount')
-            }
+            title={t('translations:warn')}
             description={
               modalType === 1
                 ? t('translations:checkoutBody')
@@ -386,7 +385,7 @@ function HomeScreen() {
                 ? t('translations:delete')
                 : modalType === 2 && isSubmitting
                 ? t('translations:deleting')
-                : null
+                : t('translations:validate')
             }
             cancelFunction={() => dismissConfirmationModal()}
             positiveAction={(value) => handleModalConfirmation(value)}

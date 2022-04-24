@@ -60,6 +60,8 @@ function UpdatePersonalInfo() {
   const updateAccountData = async (form) => {
     const dateTime = getDateTime();
     const oldEmail = userInformation.email;
+    const data = form;
+    data.type = 'home';
 
     try {
       await updateDoc(doc(db, `users/${uuid}/accountData`, uuid), {
@@ -77,14 +79,11 @@ function UpdatePersonalInfo() {
       AsyncStorage.setItem('account', JSON.stringify(form));
       dispatch({
         type: 'SET_ACCOUNT_DATA',
-        payload: form,
+        payload: data,
       });
       if (form.email === oldEmail) {
         toast.success(t('translations:dataUpdatedSuccess'));
-        navigation.navigate('Profile');
-      } else {
-        toast.success(t('translations:emailVerification'));
-        handleSignOut();
+        navigation.goBack();
       }
     } catch (error) {
       toast.error(error.code);
@@ -95,6 +94,8 @@ function UpdatePersonalInfo() {
     try {
       await updateEmail(auth.currentUser, newData.email);
       await sendEmailVerification(auth.currentUser);
+      toast.success(t('translations:emailVerification'));
+      handleSignOut();
     } catch (error) {
       toast.error(error.code);
     }
@@ -109,8 +110,8 @@ function UpdatePersonalInfo() {
         auth.currentUser.email,
         form.password,
       );
-      await updateAccountEmail();
       await updateAccountData(newData);
+      await updateAccountEmail();
     } catch (error) {
       if (error.code === 'auth/wrong-password') {
         toast.error(t('translations:invalidPassword'));
@@ -143,7 +144,9 @@ function UpdatePersonalInfo() {
         mode="login"
         title={t('translations:confirmUser')}
         cancelText={t('translations:cancel')}
-        positiveText={t('translations:confirm')}
+        positiveText={
+          loading ? t('translations:validating') : t('translations:validate')
+        }
         cancelFunction={() => setShowConfirmationModal(false)}
         positiveAction={(value) => handleUpdateUser(value)}
         showModal={showConfirmationModal}

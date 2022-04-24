@@ -61,22 +61,22 @@ const AppContents = () => {
   return (
     <ThemeProvider theme={darkMode}>
       <StatusBar backgroundColor={colors.background} barStyle="dark-content" />
-      <ToastProvider>
-        <Navigation />
-      </ToastProvider>
+      <Navigation />
     </ThemeProvider>
   );
 };
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <MenuProvider>
-        <SafeAreaProvider>
-          <AppContents />
-        </SafeAreaProvider>
-      </MenuProvider>
-    </Provider>
+    <ToastProvider>
+      <Provider store={store}>
+        <MenuProvider>
+          <SafeAreaProvider>
+            <AppContents />
+          </SafeAreaProvider>
+        </MenuProvider>
+      </Provider>
+    </ToastProvider>
   );
 };
 

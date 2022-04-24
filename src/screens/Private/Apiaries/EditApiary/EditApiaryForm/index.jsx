@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { Button, Form, Dropdown, Modal } from '@components';
+import { Button, Form, Dropdown, useToast } from '@components';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -15,7 +15,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import states from '@utils/states';
-import { Title1 } from '@components/typography';
+import { Title1, Title2 } from '@components/typography';
 import Geolocation from 'react-native-geolocation-service';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useTheme } from '@theme';
@@ -31,11 +31,10 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
   const [selectedMortality, setSelectedMortality] = useState(false);
   const [loadingZipCode, setLoadingZipCode] = useState(false);
   const [loadingCoordinates, setLoadingCoordinates] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [description, setDescription] = useState('');
   const netInfo = useNetInfo();
   const [totalQtd, setTotalQtd] = useState(0);
   const { colors } = useTheme();
+  const toast = useToast();
 
   const styles = StyleSheet.create({
     view: {
@@ -54,6 +53,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       marginTop: 24,
       marginBottom: 16,
     },
+    marginButton: { marginBottom: 8 },
   });
 
   function validPhone(value) {
@@ -214,8 +214,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
           handleSetState(data.uf.toLocaleLowerCase());
         });
     } else {
-      setDescription(t('translations:noInternet'));
-      setShowModal(true);
+      toast.error(t('translations:noInternet'));
     }
     setLoadingZipCode(false);
   };
@@ -258,9 +257,8 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       setValue('coordinates', t('translations:noPermission'));
       setValue('latitude', '');
       setValue('longitude', '');
-      setDescription(t('translations:gpsPermission'));
+      toast.error(t('translations:gpsPermission'));
       setLoadingCoordinates(false);
-      setShowModal(true);
       return;
     }
 
@@ -273,13 +271,12 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
           )}${position.coords.longitude}`,
         );
         setValue('latitude', position.coords.latitude);
-        setValue('longitude', position.coords.latitude);
+        setValue('longitude', position.coords.longitude);
       },
       (error) => {
-        setDescription(
+        toast.error(
           `${t('translations:code')} ${error.code} - ${error.message}`,
         );
-        setShowModal(true);
       },
       {
         accuracy: {
@@ -304,14 +301,6 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
 
   return (
     <>
-      <Modal
-        title={t('translations:attention')}
-        cancelFunction={() => setShowModal(false)}
-        cancelText={t('translations:ok')}
-        description={description}
-        mode="alert"
-        showModal={showModal}
-      />
       <Form.TextInput
         name="name"
         label={t('translations:requiredApiaryName')}
@@ -319,11 +308,13 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
+        autoCapitalize="words"
         onSubmitEditing={() => owner.current.focus()}
       />
       <Form.TextInput
         inputRef={owner}
         name="owner"
+        autoCapitalize="words"
         label={t('translations:requiredOwnerName')}
         placeholder={t('translations:ownerPlaceholder')}
         errorMessage={errors.owner?.message}
@@ -388,6 +379,13 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         mode="bottom"
         defaultValue={defaultMortality}
       />
+      {formValues.mortality === 'true' && (
+        <View style={styles.marginButton}>
+          <Title2 color={colors.error}>
+            {t('translations:mortalityInfo')}
+          </Title2>
+        </View>
+      )}
 
       <View style={styles.viewTitle}>
         <Title1 color={colors.primary} family="medium">

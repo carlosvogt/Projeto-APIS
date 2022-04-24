@@ -68,11 +68,6 @@ function CreateProductionForm({
   });
 
   const styles = StyleSheet.create({
-    footerContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
     scrollView: {
       position: 'relative',
       flexGrow: 1,
@@ -186,6 +181,7 @@ function CreateProductionForm({
         inputRef={payedQtd}
         keyboardType="numeric"
         label={t('translations:payedOwner')}
+        placeholder={t('translations:payedOwnerPlaceholder')}
         control={control}
         errorMessage={errors.payedQtd?.message}
       />

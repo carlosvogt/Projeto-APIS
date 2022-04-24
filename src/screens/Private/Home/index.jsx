@@ -244,16 +244,21 @@ function HomeScreen() {
   };
 
   const handleDeleteNote = async () => {
-    setIsSubmittingDelete(true);
-    try {
-      await deleteDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode));
-      await getData();
-      setShowDeleteModal(false);
-      toast.success(t('translations:noteDeleted'));
-    } catch (error) {
-      toast.error(error.code);
+    const hasInternet = netInfo.isConnected;
+    if (hasInternet) {
+      setIsSubmittingDelete(true);
+      try {
+        await deleteDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode));
+        await getData();
+        setShowDeleteModal(false);
+        toast.success(t('translations:noteDeleted'));
+      } catch (error) {
+        toast.error(error.code);
+      }
+      setIsSubmittingDelete(false);
+    } else {
+      toast.error(t('translations:noInternet'));
     }
-    setIsSubmittingDelete(false);
   };
 
   const loadPhoto = async () => {
@@ -282,7 +287,7 @@ function HomeScreen() {
       />
 
       <Modal
-        title={t('translations:deleteNote')}
+        title={t('translations:warn')}
         description={t('translations:deleteNoteQuestion')}
         cancelText={t('translations:cancel')}
         positiveText={

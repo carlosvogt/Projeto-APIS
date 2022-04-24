@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
 import {
@@ -177,35 +178,36 @@ function MortalityMap() {
               onRegionChange={onRegionChange}
               moveOnMarkerPress={false}
             >
-              {apiaries.map((item) => {
+              {apiaries.map((item, index) => {
                 return (
-                  item.latitude !== '' &&
-                  item.longitude !== '' && (
-                    <View key={item.code}>
-                      <Marker
-                        coordinate={{
-                          latitude: parseFloat(item.latitude),
-                          longitude: parseFloat(item.longitude),
-                        }}
-                        pinColor={colors.error}
-                      >
-                        <Callout>
-                          <Text style={{ color: colors.primary }}>
-                            {`${t('translations:addDate')}${item.createdAt}`}
-                          </Text>
-                        </Callout>
-                      </Marker>
-                      <Circle
-                        center={{
-                          latitude: parseFloat(item.latitude),
-                          longitude: parseFloat(item.longitude),
-                        }}
-                        radius={1500}
-                        fillColor={colors.errorLight}
-                        strokeColor={colors.error}
-                      />
-                    </View>
-                  )
+                  <View key={index}>
+                    {item.latitude !== '' && item.longitude !== '' && (
+                      <View key={item.code}>
+                        <Marker
+                          coordinate={{
+                            latitude: parseFloat(item.latitude),
+                            longitude: parseFloat(item.longitude),
+                          }}
+                          pinColor={colors.error}
+                        >
+                          <Callout>
+                            <Text style={{ color: colors.primary }}>
+                              {`${t('translations:addDate')}${item.createdAt}`}
+                            </Text>
+                          </Callout>
+                        </Marker>
+                        <Circle
+                          center={{
+                            latitude: parseFloat(item.latitude),
+                            longitude: parseFloat(item.longitude),
+                          }}
+                          radius={1500}
+                          fillColor={colors.errorLight}
+                          strokeColor={colors.error}
+                        />
+                      </View>
+                    )}
+                  </View>
                 );
               })}
             </MapView>

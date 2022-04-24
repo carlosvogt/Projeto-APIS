@@ -58,6 +58,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         errorMessage={errors.name?.message}
         control={control}
         returnKeyType="next"
+        autoCapitalize="words"
         onSubmitEditing={() => email.current.focus()}
       />
       <Form.TextInput
@@ -67,6 +68,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         placeholder={t('translations:emailPlaceholder')}
         errorMessage={errors.email?.message}
         control={control}
+        autoCapitalize="none"
         returnKeyType="next"
         keyboardType="email-address"
         onSubmitEditing={() => phone.current.focus()}
@@ -110,7 +112,7 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         <Button
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit)}
-          title={t('translations:buttonContinue')}
+          title={t('translations:continue')}
         />
         <Steps total={2} active={0} />
       </Footer>

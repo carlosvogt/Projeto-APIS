@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
 import {
@@ -14,7 +15,7 @@ import MapView, { Callout, Circle, Marker } from 'react-native-maps';
 import { Header } from '@components/layout';
 import { useTranslation } from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Title1 } from '@components/typography';
 import { Modal, useToast } from '@components';
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -22,6 +23,7 @@ import { userUid } from '@store/auth';
 import { useSelector } from 'react-redux';
 import { getDocs, collection, query } from 'firebase/firestore';
 import { db } from '@services/firebase';
+import { accountInfo } from '@store/accountData';
 
 function ApiariesMapScreen() {
   const { t } = useTranslation();
@@ -36,6 +38,10 @@ function ApiariesMapScreen() {
   const [apiaries, setApiaries] = useState([]);
   const toast = useToast();
   const [refreshing, setRefreshing] = useState(false);
+  const userInformation = useSelector(accountInfo);
+  const originMap = true;
+  const { params } = useRoute();
+  const [controller, setController] = useState(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -70,6 +76,12 @@ function ApiariesMapScreen() {
     },
   });
 
+  useEffect(() => {
+    if (params?.reload === true) {
+      setController(!controller);
+    }
+  }, [params]);
+
   const getData = async () => {
     setRefreshing(true);
     const hasInternet = netInfo.isConnected;
@@ -83,6 +95,7 @@ function ApiariesMapScreen() {
         docsSnap.forEach((item) => {
           setApiaries((oldArray) => [...oldArray, item.data()]);
         });
+        setApiaries((oldArray) => [...oldArray, userInformation]);
       } catch (error) {
         toast.error(error.code);
       }
@@ -97,7 +110,7 @@ function ApiariesMapScreen() {
     if (hasInternet !== null) {
       getData();
     }
-  }, [netInfo]);
+  }, [netInfo, controller]);
 
   const handleToApiary = (type, index) => {
     if (type === 'home') {
@@ -107,7 +120,7 @@ function ApiariesMapScreen() {
     } else {
       navigation.navigate('ApiaryNavigation', {
         screen: 'ApiaryHome',
-        params: { ...apiaries[index] },
+        params: { ...apiaries[index], originMap },
       });
     }
   };
@@ -220,51 +233,52 @@ function ApiariesMapScreen() {
               >
                 {apiaries.map((item, index) => {
                   return (
-                    item.latitude !== '' &&
-                    item.longitude !== '' && (
-                      <View key={item.code}>
-                        <Marker
-                          coordinate={{
-                            latitude: parseFloat(item.latitude),
-                            longitude: parseFloat(item.longitude),
-                          }}
-                          pinColor={
-                            item.type === 'apiary'
-                              ? colors.primary
-                              : item.type === 'home'
-                              ? colors.success
-                              : colors.error
-                          }
-                        >
-                          <Callout
-                            onPress={() => handleToApiary(item.type, index)}
-                          >
-                            <Text style={{ color: colors.primary }}>
-                              {item.name}
-                            </Text>
-                          </Callout>
-                        </Marker>
-                        {item.type !== 'home' && (
-                          <Circle
-                            center={{
+                    <View key={index}>
+                      {item.latitude !== '' && item.longitude !== '' && (
+                        <View key={item.code}>
+                          <Marker
+                            coordinate={{
                               latitude: parseFloat(item.latitude),
                               longitude: parseFloat(item.longitude),
                             }}
-                            radius={1500}
-                            fillColor={
-                              item.type === 'apiary'
-                                ? colors.primaryLight
-                                : colors.errorLight
-                            }
-                            strokeColor={
+                            pinColor={
                               item.type === 'apiary'
                                 ? colors.primary
+                                : item.type === 'home'
+                                ? colors.success
                                 : colors.error
                             }
-                          />
-                        )}
-                      </View>
-                    )
+                          >
+                            <Callout
+                              onPress={() => handleToApiary(item.type, index)}
+                            >
+                              <Text style={{ color: colors.primary }}>
+                                {item.name}
+                              </Text>
+                            </Callout>
+                          </Marker>
+                          {item.type !== 'home' && (
+                            <Circle
+                              center={{
+                                latitude: parseFloat(item.latitude),
+                                longitude: parseFloat(item.longitude),
+                              }}
+                              radius={1500}
+                              fillColor={
+                                item.type === 'apiary'
+                                  ? colors.primaryLight
+                                  : colors.errorLight
+                              }
+                              strokeColor={
+                                item.type === 'apiary'
+                                  ? colors.primary
+                                  : colors.error
+                              }
+                            />
+                          )}
+                        </View>
+                      )}
+                    </View>
                   );
                 })}
               </MapView>

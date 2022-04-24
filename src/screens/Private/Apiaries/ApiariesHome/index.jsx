@@ -8,16 +8,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  BackHandler,
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
 import { useTheme } from '@theme';
-import {
-  useNavigation,
-  useFocusEffect,
-  useIsFocused,
-} from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Add, CheckOutline } from '@assets';
 import { Header } from '@components/layout';
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -36,9 +31,10 @@ function ApiariesHome() {
   const userUuid = useSelector(userUid);
   const [apiaries, setApiaries] = useState([]);
   const toast = useToast();
-  const isFocused = useIsFocused();
   const [refreshing, setRefreshing] = useState(false);
+  const [controller, setController] = useState(false);
   const [isPullRefreshing, setIsPullRefreshing] = useState(false);
+  const { params } = useRoute();
 
   const styles = StyleSheet.create({
     container: {
@@ -103,11 +99,17 @@ function ApiariesHome() {
   };
 
   useEffect(() => {
+    if (params?.reload === true) {
+      setController(!controller);
+    }
+  }, [params]);
+
+  useEffect(() => {
     const hasInternet = netInfo.isConnected;
     if (hasInternet !== null) {
       getData();
     }
-  }, [netInfo, isFocused]);
+  }, [netInfo, controller]);
 
   useEffect(() => {
     const handleListTitle = apiaries.filter((item) =>
@@ -147,20 +149,6 @@ function ApiariesHome() {
     });
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const onBackPress = () => {
-        navigation.navigate('HomeScreen');
-        return true;
-      };
-
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
-      return () =>
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-    }, []),
-  );
-
   const handleHome = () => {
     navigation.navigate('HomeScreen');
   };
@@ -192,7 +180,7 @@ function ApiariesHome() {
               <Add size={25} color={colors.secondary} />
             </View>
             <Title1 centered color={colors.secondary}>
-              {t('translations:add')}
+              {t('translations:createApiaryHeader')}
             </Title1>
           </TouchableOpacity>
           <TouchableOpacity

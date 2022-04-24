@@ -104,14 +104,15 @@ function EditApiary() {
             createdAt,
           });
         } catch (error) {
-          console.log(error.code);
+          toast.error(error.code);
         }
       }
 
       if (
         (data.mortality === 'false' && value.mortality === 'true') ||
-        data.latitude !== value.latitude ||
-        data.longitude !== value.longitude
+        ((data.latitude !== value.latitude ||
+          data.longitude !== value.longitude) &&
+          data.mortalityId)
       ) {
         try {
           await updateDoc(doc(db, `mortalityData`, mortalityId), {
@@ -137,6 +138,8 @@ function EditApiary() {
           newData,
         );
         newData.code = data.code;
+        newData.reload = true;
+        newData.originMap = data.originMap;
         toast.success(t('translations:apiaryUpdatedSuccess'));
         navigation.navigate('ApiaryHome', newData);
       } catch (error) {
