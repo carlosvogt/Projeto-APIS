@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import React, { useLayoutEffect } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -9,11 +10,28 @@ import store from '@store';
 import { useTheme, ThemeProvider } from '@theme';
 import { ToastProvider } from '@components';
 import Navigation from '@navigation/index';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, db } from '@services/firebase';
+import { collection, getDocs, query } from 'firebase/firestore';
 
 const AppContents = () => {
   const dispatch = useDispatch();
   const { colors } = useTheme();
   const darkMode = useSelector((state) => state.mode.darkMode);
+
+  const getUserInfo = async (uid) => {
+    try {
+      const q = query(collection(db, `users/${uid}/accountData`));
+      const docsSnap = await getDocs(q);
+      docsSnap.forEach((item) => {
+        AsyncStorage.setItem('account', JSON.stringify(item.data()));
+        dispatch({
+          type: 'SET_ACCOUNT_DATA',
+          payload: item.data(),
+        });
+      });
+    } catch (error) {}
+  };
 
   const getStoreData = async () => {
     try {
@@ -49,7 +67,21 @@ const AppContents = () => {
     return null;
   };
 
+  const checkPermission = async () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        getUserInfo(auth.currentUser.uid);
+      } else {
+        AsyncStorage.removeItem('auth');
+        dispatch({
+          type: 'SIGN_OUT',
+        });
+      }
+    });
+  };
+
   const loadData = async () => {
+    await checkPermission();
     await getStoreData();
     SplashScreen.hide();
   };

@@ -478,7 +478,7 @@ function ApiaryHome() {
   const handleAddNote = () => {
     setModalOption(5);
     setModalMode('note');
-    setModalTitle(t('translations:addNote'));
+    setModalTitle(t('translations:addNotes'));
     setCancelButton(t('translations:cancel'));
     setConfirmButton(t('translations:delete'));
     setShowModal(true);
@@ -487,7 +487,7 @@ function ApiaryHome() {
   const handleAddProduction = () => {
     setModalOption(6);
     setModalMode('production');
-    setModalTitle(t('translations:production'));
+    setModalTitle(t('translations:addProduction'));
     setCancelButton(t('translations:cancel'));
     setConfirmButton(t('translations:delete'));
     setShowModal(true);
@@ -647,7 +647,7 @@ function ApiaryHome() {
                 <Add size={40} color={colors.secondary} />
               </TouchableOpacity>
               <Title1 centered color={colors.primary}>
-                {t('translations:notes')}
+                {t('translations:addNotes')}
               </Title1>
             </View>
             <View
@@ -682,7 +682,7 @@ function ApiaryHome() {
                 <Add size={40} color={colors.secondary} />
               </TouchableOpacity>
               <Title1 centered color={colors.primary}>
-                {t('translations:production')}
+                {t('translations:addProduction')}
               </Title1>
             </View>
             <View

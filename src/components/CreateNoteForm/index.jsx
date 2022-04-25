@@ -69,7 +69,7 @@ function CreateNoteForm({
     >
       <View style={styles.question}>
         <Title1 color={colors.primary} family="medium">
-          {title || t('translations:addNote')}
+          {title || t('translations:addNotes')}
         </Title1>
       </View>
 

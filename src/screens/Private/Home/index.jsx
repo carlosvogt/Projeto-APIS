@@ -178,7 +178,7 @@ function HomeScreen() {
   const handleAddNote = () => {
     setModalType(1);
     setDefaultData(null);
-    setModalTitle(t('translations:addNote'));
+    setModalTitle(t('translations:addNotes'));
     setShowModal(true);
   };
 
@@ -338,7 +338,7 @@ function HomeScreen() {
             <Add size={40} color={colors.secondary} />
           </TouchableOpacity>
           <Title1 centered color={colors.primary} family="medium">
-            {t('translations:notes')}
+            {t('translations:addNotes')}
           </Title1>
         </View>
 

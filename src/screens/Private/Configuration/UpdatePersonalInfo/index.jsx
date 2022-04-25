@@ -13,7 +13,6 @@ import {
 } from 'firebase/auth';
 import { useSelector, useDispatch } from 'react-redux';
 import { userUid } from '@store/auth';
-import { accountInfo } from '@store/accountData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNetInfo } from '@react-native-community/netinfo';
 import UpdatePersonalInfoForm from './UpdatePersonalInfoForm';
@@ -24,7 +23,6 @@ function UpdatePersonalInfo() {
   const toast = useToast();
   const params = useRoute();
   const uuid = useSelector(userUid);
-  const userInformation = useSelector(accountInfo);
   const dispatch = useDispatch();
   const [newData, setNewData] = useState();
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -81,14 +79,12 @@ function UpdatePersonalInfo() {
 
   const updateAccountData = async (form) => {
     const dateTime = getDateTime();
-    const oldEmail = userInformation.email;
     const data = form;
     data.type = 'home';
 
     try {
       await updateDoc(doc(db, `users/${uuid}/accountData`, uuid), {
         name: form.name,
-        email: form.email,
         phone: form.phone,
         zipCode: form.zipCode || '',
         coordinates: form.coordinates || '',
@@ -103,7 +99,7 @@ function UpdatePersonalInfo() {
         type: 'SET_ACCOUNT_DATA',
         payload: data,
       });
-      if (form.email === oldEmail) {
+      if (form.email === auth.currentUser.email) {
         toast.success(t('translations:dataUpdatedSuccess'));
         handleHome(true);
       }
@@ -149,7 +145,7 @@ function UpdatePersonalInfo() {
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
       setLoading(true);
-      if (form.email === userInformation.email) {
+      if (form.email === auth.currentUser.email) {
         await updateAccountData(form);
       } else {
         setShowConfirmationModal(true);

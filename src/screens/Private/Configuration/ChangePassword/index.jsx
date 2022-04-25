@@ -3,21 +3,22 @@ import { useTranslation } from 'react-i18next';
 import { Title1 } from '@components/typography';
 import { Container, useToast } from '@components';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Header } from '@components/layout';
 import { useTheme } from '@theme';
 import { signInWithEmailAndPassword, updatePassword } from 'firebase/auth';
 import { auth } from '@services/firebase';
 import { useNetInfo } from '@react-native-community/netinfo';
+import { useDispatch } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChangePasswordForm from './ChangePasswordForm';
 
 function ChangePassword() {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const { colors } = useTheme();
   const netInfo = useNetInfo();
   const toast = useToast();
+  const dispatch = useDispatch();
 
   const styles = StyleSheet.create({
     scrollView: {
@@ -34,11 +35,18 @@ function ChangePassword() {
     },
   });
 
+  const handleSignOut = () => {
+    AsyncStorage.removeItem('auth');
+    dispatch({
+      type: 'SIGN_OUT',
+    });
+  };
+
   const handleChangePassword = async (form) => {
     try {
       await updatePassword(auth.currentUser, form.newPassword);
       toast.success(t('translations:passwordUpdatedSuccess'));
-      navigation.navigate('Profile');
+      handleSignOut();
     } catch (error) {
       toast.error(error.code);
     }
