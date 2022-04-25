@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Modal, useToast } from '@components';
 import { Header } from '@components/layout';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, BackHandler } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { auth, db } from '@services/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import {
@@ -22,6 +22,7 @@ function UpdatePersonalInfo() {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const toast = useToast();
+  const params = useRoute();
   const uuid = useSelector(userUid);
   const userInformation = useSelector(accountInfo);
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ function UpdatePersonalInfo() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const netInfo = useNetInfo();
   const [loading, setLoading] = useState(false);
+  const { ...dataParams } = params.params;
 
   const styles = StyleSheet.create({
     scrollView: {
@@ -57,6 +59,26 @@ function UpdatePersonalInfo() {
     });
   };
 
+  const handleHome = (value) => {
+    if (dataParams.originMap === true) {
+      navigation.navigate('PrivateNavigator', {
+        screen: 'ApiariesMapScreen',
+        params: {
+          reload: value || false,
+        },
+      });
+    } else {
+      navigation.navigate('Profile');
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleHome);
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleHome);
+  });
+
   const updateAccountData = async (form) => {
     const dateTime = getDateTime();
     const oldEmail = userInformation.email;
@@ -83,7 +105,7 @@ function UpdatePersonalInfo() {
       });
       if (form.email === oldEmail) {
         toast.success(t('translations:dataUpdatedSuccess'));
-        navigation.goBack();
+        handleHome(true);
       }
     } catch (error) {
       toast.error(error.code);
@@ -152,7 +174,10 @@ function UpdatePersonalInfo() {
         showModal={showConfirmationModal}
         isSubmitting={loading}
       />
-      <Header title={t('translations:personalInformationHeader')} />
+      <Header
+        title={t('translations:personalInformationHeader')}
+        onGoBack={handleHome}
+      />
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}

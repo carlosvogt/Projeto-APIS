@@ -116,6 +116,7 @@ function ApiariesMapScreen() {
     if (type === 'home') {
       navigation.navigate('ProfileNavigator', {
         screen: 'UpdatePersonalInfo',
+        params: { originMap },
       });
     } else {
       navigation.navigate('ApiaryNavigation', {

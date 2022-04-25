@@ -46,7 +46,6 @@ function CreateNoteForm({
       justifyContent: 'center',
       paddingVertical: 16,
     },
-    viewStyle: { paddingHorizontal: 20 },
     buttonStyle: { width: deviceWidth * 0.45 },
   });
 
@@ -79,21 +78,23 @@ function CreateNoteForm({
       />
 
       <Footer withBorder={false} style={styles.footer}>
-        <Button
-          title={t('translations:cancel')}
-          onPress={cancelFunction}
-          mode="outlined"
-          textColor="red"
-          titleFamily="medium"
-          viewStyle={styles.viewStyle}
-        />
-        <Button
-          title={positiveText}
-          loading={isSubmitting}
-          onPress={handleSubmit(positiveAction)}
-          viewStyle={styles.viewStyle}
-          style={styles.buttonStyle}
-        />
+        <View style={{ flex: 1 }}>
+          <Button
+            title={t('translations:cancel')}
+            onPress={cancelFunction}
+            mode="outlined"
+            textColor="red"
+            titleFamily="medium"
+          />
+        </View>
+        <View>
+          <Button
+            title={positiveText}
+            loading={isSubmitting}
+            onPress={handleSubmit(positiveAction)}
+            style={styles.buttonStyle}
+          />
+        </View>
       </Footer>
     </ScrollView>
   );

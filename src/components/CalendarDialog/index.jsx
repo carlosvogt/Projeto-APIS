@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import DataHelper from '@utils/date-helper';
 import { useSelector } from 'react-redux';
 import { Footer } from '@components/layout';
-import { TitleHeader, Title2 } from '../typography';
+import { TitleHeader } from '../typography';
 import Button from '../Button';
 
 function CalendarDialog({ visible, onDismiss, onPress }) {
@@ -23,7 +23,6 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
   const { colors } = useTheme();
   const inicialValues = DataHelper().format('DD-MMMM-YYYY').split('-');
   const inicialDay = DataHelper().format('YYYY-MM-DD');
-  const [year, setYear] = useState(inicialValues[2]);
   const [month, setMonth] = useState(`${inicialValues[1]} ${inicialValues[2]}`);
   const [selectedDay, setSelectedDay] = useState(inicialDay);
   const darkMode = useSelector((state) => state.mode.darkMode);
@@ -33,7 +32,7 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
     header: {
       backgroundColor: colors.primary,
       paddingHorizontal: 24,
-      paddingVertical: 14,
+      paddingVertical: 8,
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
     },
@@ -47,7 +46,7 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
         : 'rgba(0, 0, 0, 0.4)',
     },
     modalBox: {
-      width: deviceWidth - 64,
+      width: deviceWidth - 32,
       backgroundColor: colors.background,
       borderRadius: 10,
     },
@@ -57,20 +56,19 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
       alignItems: 'center',
       marginVertical: 16,
     },
-    viewStyle: { paddingHorizontal: 20 },
     buttonStyle: { width: deviceWidth * 0.45 },
     footer: {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
       paddingVertical: 16,
+      paddingHorizontal: 8,
     },
   });
 
   function selectMonth(value) {
     const valueDate = `${value.month}/${value.day}/${value.year}`;
     const monthName = DataHelper(valueDate).format('MMMM');
-    setYear(value.year);
     setMonth(`${monthName} ${value.year}`);
   }
 
@@ -147,7 +145,6 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
                 showsVerticalScrollIndicator={false}
               >
                 <View style={styles.header}>
-                  <Title2 color={colors.secondary}>{year}</Title2>
                   <TitleHeader color={colors.secondary}>{month}</TitleHeader>
                 </View>
 
@@ -191,20 +188,22 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
                 />
 
                 <Footer withBorder={false} style={styles.footer}>
-                  <Button
-                    title={t('translations:cancel')}
-                    onPress={onDismiss}
-                    mode="outlined"
-                    textColor="red"
-                    titleFamily="medium"
-                    viewStyle={styles.viewStyle}
-                  />
-                  <Button
-                    title={t('translations:select')}
-                    onPress={() => handleClick()}
-                    viewStyle={styles.viewStyle}
-                    style={styles.buttonStyle}
-                  />
+                  <View style={{ flex: 1 }}>
+                    <Button
+                      title={t('translations:cancel')}
+                      onPress={onDismiss}
+                      mode="outlined"
+                      textColor="red"
+                      titleFamily="medium"
+                    />
+                  </View>
+                  <View>
+                    <Button
+                      title={t('translations:select')}
+                      onPress={() => handleClick()}
+                      style={styles.buttonStyle}
+                    />
+                  </View>
                 </Footer>
               </ScrollView>
             </View>

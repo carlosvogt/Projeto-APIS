@@ -80,14 +80,16 @@ function HomeScreen() {
     headerContainer: {
       flexDirection: 'row',
       alignItems: 'center',
+      paddingTop: 8,
     },
     scrollView: {
-      flexGrow: 1,
       marginHorizontal: 16,
       marginVertical: 16,
       justifyContent: 'center',
+      paddingBottom: 32,
     },
     header: {
+      marginTop: -16,
       backgroundColor: colors.primary,
       borderBottomLeftRadius: 20,
       borderBottomRightRadius: 20,
@@ -368,50 +370,51 @@ function HomeScreen() {
           header={t('translations:takeSelfie')}
         />
       ) : (
-        <View style={styles.container} radius={false}>
-          <Modal
-            mode={modalMode}
-            title={t('translations:warn')}
-            description={
-              modalType === 1
-                ? t('translations:checkoutBody')
-                : t('translations:deleteBody')
-            }
-            cancelText={t('translations:cancel')}
-            positiveText={
-              modalType === 1
-                ? t('translations:getOut')
-                : modalType === 2 && !isSubmitting
-                ? t('translations:delete')
-                : modalType === 2 && isSubmitting
-                ? t('translations:deleting')
-                : t('translations:validate')
-            }
-            cancelFunction={() => dismissConfirmationModal()}
-            positiveAction={(value) => handleModalConfirmation(value)}
-            showModal={showConfirmationModal}
-            isSubmitting={isSubmitting}
-          />
+        <>
+          <View style={styles.container}>
+            <Modal
+              mode={modalMode}
+              title={t('translations:warn')}
+              description={
+                modalType === 1
+                  ? t('translations:checkoutBody')
+                  : t('translations:deleteBody')
+              }
+              cancelText={t('translations:cancel')}
+              positiveText={
+                modalType === 1
+                  ? t('translations:getOut')
+                  : modalType === 2 && !isSubmitting
+                  ? t('translations:delete')
+                  : modalType === 2 && isSubmitting
+                  ? t('translations:deleting')
+                  : t('translations:validate')
+              }
+              cancelFunction={() => dismissConfirmationModal()}
+              positiveAction={(value) => handleModalConfirmation(value)}
+              showModal={showConfirmationModal}
+              isSubmitting={isSubmitting}
+            />
 
-          <ModalBottom
-            showModal={showModalDrawer}
-            onPressOut={() => setShowModalDrawer(false)}
-          >
-            {data?.map((item) => {
-              return (
-                <TouchableOpacity
-                  key={item.option}
-                  style={styles.modalItem}
-                  onPress={item.onClick}
-                >
-                  <Title1 family="medium" color={colors.primary}>
-                    {item.option}
-                  </Title1>
-                </TouchableOpacity>
-              );
-            })}
-          </ModalBottom>
-
+            <ModalBottom
+              showModal={showModalDrawer}
+              onPressOut={() => setShowModalDrawer(false)}
+            >
+              {data?.map((item) => {
+                return (
+                  <TouchableOpacity
+                    key={item.option}
+                    style={styles.modalItem}
+                    onPress={item.onClick}
+                  >
+                    <Title1 family="medium" color={colors.primary}>
+                      {item.option}
+                    </Title1>
+                  </TouchableOpacity>
+                );
+              })}
+            </ModalBottom>
+          </View>
           <View style={styles.header}>
             <View style={styles.headerContainer}>
               <View style={styles.headerView}>
@@ -532,7 +535,7 @@ function HomeScreen() {
 
             <View style={styles.line} />
           </ScrollView>
-        </View>
+        </>
       )}
     </>
   );

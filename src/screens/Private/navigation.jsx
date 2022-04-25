@@ -83,6 +83,7 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
+            width: 500,
             borderTopRightRadius: 10,
             borderBottomRightRadius: 10,
           },
@@ -93,6 +94,7 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
+            width: 500,
             borderRadius: 10,
           },
         }}
@@ -103,6 +105,7 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
+            width: 500,
             borderRadius: 10,
           },
         }}
@@ -113,6 +116,7 @@ function PrivateNavigator() {
         options={{
           headerShown: false,
           tabBarItemStyle: {
+            width: 500,
             borderTopLeftRadius: 10,
             borderBottomLeftRadius: 10,
           },

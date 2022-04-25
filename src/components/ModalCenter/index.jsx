@@ -11,6 +11,7 @@ import {
 import { useTheme } from '@theme';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { Footer } from '@components/layout';
 import Button from '../Button';
 import CreateNoteForm from '../CreateNoteForm';
 import LoginForm from '../LoginForm';
@@ -62,7 +63,6 @@ const ModalCenter = ({
       justifyContent: 'center',
       paddingBottom: 8,
     },
-    viewStyle: { paddingHorizontal: 20 },
     buttonStyle: { width: deviceWidth * 0.45 },
     confirmView: {
       justifyContent: 'center',
@@ -72,6 +72,11 @@ const ModalCenter = ({
     view: {
       flexDirection: 'row',
       justifyContent: 'center',
+      alignItems: 'center',
+    },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
       alignItems: 'center',
     },
   });
@@ -94,23 +99,25 @@ const ModalCenter = ({
                       {description}
                     </Title2>
                   </View>
-                  <View style={styles.view}>
-                    <Button
-                      title={cancelText}
-                      onPress={cancelFunction}
-                      mode="outlined"
-                      textColor="red"
-                      titleFamily="medium"
-                      viewStyle={styles.viewStyle}
-                    />
-                    <Button
-                      title={positiveText}
-                      onPress={positiveAction}
-                      viewStyle={styles.viewStyle}
-                      style={styles.buttonStyle}
-                      loading={isSubmitting}
-                    />
-                  </View>
+                  <Footer withBorder={false} style={styles.footer}>
+                    <View style={{ flex: 1 }}>
+                      <Button
+                        title={cancelText}
+                        onPress={cancelFunction}
+                        mode="outlined"
+                        textColor="red"
+                        titleFamily="medium"
+                      />
+                    </View>
+                    <View>
+                      <Button
+                        title={positiveText}
+                        onPress={positiveAction}
+                        style={styles.buttonStyle}
+                        loading={isSubmitting}
+                      />
+                    </View>
+                  </Footer>
                 </>
               )}
               {mode === 'alert' && (
@@ -129,7 +136,6 @@ const ModalCenter = ({
                     <Button
                       title={cancelText}
                       onPress={cancelFunction}
-                      viewStyle={styles.viewStyle}
                       style={styles.buttonStyle}
                     />
                   </View>
