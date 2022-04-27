@@ -6,14 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTheme } from '@theme';
-import { auth, db } from '@services/firebase';
-import {
-  createUserWithEmailAndPassword,
-  deleteUser,
-  sendEmailVerification,
-} from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
 import { useNetInfo } from '@react-native-community/netinfo';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import AddressForm from './AddressForm';
 
 function Address() {
@@ -45,8 +40,8 @@ function Address() {
     },
   });
 
-  const handleDeleteUserAccess = async () => {
-    await deleteUser(auth.currentUser);
+  const handleDeleteUserAccess = async (userCredencial) => {
+    await userCredencial.user.delete();
   };
 
   const getDateTime = () => {
@@ -67,13 +62,10 @@ function Address() {
     const createdAt = Date();
 
     try {
-      await setDoc(
-        doc(
-          db,
-          `users/${userCredencial.user.uid}/accountData`,
-          userCredencial.user.uid,
-        ),
-        {
+      await firestore()
+        .collection(`users/${userCredencial.user.uid}/accountData`)
+        .doc(userCredencial.user.uid)
+        .set({
           name: params.name,
           phone: params.phone,
           zipCode: form.zipCode || '',
@@ -85,13 +77,12 @@ function Address() {
           type: 'home',
           lastModify: dateTime,
           createdAt: createdAt.toString(),
-        },
-      );
-      await sendEmailVerification(auth.currentUser);
+        });
+
       toast.success(t('translations:createAccountSuccess'));
       navigation.navigate('SignIn');
     } catch (error) {
-      await handleDeleteUserAccess();
+      await handleDeleteUserAccess(userCredencial);
       toast.error(error.code);
     }
   };
@@ -101,12 +92,12 @@ function Address() {
     if (hasInternet) {
       setLoading(true);
       try {
-        const user = await createUserWithEmailAndPassword(
-          auth,
+        const userData = await auth().createUserWithEmailAndPassword(
           params.email,
           params.password,
         );
-        await handleCreateAccountData(form, user);
+        await userData.user.sendEmailVerification(auth.currentUser);
+        await handleCreateAccountData(form, userData);
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
           toast.error(t('translations:emailInUse'));

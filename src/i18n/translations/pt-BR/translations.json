@@ -18,6 +18,7 @@
   "invalidUser" : "Atenção! Usuário não encontrado.",
   "invalidPassword" : "Atenção! Senha incorreta.",
   "noInternet" : "Atenção! Sem acesso a internet.",
+  "noInternetToContinue" : "Atenção! Para continuar, você precisa estar conectado a internet.",
   "emailVerifiedError" : "Atenção! Valide seu e-mail para continuar.",
   "attention" : "Atenção!",
   "requiredError": "Este campo é obrigatório",

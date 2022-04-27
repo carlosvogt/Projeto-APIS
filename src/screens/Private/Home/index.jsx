@@ -15,22 +15,11 @@ import { useTheme } from '@theme';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Add } from '@assets';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  query,
-  getDocs,
-  collection,
-  setDoc,
-  doc,
-  deleteDoc,
-  orderBy,
-  updateDoc,
-} from 'firebase/firestore';
-import { db } from '@services/firebase';
+import firestore from '@react-native-firebase/firestore';
 import { userUid } from '@store/auth';
 import { userName } from '@store/accountData';
 import { useSelector } from 'react-redux';
 import uuid from 'react-native-uuid';
-import { useNetInfo } from '@react-native-community/netinfo';
 
 function HomeScreen() {
   const { t } = useTranslation();
@@ -51,7 +40,6 @@ function HomeScreen() {
   const username = useSelector(userName);
   const toast = useToast();
   const [notes, setNotes] = useState([]);
-  const netInfo = useNetInfo();
   const [refreshing, setRefreshing] = useState(false);
   const [isPullRefreshing, setIsPullRefreshing] = useState(false);
   LogBox.ignoreLogs([
@@ -101,36 +89,28 @@ function HomeScreen() {
     },
   });
 
-  const getData = async () => {
+  const getData = () => {
     setRefreshing(true);
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      try {
-        const q = query(
-          collection(db, `users/${userUuid}/homeNotes`),
-          orderBy('lastModify', 'desc'),
-        );
-        const docsSnap = await getDocs(q);
-        setNotes([]);
-        docsSnap.forEach((item) => {
-          setNotes((oldArray) => [...oldArray, item.data()]);
+    try {
+      firestore()
+        .collection(`users/${userUuid}/homeNotes`)
+        .orderBy('lastModify', 'desc')
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
+          setNotes([]);
+          docs.forEach((doc) => {
+            setNotes((oldArray) => [...oldArray, doc.data()]);
+          });
         });
-      } catch (error) {
-        toast.error(error.code);
-      }
-    } else {
-      toast.error(t('translations:noInternet'));
+    } catch (error) {
+      toast.error(error.code);
     }
     setRefreshing(false);
     setIsPullRefreshing(false);
   };
 
   useEffect(() => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet !== null) {
-      getData();
-    }
-  }, [netInfo]);
+    getData();
+  }, []);
 
   const getDateTime = () => {
     const day = new Date().getDate();
@@ -192,73 +172,63 @@ function HomeScreen() {
     setIsSubmittingDelete(false);
   };
 
-  const handleCreateNote = async (value) => {
-    const hasInternet = netInfo.isConnected;
-
-    if (hasInternet) {
-      setIsSubmitting(true);
-      const dateTime = getDateTime();
-      const createdAt = Date();
-      const noteId = `${uuid.v4()}-${value.title}`;
-      try {
-        await setDoc(doc(db, `users/${userUuid}/homeNotes`, noteId), {
+  const handleCreateNote = (value) => {
+    setIsSubmitting(true);
+    const dateTime = getDateTime();
+    const createdAt = Date();
+    const noteId = `${uuid.v4()}-${value.title}`;
+    try {
+      firestore()
+        .collection(`users/${userUuid}/homeNotes`)
+        .doc(noteId)
+        .set({
           code: noteId,
           title: value.title || '',
           description: value.description,
           lastModify: dateTime,
           createdAt: createdAt.toString(),
         });
-        await getData();
-        setShowModal(false);
-        toast.success(t('translations:noteSuccessCreated'));
-      } catch (error) {
-        toast.error(error.code);
-      }
-      setIsSubmitting(false);
-    } else {
-      toast.error(t('translations:noInternet'));
+      setShowModal(false);
+      toast.success(t('translations:noteSuccessCreated'));
+    } catch (error) {
+      toast.error(error.code);
     }
+    setIsSubmitting(false);
   };
 
-  const handleEditNote = async (value) => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      setIsSubmitting(true);
-      const dateTime = getDateTime();
-      try {
-        await updateDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode), {
+  const handleEditNote = (value) => {
+    setIsSubmitting(true);
+    const dateTime = getDateTime();
+    try {
+      firestore()
+        .collection(`users/${userUuid}/homeNotes`)
+        .doc(selectedCode)
+        .update({
           title: value.title || '',
           description: value.description,
           lastModify: dateTime,
         });
-        await getData();
-        setShowModal(false);
-        toast.success(t('translations:noteUpdated'));
-      } catch (error) {
-        toast.error(t('translations:noInternet'));
-      }
-      setIsSubmitting(false);
-    } else {
+      setShowModal(false);
+      toast.success(t('translations:noteUpdated'));
+    } catch (error) {
       toast.error(t('translations:noInternet'));
     }
+    setIsSubmitting(false);
   };
 
-  const handleDeleteNote = async () => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      setIsSubmittingDelete(true);
-      try {
-        await deleteDoc(doc(db, `users/${userUuid}/homeNotes`, selectedCode));
-        await getData();
-        setShowDeleteModal(false);
-        toast.success(t('translations:noteDeleted'));
-      } catch (error) {
-        toast.error(error.code);
-      }
-      setIsSubmittingDelete(false);
-    } else {
-      toast.error(t('translations:noInternet'));
+  const handleDeleteNote = () => {
+    setIsSubmittingDelete(true);
+    try {
+      firestore()
+        .collection(`users/${userUuid}/homeNotes`)
+        .doc(selectedCode)
+        .delete();
+      setShowDeleteModal(false);
+      toast.success(t('translations:noteDeleted'));
+    } catch (error) {
+      toast.error(error.code);
     }
+    setIsSubmittingDelete(false);
   };
 
   const loadPhoto = async () => {

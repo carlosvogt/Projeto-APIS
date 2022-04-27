@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "112581464124",
+    "project_id": "projeto-apis-cb67d",
+    "storage_bucket": "projeto-apis-cb67d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112581464124:android:2e0a1038b23fa6cb407339",
+        "android_client_info": {
+          "package_name": "com.apis"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "112581464124-11f1ggm190bqr6jerm41ekvth2jh4agi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD82rkMQ_Ee-NTkm2JF7dDFRBA94ve72KM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "112581464124-11f1ggm190bqr6jerm41ekvth2jh4agi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

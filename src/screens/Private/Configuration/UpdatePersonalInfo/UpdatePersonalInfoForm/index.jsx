@@ -20,7 +20,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import { useTheme } from '@theme';
 import { accountInfo } from '@store/accountData';
 import { useSelector } from 'react-redux';
-import { auth } from '@services/firebase';
+import auth from '@react-native-firebase/auth';
 
 function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
   const { t } = useTranslation();
@@ -116,7 +116,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     mode: 'onChange',
     defaultValues: {
       name: userInfo.name,
-      email: auth.currentUser.email,
+      email: auth().currentUser.email,
       phone: userInfo.phone,
       zipCode: userInfo.zipCode,
       coordinates: userInfo.coordinates,

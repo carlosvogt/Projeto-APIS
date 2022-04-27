@@ -8,10 +8,9 @@ import { Footer } from '@components/layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from '@theme';
-import { auth, db } from '@services/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNetInfo } from '@react-native-community/netinfo';
-import { collection, getDocs, query } from 'firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import SignInForm from './SignInForm';
 
 function SignIn() {
@@ -65,8 +64,7 @@ function SignIn() {
   };
 
   const handleUserData = (userCredencial) => {
-    const user = auth.currentUser;
-    if (user.emailVerified) {
+    if (userCredencial.user.emailVerified) {
       AsyncStorage.setItem('auth', JSON.stringify(userCredencial));
       dispatch({
         type: 'SIGN_IN',
@@ -78,17 +76,17 @@ function SignIn() {
   };
 
   const getUserInfo = async (userCredencial) => {
-    const q = query(
-      collection(db, `users/${userCredencial.user.uid}/accountData`),
-    );
-    const docsSnap = await getDocs(q);
-    docsSnap.forEach((item) => {
-      AsyncStorage.setItem('account', JSON.stringify(item.data()));
-      dispatch({
-        type: 'SET_ACCOUNT_DATA',
-        payload: item.data(),
+    firestore()
+      .collection(`users/${userCredencial.user.uid}/accountData`)
+      .onSnapshot((docs) => {
+        docs.forEach((doc) => {
+          AsyncStorage.setItem('account', JSON.stringify(doc.data()));
+          dispatch({
+            type: 'SET_ACCOUNT_DATA',
+            payload: doc.data(),
+          });
+        });
       });
-    });
   };
 
   const handleLogin = async (form) => {
@@ -96,14 +94,14 @@ function SignIn() {
     if (hasInternet) {
       setLoading(true);
       try {
-        const user = await signInWithEmailAndPassword(
-          auth,
+        const user = await auth().signInWithEmailAndPassword(
           form.email,
           form.password,
         );
         await getUserInfo(user);
         handleUserData(user);
       } catch (error) {
+        console.log('error', error);
         if (error.code === 'auth/user-not-found') {
           toast.error(t('translations:invalidUser'));
         } else if (error.code === 'auth/wrong-password') {

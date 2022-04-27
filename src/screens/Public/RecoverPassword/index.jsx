@@ -5,9 +5,8 @@ import { Container, useToast } from '@components';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { Header } from '@components/layout';
 import { useTheme } from '@theme';
-import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '@services/firebase';
 import { useNetInfo } from '@react-native-community/netinfo';
+import auth from '@react-native-firebase/auth';
 import RecoverPasswordForm from './RecoverPasswordForm';
 
 function RecoverPassword() {
@@ -38,10 +37,11 @@ function RecoverPassword() {
     if (hasInternet) {
       setLoading(true);
       try {
-        await sendPasswordResetEmail(auth, form.email);
+        await auth().sendPasswordResetEmail(form.email);
         setEmailSended(true);
         toast.success(t('translations:emailSuccess'));
       } catch (error) {
+        console.log(error);
         if (error.code === 'auth/user-not-found') {
           toast.error(t('translations:invalidUser'));
         } else {

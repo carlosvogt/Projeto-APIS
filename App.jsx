@@ -10,9 +10,8 @@ import store from '@store';
 import { useTheme, ThemeProvider } from '@theme';
 import { ToastProvider } from '@components';
 import Navigation from '@navigation/index';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '@services/firebase';
-import { collection, getDocs, query } from 'firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const AppContents = () => {
   const dispatch = useDispatch();
@@ -21,15 +20,17 @@ const AppContents = () => {
 
   const getUserInfo = async (uid) => {
     try {
-      const q = query(collection(db, `users/${uid}/accountData`));
-      const docsSnap = await getDocs(q);
-      docsSnap.forEach((item) => {
-        AsyncStorage.setItem('account', JSON.stringify(item.data()));
-        dispatch({
-          type: 'SET_ACCOUNT_DATA',
-          payload: item.data(),
+      firestore()
+        .collection(`users/${uid}/accountData`)
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
+          docs.forEach((doc) => {
+            AsyncStorage.setItem('account', JSON.stringify(doc.data()));
+            dispatch({
+              type: 'SET_ACCOUNT_DATA',
+              payload: doc.data(),
+            });
+          });
         });
-      });
     } catch (error) {}
   };
 
@@ -68,9 +69,9 @@ const AppContents = () => {
   };
 
   const checkPermission = async () => {
-    onAuthStateChanged(auth, (user) => {
+    auth().onAuthStateChanged((user) => {
       if (user) {
-        getUserInfo(auth.currentUser.uid);
+        getUserInfo(user.uid);
       } else {
         AsyncStorage.removeItem('auth');
         dispatch({

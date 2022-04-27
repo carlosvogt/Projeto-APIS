@@ -4,17 +4,12 @@ import { Header } from '@components/layout';
 import { StyleSheet, ScrollView, BackHandler } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { auth, db } from '@services/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
-import {
-  sendEmailVerification,
-  signInWithEmailAndPassword,
-  updateEmail,
-} from 'firebase/auth';
 import { useSelector, useDispatch } from 'react-redux';
 import { userUid } from '@store/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNetInfo } from '@react-native-community/netinfo';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import UpdatePersonalInfoForm from './UpdatePersonalInfoForm';
 
 function UpdatePersonalInfo() {
@@ -83,23 +78,27 @@ function UpdatePersonalInfo() {
     data.type = 'home';
 
     try {
-      await updateDoc(doc(db, `users/${uuid}/accountData`, uuid), {
-        name: form.name,
-        phone: form.phone,
-        zipCode: form.zipCode || '',
-        coordinates: form.coordinates || '',
-        latitude: form.latitude || '',
-        longitude: form.longitude || '',
-        city: form.city,
-        state: form.state,
-        lastModify: dateTime,
-      });
+      firestore()
+        .collection(`users/${uuid}/accountData`)
+        .doc(uuid)
+        .set({
+          name: form.name,
+          phone: form.phone,
+          zipCode: form.zipCode || '',
+          coordinates: form.coordinates || '',
+          latitude: form.latitude || '',
+          longitude: form.longitude || '',
+          city: form.city,
+          state: form.state,
+          lastModify: dateTime,
+        });
+
       AsyncStorage.setItem('account', JSON.stringify(form));
       dispatch({
         type: 'SET_ACCOUNT_DATA',
         payload: data,
       });
-      if (form.email === auth.currentUser.email) {
+      if (form.email === auth().currentUser.email) {
         toast.success(t('translations:dataUpdatedSuccess'));
         handleHome(true);
       }
@@ -122,38 +121,36 @@ function UpdatePersonalInfo() {
   const handleUpdateUser = async (form) => {
     setShowConfirmationModal(false);
     setLoading(true);
-    try {
-      await signInWithEmailAndPassword(
-        auth,
-        auth.currentUser.email,
-        form.password,
-      );
-      await updateAccountData(newData);
-      await updateAccountEmail();
-    } catch (error) {
-      if (error.code === 'auth/wrong-password') {
-        toast.error(t('translations:invalidPassword'));
-      } else {
-        toast.error(error.code);
-      }
-    }
+    // try {
+    //   await signInWithEmailAndPassword(
+    //     auth,
+    //     auth.currentUser.email,
+    //     form.password,
+    //   );
+    //   await updateAccountData(newData);
+    //   await updateAccountEmail();
+    // } catch (error) {
+    //   if (error.code === 'auth/wrong-password') {
+    //     toast.error(t('translations:invalidPassword'));
+    //   } else {
+    //     toast.error(error.code);
+    //   }
+    // }
     setLoading(false);
   };
 
   const handleUpdatePersonalInfo = async (form) => {
     setNewData(form);
     const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      setLoading(true);
-      if (form.email === auth.currentUser.email) {
-        await updateAccountData(form);
-      } else {
-        setShowConfirmationModal(true);
-      }
-      setLoading(false);
-    } else {
-      toast.error(t('translations:noInternet'));
+    setLoading(true);
+    if (form.email === auth().currentUser.email) {
+      updateAccountData(form);
+    } else if (form.email !== auth().currentUser.email && hasInternet) {
+      setShowConfirmationModal(true);
+    } else if (form.email !== auth().currentUser.email && !hasInternet) {
+      toast.error(t('translations:noInternetToContinue'));
     }
+    setLoading(false);
   };
 
   return (
