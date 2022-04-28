@@ -50,6 +50,7 @@ function UpdatePersonalInfo() {
     dispatch({
       type: 'SIGN_OUT',
     });
+    auth().signOut();
   };
 
   const handleHome = (value) => {

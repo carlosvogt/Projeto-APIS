@@ -41,12 +41,7 @@ function RecoverPassword() {
         setEmailSended(true);
         toast.success(t('translations:emailSuccess'));
       } catch (error) {
-        console.log(error);
-        if (error.code === 'auth/user-not-found') {
-          toast.error(t('translations:invalidUser'));
-        } else {
-          toast.error(error.code);
-        }
+        toast.error(t('translations:genericError'));
       }
       setLoading(false);
     } else {

@@ -140,9 +140,9 @@ function HomeScreen() {
     );
   };
 
-  const handleDelePicture = () => {
+  const handleDelePicture = async () => {
     setShowModalDrawer(false);
-    AsyncStorage.removeItem(JSON.stringify(username)).then(() => {
+    await AsyncStorage.removeItem(JSON.stringify(username)).then(() => {
       setReloadImage(!reloadImage);
     });
   };
@@ -172,19 +172,23 @@ function HomeScreen() {
     setIsSubmitting(false);
   };
 
-  const handleSignOut = () => {
-    AsyncStorage.removeItem('auth');
+  const handleSignOut = async () => {
+    setIsSubmitting(true);
+    await AsyncStorage.removeItem('auth');
     dispatch({
       type: 'SIGN_OUT',
     });
     setShowConfirmationModal(false);
+    auth().signOut();
+    setIsSubmitting(false);
   };
 
   const deleteHomeNotes = () => {
+    setIsSubmitting(true);
     try {
       firestore()
         .collection(`users/${uuid}/homeNotes`)
-        .onSnapshot((docs) => {
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
           docs.forEach((doc) => {
             firestore()
               .collection(`users/${uuid}/homeNotes`)
@@ -195,23 +199,27 @@ function HomeScreen() {
     } catch (error) {
       toast.error(error.code);
     }
+    setIsSubmitting(false);
   };
 
   const deleteAccountData = () => {
+    setIsSubmitting(true);
     try {
       firestore().collection(`users/${uuid}/accountData`).doc(uuid).delete();
     } catch (error) {
       toast.error(error.code);
     }
+    setIsSubmitting(false);
   };
 
   const deleteNotes = (item) => {
+    setIsSubmitting(true);
     try {
       firestore()
         .collection(`users/${uuid}/apiaries`)
         .doc(item.code)
         .collection('notes')
-        .onSnapshot((docs) => {
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
           docs.forEach((doc) => {
             firestore()
               .collection(`users/${uuid}/apiaries`)
@@ -224,15 +232,17 @@ function HomeScreen() {
     } catch (error) {
       toast.error(error.code);
     }
+    setIsSubmitting(false);
   };
 
   const deleteProductions = (item) => {
+    setIsSubmitting(true);
     try {
       firestore()
         .collection(`users/${uuid}/apiaries`)
         .doc(item.code)
         .collection('productions')
-        .onSnapshot((docs) => {
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
           docs.forEach((doc) => {
             firestore()
               .collection(`users/${uuid}/apiaries`)
@@ -245,13 +255,15 @@ function HomeScreen() {
     } catch (error) {
       toast.error(error.code);
     }
+    setIsSubmitting(false);
   };
 
   const deleteApiary = (item) => {
+    setIsSubmitting(true);
     try {
       firestore()
         .collection(`users/${uuid}/apiaries`, item.code)
-        .onSnapshot((docs) => {
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
           docs.forEach((doc) => {
             firestore()
               .collection(`users/${uuid}/apiaries`)
@@ -262,13 +274,15 @@ function HomeScreen() {
     } catch (error) {
       toast.error(error.code);
     }
+    setIsSubmitting(false);
   };
 
   const deleteApiaries = () => {
+    setIsSubmitting(true);
     try {
       firestore()
         .collection(`users/${uuid}/apiaries`)
-        .onSnapshot((docs) => {
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
           docs.forEach((doc) => {
             deleteNotes(doc.data());
             deleteProductions(doc.data());
@@ -278,17 +292,21 @@ function HomeScreen() {
     } catch (error) {
       toast.error(error.code);
     }
+    setIsSubmitting(false);
   };
 
   const deleteUuid = async () => {
+    setIsSubmitting(true);
     try {
       firestore().collection('users').doc(uuid).delete();
     } catch (error) {
       toast.error(error.code);
     }
+    setIsSubmitting(false);
   };
 
   const handleDeleteAccount = async () => {
+    setIsSubmitting(true);
     try {
       await auth().currentUser.delete();
       deleteHomeNotes();
@@ -300,9 +318,11 @@ function HomeScreen() {
     } catch (error) {
       toast.error(error.code);
     }
+    setIsSubmitting(false);
   };
 
   const handleModalConfirmation = async (form) => {
+    setIsSubmitting(true);
     if (modalType === 1) {
       handleSignOut();
     }
@@ -337,6 +357,7 @@ function HomeScreen() {
         toast.error(t('translations:noInternet'));
       }
     }
+    setIsSubmitting(false);
   };
 
   const handleSuggestions = () => {

@@ -39,6 +39,7 @@ function ChangePassword() {
     dispatch({
       type: 'SIGN_OUT',
     });
+    auth().signOut();
   };
 
   const handleChangePassword = async (form) => {
@@ -47,7 +48,6 @@ function ChangePassword() {
       toast.success(t('translations:passwordUpdatedSuccess'));
       handleSignOut();
     } catch (error) {
-      console.log('error', error);
       toast.error(error.code);
     }
   };

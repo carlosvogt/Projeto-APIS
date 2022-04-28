@@ -25,7 +25,6 @@ function SignIn() {
   LogBox.ignoreLogs([
     'AsyncStorage has been extracted from react-native core and will be removed in a future release.',
     'Require cycle:',
-    'Cant perform a React state update on an unmounted component.',
   ]);
 
   const styles = StyleSheet.create({
@@ -64,9 +63,9 @@ function SignIn() {
     }
   };
 
-  const handleUserData = (userCredencial) => {
+  const handleUserData = async (userCredencial) => {
     if (userCredencial.user.emailVerified) {
-      AsyncStorage.setItem('auth', JSON.stringify(userCredencial));
+      await AsyncStorage.setItem('auth', JSON.stringify(userCredencial));
       dispatch({
         type: 'SIGN_IN',
         payload: userCredencial,
@@ -79,7 +78,7 @@ function SignIn() {
   const getUserInfo = async (userCredencial) => {
     firestore()
       .collection(`users/${userCredencial.user.uid}/accountData`)
-      .onSnapshot((docs) => {
+      .onSnapshot({ includeMetadataChanges: true }, (docs) => {
         docs.forEach((doc) => {
           AsyncStorage.setItem('account', JSON.stringify(doc.data()));
           dispatch({
@@ -100,16 +99,9 @@ function SignIn() {
           form.password,
         );
         await getUserInfo(user);
-        handleUserData(user);
+        await handleUserData(user);
       } catch (error) {
-        console.log('error', error);
-        if (error.code === 'auth/user-not-found') {
-          toast.error(t('translations:invalidUser'));
-        } else if (error.code === 'auth/wrong-password') {
-          toast.error(t('translations:invalidPassword'));
-        } else {
-          toast.error(error.code);
-        }
+        toast.error(t('translations:genericError'));
       }
       setLoading(false);
     } else {

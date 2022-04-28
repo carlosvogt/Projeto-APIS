@@ -18,7 +18,7 @@ const AppContents = () => {
   const { colors } = useTheme();
   const darkMode = useSelector((state) => state.mode.darkMode);
 
-  const getUserInfo = async (uid) => {
+  const getUserInfo = (uid) => {
     try {
       firestore()
         .collection(`users/${uid}/accountData`)
@@ -68,7 +68,7 @@ const AppContents = () => {
     return null;
   };
 
-  const checkPermission = async () => {
+  const checkPermission = () => {
     auth().onAuthStateChanged((user) => {
       if (user) {
         getUserInfo(user.uid);
@@ -77,17 +77,18 @@ const AppContents = () => {
         dispatch({
           type: 'SIGN_OUT',
         });
+        auth().signOut();
       }
     });
   };
 
   const loadData = async () => {
-    await checkPermission();
     await getStoreData();
     SplashScreen.hide();
   };
 
   useLayoutEffect(() => {
+    checkPermission();
     loadData();
   }, []);
 

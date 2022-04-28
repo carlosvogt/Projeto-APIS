@@ -271,6 +271,7 @@ function ApiaryHome() {
 
   const handlePositiveAction = async (value) => {
     setIsSubmitting(true);
+    // Apiario deletado
     if (modalOption === 0) {
       setConfirmButton(t('translations:deleting'));
       try {
@@ -292,7 +293,6 @@ function ApiaryHome() {
         toast.error(error.code);
       }
     }
-    // const apiaryRef = doc(db, `users/${userUuid}/apiaries`, data.code);
     if (modalOption === 1) {
       setConfirmButton(t('translations:saving'));
       const dateTime = getDateTime();

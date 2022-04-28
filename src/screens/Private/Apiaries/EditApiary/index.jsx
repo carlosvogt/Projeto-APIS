@@ -51,7 +51,7 @@ function EditApiary() {
     return `${newDay}/${newMonth}/${year} - ${newHour}:${newMinutes}`;
   };
 
-  const handleUpdateApiary = async (value) => {
+  const handleUpdateApiary = (value) => {
     setIsSubmitting(true);
     const dateTime = getDateTime();
     const mortalityId =
