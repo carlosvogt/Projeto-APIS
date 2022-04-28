@@ -35,12 +35,11 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'react-native-image-picker';
-import { auth, db } from '@services/firebase';
-import { deleteUser, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, deleteDoc, collection, query, getDocs } from 'firebase/firestore';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { userUid } from '@store/auth';
 import { userName } from '@store/accountData';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 function HomeScreen() {
   const { t } = useTranslation();
@@ -181,69 +180,101 @@ function HomeScreen() {
     setShowConfirmationModal(false);
   };
 
-  const deleteHomeNotes = async () => {
+  const deleteHomeNotes = () => {
     try {
-      const q = query(collection(db, `users/${uuid}/homeNotes`));
-      const docsSnap = await getDocs(q);
-      docsSnap.forEach((item) => {
-        deleteDoc(doc(db, `users/${uuid}/homeNotes`, item.data().code));
-      });
+      firestore()
+        .collection(`users/${uuid}/homeNotes`)
+        .onSnapshot((docs) => {
+          docs.forEach((doc) => {
+            firestore()
+              .collection(`users/${uuid}/homeNotes`)
+              .doc(doc.data().code)
+              .delete();
+          });
+        });
     } catch (error) {
       toast.error(error.code);
     }
   };
 
-  const deleteAccountData = async () => {
+  const deleteAccountData = () => {
     try {
-      await deleteDoc(doc(db, `users/${uuid}/accountData`, uuid));
+      firestore().collection(`users/${uuid}/accountData`).doc(uuid).delete();
     } catch (error) {
       toast.error(error.code);
     }
   };
 
-  const deleteNotes = async (item) => {
+  const deleteNotes = (item) => {
     try {
-      const apiaryRef = doc(db, `users/${uuid}/apiaries`, item.code);
-      const queryNotesSnapshot = query(collection(apiaryRef, 'notes'));
-      const docsNotesSnap = await getDocs(queryNotesSnapshot);
-      docsNotesSnap.forEach((note) => {
-        deleteDoc(doc(apiaryRef, 'notes', note.data().code));
-      });
+      firestore()
+        .collection(`users/${uuid}/apiaries`)
+        .doc(item.code)
+        .collection('notes')
+        .onSnapshot((docs) => {
+          docs.forEach((doc) => {
+            firestore()
+              .collection(`users/${uuid}/apiaries`)
+              .doc(item.code)
+              .collection('notes')
+              .doc(doc.data().code)
+              .delete();
+          });
+        });
     } catch (error) {
       toast.error(error.code);
     }
   };
 
-  const deleteProductions = async (item) => {
+  const deleteProductions = (item) => {
     try {
-      const apiaryRef = doc(db, `users/${uuid}/apiaries`, item.code);
-      const queryNotesSnapshot = query(collection(apiaryRef, 'productions'));
-      const docsNotesSnap = await getDocs(queryNotesSnapshot);
-      docsNotesSnap.forEach((production) => {
-        deleteDoc(doc(apiaryRef, 'productions', production.data().code));
-      });
+      firestore()
+        .collection(`users/${uuid}/apiaries`)
+        .doc(item.code)
+        .collection('productions')
+        .onSnapshot((docs) => {
+          docs.forEach((doc) => {
+            firestore()
+              .collection(`users/${uuid}/apiaries`)
+              .doc(item.code)
+              .collection('productions')
+              .doc(doc.data().code)
+              .delete();
+          });
+        });
     } catch (error) {
       toast.error(error.code);
     }
   };
 
-  const deleteApiary = async (item) => {
+  const deleteApiary = (item) => {
     try {
-      await deleteDoc(doc(db, `users/${uuid}/apiaries`, item.code));
+      firestore()
+        .collection(`users/${uuid}/apiaries`, item.code)
+        .onSnapshot((docs) => {
+          docs.forEach((doc) => {
+            firestore()
+              .collection(`users/${uuid}/apiaries`)
+              .doc(doc.data().code)
+              .delete();
+          });
+        });
     } catch (error) {
       toast.error(error.code);
     }
   };
 
-  const deleteApiaries = async () => {
+  const deleteApiaries = () => {
     try {
-      const querySnapshot = query(collection(db, `users/${uuid}/apiaries`));
-      const docsSnap = await getDocs(querySnapshot);
-      docsSnap.forEach((item) => {
-        deleteNotes(item.data());
-        deleteProductions(item.data());
-        deleteApiary(item.data());
-      });
+      firestore()
+        .collection(`users/${uuid}/apiaries`)
+        .onSnapshot((docs) => {
+          docs.forEach((doc) => {
+            deleteNotes(doc.data());
+            deleteProductions(doc.data());
+            deleteApiary(doc.data());
+          });
+        });
     } catch (error) {
       toast.error(error.code);
     }
@@ -251,7 +282,7 @@ function HomeScreen() {
 
   const deleteUuid = async () => {
     try {
-      await deleteDoc(doc(db, 'users', uuid));
+      firestore().collection('users').doc(uuid).delete();
     } catch (error) {
       toast.error(error.code);
     }
@@ -259,11 +290,11 @@ function HomeScreen() {
 
   const handleDeleteAccount = async () => {
     try {
-      await deleteUser(auth.currentUser);
-      await deleteHomeNotes();
-      await deleteAccountData();
-      await deleteApiaries();
-      await deleteUuid();
+      await auth().currentUser.delete();
+      deleteHomeNotes();
+      deleteAccountData();
+      deleteApiaries();
+      deleteUuid();
       toast.success(t('translations:successDeleteAccount'));
       handleSignOut();
     } catch (error) {
@@ -287,9 +318,8 @@ function HomeScreen() {
       if (hasInternet) {
         setIsSubmitting(true);
         try {
-          await signInWithEmailAndPassword(
-            auth,
-            auth.currentUser.email,
+          await auth().signInWithEmailAndPassword(
+            auth().currentUser.email,
             form.password,
           );
           await handleDeleteAccount();
@@ -452,7 +482,12 @@ function HomeScreen() {
             <View style={styles.line} />
             <TouchableOpacity
               style={styles.touchableOpacity}
-              onPress={() => handlePassword()}
+              onPress={() => {
+                const hasInternet = netInfo.isConnected;
+                if (hasInternet) {
+                  handlePassword();
+                }
+              }}
             >
               <Password color={iconColor} size={30} />
               <View style={styles.option}>
@@ -521,8 +556,11 @@ function HomeScreen() {
             <TouchableOpacity
               style={styles.touchableOpacity}
               onPress={() => {
-                setModalMode('question');
-                handleConfirmationModal(2);
+                const hasInternet = netInfo.isConnected;
+                if (hasInternet) {
+                  setModalMode('question');
+                  handleConfirmationModal(2);
+                }
               }}
             >
               <Trash color={colors.error} size={30} />

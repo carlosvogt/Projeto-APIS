@@ -15,9 +15,7 @@ import { useTheme } from '@theme';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Add, CheckOutline } from '@assets';
 import { Header } from '@components/layout';
-import { useNetInfo } from '@react-native-community/netinfo';
-import { getDocs, collection, orderBy, query } from 'firebase/firestore';
-import { db } from '@services/firebase';
+import firestore from '@react-native-firebase/firestore';
 import { userUid } from '@store/auth';
 import { useSelector } from 'react-redux';
 
@@ -27,7 +25,6 @@ function ApiariesHome() {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
   const [editedText, setEditedText] = useState();
-  const netInfo = useNetInfo();
   const userUuid = useSelector(userUid);
   const [apiaries, setApiaries] = useState([]);
   const toast = useToast();
@@ -74,25 +71,20 @@ function ApiariesHome() {
     iconMargin: { marginRight: 8 },
   });
 
-  const getData = async () => {
+  const getData = () => {
     setRefreshing(true);
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      try {
-        const querySnapshot = query(
-          collection(db, `users/${userUuid}/apiaries`),
-          orderBy('name', 'asc'),
-        );
-        const docsSnap = await getDocs(querySnapshot);
-        setApiaries([]);
-        docsSnap.forEach((item) => {
-          setApiaries((oldArray) => [...oldArray, item.data()]);
+    try {
+      firestore()
+        .collection(`users/${userUuid}/apiaries`)
+        .orderBy('name', 'asc')
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
+          setApiaries([]);
+          docs.forEach((doc) => {
+            setApiaries((oldArray) => [...oldArray, doc.data()]);
+          });
         });
-      } catch (error) {
-        toast.error(error.code);
-      }
-    } else {
-      toast.error(t('translations:noInternet'));
+    } catch (error) {
+      toast.error(error.code);
     }
     setRefreshing(false);
     setIsPullRefreshing(false);
@@ -105,11 +97,8 @@ function ApiariesHome() {
   }, [params]);
 
   useEffect(() => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet !== null) {
-      getData();
-    }
-  }, [netInfo, controller]);
+    getData();
+  }, [controller]);
 
   useEffect(() => {
     const handleListTitle = apiaries.filter((item) =>

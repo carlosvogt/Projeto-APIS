@@ -96,7 +96,7 @@ function Address() {
           params.email,
           params.password,
         );
-        await userData.user.sendEmailVerification(auth.currentUser);
+        await userData.user.sendEmailVerification();
         await handleCreateAccountData(form, userData);
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {

@@ -25,6 +25,7 @@ function SignIn() {
   LogBox.ignoreLogs([
     'AsyncStorage has been extracted from react-native core and will be removed in a future release.',
     'Require cycle:',
+    'Cant perform a React state update on an unmounted component.',
   ]);
 
   const styles = StyleSheet.create({

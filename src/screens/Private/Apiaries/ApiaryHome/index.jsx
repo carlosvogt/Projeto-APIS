@@ -23,19 +23,8 @@ import { useTheme } from '@theme';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import MapView, { Circle, Marker } from 'react-native-maps';
-import {
-  doc,
-  collection,
-  setDoc,
-  getDocs,
-  query,
-  orderBy,
-  updateDoc,
-  deleteDoc,
-} from 'firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 import { userUid } from '@store/auth';
-import { db } from '@services/firebase';
-import { useNetInfo } from '@react-native-community/netinfo';
 import uuid from 'react-native-uuid';
 
 function ApiaryHome() {
@@ -62,9 +51,7 @@ function ApiaryHome() {
   const [permission, setPermission] = useState(false);
   const [notes, setNotes] = useState([]);
   const [productions, setProductions] = useState([]);
-  const netInfo = useNetInfo();
   const toast = useToast();
-  const apiaryRef = doc(db, `users/${userUuid}/apiaries`, data.code);
   const [refreshing, setRefreshing] = useState(false);
   const [isPullRefreshing, setIsPullRefreshing] = useState(false);
   const [qtdTotalPayed, setQtdTotalPayed] = useState(0);
@@ -170,216 +157,241 @@ function ApiaryHome() {
     return `${newDay}/${newMonth}/${year} - ${newHour}:${newMinutes}`;
   };
 
-  const getNotesData = async () => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      try {
-        const queryNotesSnapshot = query(
-          collection(apiaryRef, 'notes'),
-          orderBy('lastModify', 'desc'),
-        );
-        const docsNotesSnap = await getDocs(queryNotesSnapshot);
-        setNotes([]);
-        docsNotesSnap.forEach((item) => {
-          setNotes((oldArray) => [...oldArray, item.data()]);
+  const getNotesData = () => {
+    try {
+      firestore()
+        .collection(`users/${userUuid}/apiaries`)
+        .doc(data.code)
+        .collection('notes')
+        .orderBy('lastModify', 'desc')
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
+          setNotes([]);
+          docs.forEach((doc) => {
+            setNotes((oldArray) => [...oldArray, doc.data()]);
+          });
         });
-      } catch (error) {
-        toast.error(error.code);
-      }
-    } else {
-      toast.error(t('translations:noInternet'));
+    } catch (error) {
+      toast.error(error.code);
     }
   };
 
-  const getProductionsData = async () => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      try {
-        const queryProductionsSnapshot = query(
-          collection(apiaryRef, 'productions'),
-          orderBy('lastModify', 'desc'),
-        );
-        const docsProductionsSnap = await getDocs(queryProductionsSnapshot);
-        setQtdTotal(0);
-        setQtdTotalPayed(0);
-        setProductions([]);
-        docsProductionsSnap.forEach((item) => {
-          setProductions((oldArray) => [...oldArray, item.data()]);
-          setQtdTotal(
-            (value) => parseInt(value, 10) + parseInt(item.data().qtd, 10),
-          );
-          if (item.data().payedQtd !== '') {
-            setQtdTotalPayed(
-              (value) =>
-                parseInt(value, 10) + parseInt(item.data().payedQtd, 10),
+  const getProductionsData = () => {
+    try {
+      firestore()
+        .collection(`users/${userUuid}/apiaries`)
+        .doc(data.code)
+        .collection('productions')
+        .orderBy('lastModify', 'desc')
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
+          setQtdTotal(0);
+          setQtdTotalPayed(0);
+          setProductions([]);
+          docs.forEach((doc) => {
+            setProductions((oldArray) => [...oldArray, doc.data()]);
+            setQtdTotal(
+              (value) => parseInt(value, 10) + parseInt(doc.data().qtd, 10),
             );
-          }
+            if (doc.data().payedQtd !== '') {
+              setQtdTotalPayed(
+                (value) =>
+                  parseInt(value, 10) + parseInt(doc.data().payedQtd, 10),
+              );
+            }
+          });
         });
-      } catch (error) {
-        toast.error(error.code);
-      }
-    } else {
-      toast.error(t('translations:noInternet'));
+    } catch (error) {
+      toast.error(error.code);
     }
   };
 
-  const getData = async () => {
+  const getData = () => {
     setRefreshing(true);
-    await getNotesData();
-    await getProductionsData();
+    getNotesData();
+    getProductionsData();
     setRefreshing(false);
     setIsPullRefreshing(false);
   };
 
   useEffect(() => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet !== null) {
-      getData();
-    }
-  }, [netInfo]);
+    getData();
+  }, []);
 
-  const deleteNotes = async () => {
+  const deleteNotes = () => {
     try {
-      const queryNotesSnapshot = query(collection(apiaryRef, 'notes'));
-      const docsNotesSnap = await getDocs(queryNotesSnapshot);
-      docsNotesSnap.forEach((item) => {
-        deleteDoc(doc(apiaryRef, 'notes', item.data().code));
-      });
+      firestore()
+        .collection(`users/${userUuid}/apiaries`)
+        .doc(data.code)
+        .collection('notes')
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
+          docs.forEach((doc) => {
+            firestore()
+              .collection(`users/${uuid}/apiaries`)
+              .doc(data.code)
+              .collection('notes')
+              .doc(doc.data().code)
+              .delete();
+          });
+        });
     } catch (error) {
       toast.error(error.code);
     }
   };
 
-  const deleteProductions = async () => {
+  const deleteProductions = () => {
     try {
-      const queryNotesSnapshot = query(collection(apiaryRef, 'productions'));
-      const docsNotesSnap = await getDocs(queryNotesSnapshot);
-      docsNotesSnap.forEach((item) => {
-        deleteDoc(doc(apiaryRef, 'productions', item.data().code));
-      });
+      firestore()
+        .collection(`users/${userUuid}/apiaries`)
+        .doc(data.code)
+        .collection('productions')
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
+          docs.forEach((doc) => {
+            firestore()
+              .collection(`users/${uuid}/apiaries`)
+              .doc(data.code)
+              .collection('productions')
+              .doc(doc.data().code)
+              .delete();
+          });
+        });
     } catch (error) {
       toast.error(error.code);
     }
   };
 
-  const deleteApiary = async () => {
+  const deleteApiary = () => {
     try {
-      await deleteDoc(doc(db, `users/${userUuid}/apiaries`, data.code));
+      firestore()
+        .collection(`users/${userUuid}/apiaries`)
+        .doc(data.code)
+        .delete();
     } catch (error) {
       toast.error(error.code);
     }
   };
 
   const handlePositiveAction = async (value) => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      setIsSubmitting(true);
-      if (modalOption === 0) {
-        setConfirmButton(t('translations:deleting'));
-        try {
-          await deleteNotes();
-          await deleteProductions();
-          await deleteApiary();
-          toast.success(t('translations:successApiaryDeleted'));
-
-          if (data.originMap === true) {
-            navigation.goBack();
-          } else {
-            navigation.navigate('PrivateNavigator', {
-              screen: 'ApiariesHome',
-              params: {
-                reload: true,
-              },
-            });
-          }
-        } catch (error) {
-          toast.error(error.code);
+    setIsSubmitting(true);
+    if (modalOption === 0) {
+      setConfirmButton(t('translations:deleting'));
+      try {
+        deleteNotes();
+        deleteProductions();
+        deleteApiary();
+        toast.success(t('translations:successApiaryDeleted'));
+        if (data.originMap === true) {
+          navigation.goBack();
+        } else {
+          navigation.navigate('PrivateNavigator', {
+            screen: 'ApiariesHome',
+            params: {
+              reload: true,
+            },
+          });
         }
+      } catch (error) {
+        toast.error(error.code);
       }
-      if (modalOption === 1) {
-        setConfirmButton(t('translations:saving'));
-        const dateTime = getDateTime();
-        try {
-          await updateDoc(doc(apiaryRef, 'notes', selectedNoteCode), {
+    }
+    // const apiaryRef = doc(db, `users/${userUuid}/apiaries`, data.code);
+    if (modalOption === 1) {
+      setConfirmButton(t('translations:saving'));
+      const dateTime = getDateTime();
+      try {
+        firestore()
+          .collection(`users/${userUuid}/apiaries`)
+          .doc(data.code)
+          .collection('notes')
+          .doc(selectedNoteCode)
+          .update({
             title: value.title || '',
             description: value.description,
             lastModify: dateTime,
           });
-          await getNotesData();
-          toast.success(t('translations:noteUpdated'));
-        } catch (error) {
-          toast.error(error.code);
-        }
+      } catch (error) {
+        toast.error(error.code);
       }
-      if (modalOption === 2) {
-        setConfirmButton(t('translations:deleting'));
-        try {
-          await deleteDoc(doc(apiaryRef, 'notes', selectedNoteCode));
-          await getNotesData();
-          toast.success(t('translations:noteDeleted'));
-        } catch (error) {
-          toast.error(error.code);
-        }
+    }
+    if (modalOption === 2) {
+      setConfirmButton(t('translations:deleting'));
+      try {
+        firestore()
+          .collection(`users/${userUuid}/apiaries`)
+          .doc(data.code)
+          .collection('notes')
+          .doc(selectedNoteCode)
+          .delete();
+      } catch (error) {
+        toast.error(error.code);
       }
-      if (modalOption === 3) {
-        setConfirmButton(t('translations:saving'));
-        const dateTime = getDateTime();
-        try {
-          await updateDoc(
-            doc(apiaryRef, 'productions', selectedProductionCode),
-            {
-              name: value.name,
-              payed: value.payed || t('translations:not'),
-              payedQtd: value.payedQtd,
-              qtd: value.qtd || '',
-              date: value.date,
-              lastModify: dateTime,
-            },
-          );
-          await getProductionsData();
-          toast.success(t('translations:productionUpdated'));
-        } catch (error) {
-          toast.error(error.code);
-        }
+    }
+    if (modalOption === 3) {
+      setConfirmButton(t('translations:saving'));
+      const dateTime = getDateTime();
+      try {
+        firestore()
+          .collection(`users/${userUuid}/apiaries`)
+          .doc(data.code)
+          .collection('productions')
+          .doc(selectedProductionCode)
+          .update({
+            name: value.name,
+            payed: value.payed || t('translations:not'),
+            payedQtd: value.payedQtd,
+            qtd: value.qtd || '',
+            date: value.date,
+            lastModify: dateTime,
+          });
+      } catch (error) {
+        toast.error(error.code);
       }
-      if (modalOption === 4) {
-        setConfirmButton(t('translations:deleting'));
-        try {
-          await deleteDoc(
-            doc(apiaryRef, 'productions', selectedProductionCode),
-          );
-          await getProductionsData();
-          toast.success(t('translations:productionDeleted'));
-        } catch (error) {
-          toast.error(error.code);
-        }
+    }
+    if (modalOption === 4) {
+      setConfirmButton(t('translations:deleting'));
+      try {
+        firestore()
+          .collection(`users/${userUuid}/apiaries`)
+          .doc(data.code)
+          .collection('productions')
+          .doc(selectedProductionCode)
+          .delete();
+      } catch (error) {
+        toast.error(error.code);
       }
-      if (modalOption === 5) {
-        setConfirmButton(t('translations:deleting'));
-        const dateTime = getDateTime();
-        const createdAt = Date();
-        const noteId = `${uuid.v4()}-${value.title}`;
-        try {
-          await setDoc(doc(apiaryRef, 'notes', noteId), {
+    }
+    if (modalOption === 5) {
+      setConfirmButton(t('translations:deleting'));
+      const dateTime = getDateTime();
+      const createdAt = Date();
+      const noteId = `${uuid.v4()}-${value.title}`;
+      try {
+        firestore()
+          .collection(`users/${userUuid}/apiaries`)
+          .doc(data.code)
+          .collection('notes')
+          .doc(noteId)
+          .set({
             code: noteId,
             title: value.title || '',
             description: value.description,
             lastModify: dateTime,
             createdAt: createdAt.toString(),
           });
-          await getNotesData();
-          toast.success(t('translations:noteSuccessCreated'));
-        } catch (error) {
-          toast.error(error.code);
-        }
+      } catch (error) {
+        toast.error(error.code);
       }
-      if (modalOption === 6) {
-        setConfirmButton(t('translations:deleting'));
-        const dateTime = getDateTime();
-        const createdAt = Date();
-        const productionId = `${uuid.v4()}-${value.name}`;
-        try {
-          await setDoc(doc(apiaryRef, 'productions', productionId), {
+    }
+    if (modalOption === 6) {
+      setConfirmButton(t('translations:deleting'));
+      const dateTime = getDateTime();
+      const createdAt = Date();
+      const productionId = `${uuid.v4()}-${value.name}`;
+      try {
+        firestore()
+          .collection(`users/${userUuid}/apiaries`)
+          .doc(data.code)
+          .collection('productions')
+          .doc(productionId)
+          .set({
             code: productionId,
             name: value.name,
             payed: value.payed || 'Não',
@@ -389,24 +401,19 @@ function ApiaryHome() {
             lastModify: dateTime,
             createdAt: createdAt.toString(),
           });
-          await getProductionsData();
-          toast.success(t('translations:productionSuccessCreated'));
-        } catch (error) {
-          toast.error(error.code);
-        }
+      } catch (error) {
+        toast.error(error.code);
       }
-      setIsSubmitting(false);
-      setShowModal(false);
-      setModalOption(null);
-      setModalTitle('');
-      setModalMode('question');
-      setDescription('');
-      setCancelButton('');
-      setConfirmButton('');
-      setDefaultData(null);
-    } else {
-      toast.error(t('translations:noInternet'));
     }
+    setIsSubmitting(false);
+    setShowModal(false);
+    setModalOption(null);
+    setModalTitle('');
+    setModalMode('question');
+    setDescription('');
+    setCancelButton('');
+    setConfirmButton('');
+    setDefaultData(null);
   };
 
   const dismissModal = () => {

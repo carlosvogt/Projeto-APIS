@@ -72,11 +72,11 @@ function UpdatePersonalInfo() {
       BackHandler.removeEventListener('hardwareBackPress', handleHome);
   });
 
-  const updateAccountData = async (form) => {
+  const updateAccountData = (form) => {
+    setLoading(true);
     const dateTime = getDateTime();
     const data = form;
     data.type = 'home';
-
     try {
       firestore()
         .collection(`users/${uuid}/accountData`)
@@ -105,12 +105,13 @@ function UpdatePersonalInfo() {
     } catch (error) {
       toast.error(error.code);
     }
+    setLoading(false);
   };
 
   const updateAccountEmail = async () => {
     try {
-      await updateEmail(auth.currentUser, newData.email);
-      await sendEmailVerification(auth.currentUser);
+      await auth().currentUser.updateEmail(newData.email);
+      await auth().currentUser.sendEmailVerification();
       toast.success(t('translations:emailVerification'));
       handleSignOut();
     } catch (error) {
@@ -121,28 +122,26 @@ function UpdatePersonalInfo() {
   const handleUpdateUser = async (form) => {
     setShowConfirmationModal(false);
     setLoading(true);
-    // try {
-    //   await signInWithEmailAndPassword(
-    //     auth,
-    //     auth.currentUser.email,
-    //     form.password,
-    //   );
-    //   await updateAccountData(newData);
-    //   await updateAccountEmail();
-    // } catch (error) {
-    //   if (error.code === 'auth/wrong-password') {
-    //     toast.error(t('translations:invalidPassword'));
-    //   } else {
-    //     toast.error(error.code);
-    //   }
-    // }
+    try {
+      await auth().signInWithEmailAndPassword(
+        auth().currentUser.email,
+        form.password,
+      );
+      updateAccountData(newData);
+      await updateAccountEmail();
+    } catch (error) {
+      if (error.code === 'auth/wrong-password') {
+        toast.error(t('translations:invalidPassword'));
+      } else {
+        toast.error(error.code);
+      }
+    }
     setLoading(false);
   };
 
   const handleUpdatePersonalInfo = async (form) => {
     setNewData(form);
     const hasInternet = netInfo.isConnected;
-    setLoading(true);
     if (form.email === auth().currentUser.email) {
       updateAccountData(form);
     } else if (form.email !== auth().currentUser.email && hasInternet) {
@@ -150,7 +149,6 @@ function UpdatePersonalInfo() {
     } else if (form.email !== auth().currentUser.email && !hasInternet) {
       toast.error(t('translations:noInternetToContinue'));
     }
-    setLoading(false);
   };
 
   return (

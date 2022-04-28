@@ -6,9 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTheme } from '@theme';
-import { useNetInfo } from '@react-native-community/netinfo';
-import { setDoc, doc } from 'firebase/firestore';
-import { db } from '@services/firebase';
+import firestore from '@react-native-firebase/firestore';
 import { userUid } from '@store/auth';
 import uuid from 'react-native-uuid';
 import { useSelector } from 'react-redux';
@@ -20,7 +18,6 @@ function Address() {
   const { params } = useRoute();
   const navigation = useNavigation();
   const { colors } = useTheme();
-  const netInfo = useNetInfo();
   const userUuid = useSelector(userUid);
   const toast = useToast();
 
@@ -57,15 +54,16 @@ function Address() {
     return `${newDay}/${newMonth}/${year} - ${newHour}:${newMinutes}`;
   };
 
-  const handleCreateApiary = async (value) => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      setIsSubmitting(true);
-      const dateTime = getDateTime();
-      const apiariId = `${uuid.v4()}-${params.name}`;
-      const createdAt = Date();
-      try {
-        await setDoc(doc(db, `users/${userUuid}/apiaries`, apiariId), {
+  const handleCreateApiary = (value) => {
+    setIsSubmitting(true);
+    const dateTime = getDateTime();
+    const apiariId = `${uuid.v4()}-${params.name}`;
+    const createdAt = Date();
+    try {
+      firestore()
+        .collection(`users/${userUuid}/apiaries`)
+        .doc(apiariId)
+        .set({
           code: apiariId,
           name: params.name,
           owner: params.owner,
@@ -88,18 +86,14 @@ function Address() {
           ).toString(),
           lastModify: dateTime,
         });
-        toast.success(t('translations:createdApiarySuccess'));
-        navigation.navigate('PrivateNavigator', {
-          screen: 'ApiariesHome',
-          params: { reload: true },
-        });
-      } catch (error) {
-        toast.error(error.code);
-      }
-      setIsSubmitting(false);
-    } else {
-      toast.error(t('translations:noInternet'));
+      navigation.navigate('PrivateNavigator', {
+        screen: 'ApiariesHome',
+        params: { reload: true },
+      });
+    } catch (error) {
+      toast.error(error.code);
     }
+    setIsSubmitting(false);
   };
 
   return (

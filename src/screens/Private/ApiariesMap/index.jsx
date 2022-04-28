@@ -18,11 +18,9 @@ import Geolocation from 'react-native-geolocation-service';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Title1 } from '@components/typography';
 import { Modal, useToast } from '@components';
-import { useNetInfo } from '@react-native-community/netinfo';
 import { userUid } from '@store/auth';
 import { useSelector } from 'react-redux';
-import { getDocs, collection, query } from 'firebase/firestore';
-import { db } from '@services/firebase';
+import firestore from '@react-native-firebase/firestore';
 import { accountInfo } from '@store/accountData';
 
 function ApiariesMapScreen() {
@@ -33,12 +31,11 @@ function ApiariesMapScreen() {
   const [permission, setPermission] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState('');
-  const netInfo = useNetInfo();
   const userUuid = useSelector(userUid);
-  const [apiaries, setApiaries] = useState([]);
   const toast = useToast();
   const [refreshing, setRefreshing] = useState(false);
   const userInformation = useSelector(accountInfo);
+  const [apiaries, setApiaries] = useState([]);
   const originMap = true;
   const { params } = useRoute();
   const [controller, setController] = useState(false);
@@ -82,35 +79,27 @@ function ApiariesMapScreen() {
     }
   }, [params]);
 
-  const getData = async () => {
+  const getData = () => {
     setRefreshing(true);
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      try {
-        const querySnapshot = query(
-          collection(db, `users/${userUuid}/apiaries`),
-        );
-        const docsSnap = await getDocs(querySnapshot);
-        setApiaries([]);
-        docsSnap.forEach((item) => {
-          setApiaries((oldArray) => [...oldArray, item.data()]);
+    try {
+      firestore()
+        .collection(`users/${userUuid}/apiaries`)
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
+          setApiaries([]);
+          docs.forEach((doc) => {
+            setApiaries((oldArray) => [...oldArray, doc.data()]);
+          });
+          setApiaries((oldArray) => [...oldArray, userInformation]);
         });
-        setApiaries((oldArray) => [...oldArray, userInformation]);
-      } catch (error) {
-        toast.error(error.code);
-      }
-    } else {
-      toast.error(t('translations:noInternet'));
+    } catch (error) {
+      toast.error(error.code);
     }
     setRefreshing(false);
   };
 
   useEffect(() => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet !== null) {
-      getData();
-    }
-  }, [netInfo, controller]);
+    getData();
+  }, [controller]);
 
   const handleToApiary = (type, index) => {
     if (type === 'home') {

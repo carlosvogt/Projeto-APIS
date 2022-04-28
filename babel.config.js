@@ -8,7 +8,6 @@ const ModuleResolverPlugin = [
       '@components': './src/components',
       '@i18n': './src/i18n',
       '@screens': './src/screens',
-      '@services': './src/services',
       '@theme': './src/theme',
       '@utils': './src/utils',
       '@assets': './src/assets',

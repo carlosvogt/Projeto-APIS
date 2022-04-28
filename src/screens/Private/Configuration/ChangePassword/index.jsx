@@ -5,8 +5,7 @@ import { Container, useToast } from '@components';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { Header } from '@components/layout';
 import { useTheme } from '@theme';
-import { signInWithEmailAndPassword, updatePassword } from 'firebase/auth';
-import { auth } from '@services/firebase';
+import auth from '@react-native-firebase/auth';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -44,10 +43,11 @@ function ChangePassword() {
 
   const handleChangePassword = async (form) => {
     try {
-      await updatePassword(auth.currentUser, form.newPassword);
+      await auth().currentUser.updatePassword(form.newPassword);
       toast.success(t('translations:passwordUpdatedSuccess'));
       handleSignOut();
     } catch (error) {
+      console.log('error', error);
       toast.error(error.code);
     }
   };
@@ -57,9 +57,8 @@ function ChangePassword() {
     if (hasInternet) {
       setLoading(true);
       try {
-        await signInWithEmailAndPassword(
-          auth,
-          auth.currentUser.email,
+        await auth().signInWithEmailAndPassword(
+          auth().currentUser.email,
           form.oldPassword,
         );
         await handleChangePassword(form);

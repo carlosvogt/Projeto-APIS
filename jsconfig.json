@@ -33,12 +33,6 @@
       "@screens/*": [
         "src/screens/*"
       ],
-      "@services": [
-        "./src/services/index",
-      ],
-      "@services/*": [
-        "./src/services/*"
-      ],
       "@theme": [
         "src/theme/index",
       ],

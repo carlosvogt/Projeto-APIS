@@ -9,7 +9,6 @@ import {
   View,
   ActivityIndicator,
   RefreshControl,
-  LogBox,
 } from 'react-native';
 import { useTheme } from '@theme';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
@@ -42,10 +41,6 @@ function HomeScreen() {
   const [notes, setNotes] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isPullRefreshing, setIsPullRefreshing] = useState(false);
-  LogBox.ignoreLogs([
-    'AsyncStorage has been extracted from react-native core and will be removed in a future release.',
-    'Require cycle:',
-  ]);
 
   const styles = StyleSheet.create({
     container: {
@@ -189,7 +184,6 @@ function HomeScreen() {
           createdAt: createdAt.toString(),
         });
       setShowModal(false);
-      toast.success(t('translations:noteSuccessCreated'));
     } catch (error) {
       toast.error(error.code);
     }
@@ -209,7 +203,6 @@ function HomeScreen() {
           lastModify: dateTime,
         });
       setShowModal(false);
-      toast.success(t('translations:noteUpdated'));
     } catch (error) {
       toast.error(t('translations:noInternet'));
     }
@@ -224,7 +217,6 @@ function HomeScreen() {
         .doc(selectedCode)
         .delete();
       setShowDeleteModal(false);
-      toast.success(t('translations:noteDeleted'));
     } catch (error) {
       toast.error(error.code);
     }

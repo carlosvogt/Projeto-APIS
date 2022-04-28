@@ -17,9 +17,7 @@ import { useTranslation } from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
 import { Title1 } from '@components/typography';
 import { Modal, useToast } from '@components';
-import { useNetInfo } from '@react-native-community/netinfo';
-import { getDocs, collection, query } from 'firebase/firestore';
-import { db } from '@services/firebase';
+import firestore from '@react-native-firebase/firestore';
 
 function MortalityMap() {
   const { t } = useTranslation();
@@ -27,7 +25,6 @@ function MortalityMap() {
   const [permission, setPermission] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState('');
-  const netInfo = useNetInfo();
   const [apiaries, setApiaries] = useState([]);
   const toast = useToast();
   const [refreshing, setRefreshing] = useState(false);
@@ -49,22 +46,19 @@ function MortalityMap() {
     },
   });
 
-  const getData = async () => {
+  const getData = () => {
     setRefreshing(true);
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet) {
-      try {
-        const querySnapshot = query(collection(db, 'mortalityData'));
-        const docsSnap = await getDocs(querySnapshot);
-        setApiaries([]);
-        docsSnap.forEach((item) => {
-          setApiaries((oldArray) => [...oldArray, item.data()]);
+    try {
+      firestore()
+        .collection('mortalityData')
+        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
+          setApiaries([]);
+          docs.forEach((doc) => {
+            setApiaries((oldArray) => [...oldArray, doc.data()]);
+          });
         });
-      } catch (error) {
-        toast.error(error.code);
-      }
-    } else {
-      toast.error(t('translations:noInternet'));
+    } catch (error) {
+      toast.error(error.code);
     }
     setRefreshing(false);
   };
@@ -141,12 +135,9 @@ function MortalityMap() {
   };
 
   useEffect(() => {
-    const hasInternet = netInfo.isConnected;
-    if (hasInternet !== null) {
-      getData();
-    }
+    getData();
     getLocation();
-  }, [netInfo]);
+  }, []);
 
   function onRegionChange(region) {
     setUserLocalization(region);
