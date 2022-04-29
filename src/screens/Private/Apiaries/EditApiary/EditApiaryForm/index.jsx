@@ -208,10 +208,14 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       await fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
         .then((res) => res.json())
         .then((data) => {
-          setValue('city', data.localidade, {
-            shouldValidate: true,
-          });
-          handleSetState(data.uf.toLocaleLowerCase());
+          if (data.erro === 'true') {
+            toast.error(t('translations:invalidZipCode'));
+          } else {
+            setValue('city', data.localidade, {
+              shouldValidate: true,
+            });
+            handleSetState(data.uf.toLocaleLowerCase());
+          }
         });
     } else {
       toast.error(t('translations:noInternet'));

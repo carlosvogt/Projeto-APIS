@@ -16,6 +16,7 @@ const Light = {
   line: '#F5F5F5',
   primaryLight: '#F5C499af',
   errorLight: '#E54343af',
+  lightGray: '#D3D3D3',
 };
 
 const LightTheme = merge(BaseTheme, {

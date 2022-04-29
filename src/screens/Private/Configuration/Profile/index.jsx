@@ -507,6 +507,8 @@ function HomeScreen() {
                 const hasInternet = netInfo.isConnected;
                 if (hasInternet) {
                   handlePassword();
+                } else {
+                  toast.error(t('translations:noInternet'));
                 }
               }}
             >
@@ -581,6 +583,8 @@ function HomeScreen() {
                 if (hasInternet) {
                   setModalMode('question');
                   handleConfirmationModal(2);
+                } else {
+                  toast.error(t('translations:noInternet'));
                 }
               }}
             >

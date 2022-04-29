@@ -87,7 +87,9 @@ function ApiariesMapScreen() {
         .onSnapshot({ includeMetadataChanges: true }, (docs) => {
           setApiaries([]);
           docs.forEach((doc) => {
-            setApiaries((oldArray) => [...oldArray, doc.data()]);
+            if (doc.data().status === 'active') {
+              setApiaries((oldArray) => [...oldArray, doc.data()]);
+            }
           });
           setApiaries((oldArray) => [...oldArray, userInformation]);
         });

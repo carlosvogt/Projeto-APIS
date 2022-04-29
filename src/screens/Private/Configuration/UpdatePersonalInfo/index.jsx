@@ -82,7 +82,7 @@ function UpdatePersonalInfo() {
       firestore()
         .collection(`users/${uuid}/accountData`)
         .doc(uuid)
-        .set({
+        .update({
           name: form.name,
           phone: form.phone,
           zipCode: form.zipCode || '',
@@ -110,6 +110,7 @@ function UpdatePersonalInfo() {
   };
 
   const updateAccountEmail = async () => {
+    setLoading(true);
     try {
       await auth().currentUser.updateEmail(newData.email);
       await auth().currentUser.sendEmailVerification();
@@ -118,6 +119,7 @@ function UpdatePersonalInfo() {
     } catch (error) {
       toast.error(error.code);
     }
+    setLoading(false);
   };
 
   const handleUpdateUser = async (form) => {

@@ -10,8 +10,8 @@ import store from '@store';
 import { useTheme, ThemeProvider } from '@theme';
 import { ToastProvider } from '@components';
 import Navigation from '@navigation/index';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { firebase as firebaseAuth } from '@react-native-firebase/auth';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 
 const AppContents = () => {
   const dispatch = useDispatch();
@@ -69,7 +69,7 @@ const AppContents = () => {
   };
 
   const checkPermission = () => {
-    auth().onAuthStateChanged((user) => {
+    firebaseAuth.auth().onAuthStateChanged((user) => {
       if (user) {
         getUserInfo(user.uid);
       } else {
@@ -77,7 +77,6 @@ const AppContents = () => {
         dispatch({
           type: 'SIGN_OUT',
         });
-        auth().signOut();
       }
     });
   };
@@ -88,6 +87,10 @@ const AppContents = () => {
   };
 
   useLayoutEffect(() => {
+    firebase.firestore().settings({
+      persistence: true,
+      cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
+    });
     checkPermission();
     loadData();
   }, []);

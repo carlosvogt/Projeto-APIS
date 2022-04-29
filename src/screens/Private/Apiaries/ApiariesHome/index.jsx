@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { ExpensiveNote, TextInput, useToast } from '@components';
+import { ExpensiveNote, TextInput, useToast, Modal } from '@components';
 import {
   ScrollView,
   StyleSheet,
@@ -27,11 +27,16 @@ function ApiariesHome() {
   const [editedText, setEditedText] = useState();
   const userUuid = useSelector(userUid);
   const [apiaries, setApiaries] = useState([]);
+  const [disabledApiaries, setDisabledApiaries] = useState([]);
   const toast = useToast();
   const [refreshing, setRefreshing] = useState(false);
   const [controller, setController] = useState(false);
   const [isPullRefreshing, setIsPullRefreshing] = useState(false);
   const { params } = useRoute();
+  const [showModal, setShowModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [disabledApiaryIndex, setDisabledApiaryIndex] = useState(0);
+  const [apiariesCounter, setApiariesCounter] = useState(0);
 
   const styles = StyleSheet.create({
     container: {
@@ -79,8 +84,14 @@ function ApiariesHome() {
         .orderBy('name', 'asc')
         .onSnapshot({ includeMetadataChanges: true }, (docs) => {
           setApiaries([]);
+          setDisabledApiaries([]);
+          setApiariesCounter(docs.size);
           docs.forEach((doc) => {
-            setApiaries((oldArray) => [...oldArray, doc.data()]);
+            if (doc.data().status === 'active') {
+              setApiaries((oldArray) => [...oldArray, doc.data()]);
+            } else {
+              setDisabledApiaries((oldArray) => [...oldArray, doc.data()]);
+            }
           });
         });
     } catch (error) {
@@ -101,10 +112,14 @@ function ApiariesHome() {
   }, [controller]);
 
   useEffect(() => {
-    const handleListTitle = apiaries.filter((item) =>
+    const handleApiariesList = apiaries.filter((item) =>
       item.name.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()),
     );
-    setEditedText(handleListTitle);
+    const handleDisabledApiariesList = disabledApiaries.filter((item) =>
+      item.name.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()),
+    );
+    const newArray = handleApiariesList.concat(handleDisabledApiariesList);
+    setEditedText(newArray);
   }, [searchText]);
 
   const handleToApiary = (index) => {
@@ -114,16 +129,53 @@ function ApiariesHome() {
     });
   };
 
+  const handleToReactivatedApiary = (index) => {
+    navigation.navigate('ApiaryNavigation', {
+      screen: 'ApiaryHome',
+      params: { ...disabledApiaries[index] },
+    });
+  };
+
   const handleApiaries = (apiary, index) => {
+    if (apiary.status === 'active') {
+      return (
+        <ExpensiveNote
+          key={apiary.code}
+          data={apiary}
+          hasData
+          mode="apiary"
+          onPress={() => handleToApiary(index)}
+        />
+      );
+    }
     return (
       <ExpensiveNote
         key={apiary.code}
         data={apiary}
         hasData
-        mode="apiary"
-        onPress={() => handleToApiary(index)}
+        mode="disabledApiary"
+        onPress={() => {
+          setDisabledApiaryIndex(index);
+          setShowModal(true);
+        }}
       />
     );
+  };
+
+  const handleToActiveApiary = () => {
+    setIsSubmitting(true);
+    try {
+      firestore()
+        .collection(`users/${userUuid}/apiaries`)
+        .doc(disabledApiaries[disabledApiaryIndex].code)
+        .update({ status: 'active' });
+      setShowModal(false);
+      toast.success(t('translations:successApiaryActivated'));
+      handleToReactivatedApiary(disabledApiaryIndex);
+    } catch (error) {
+      toast.error(error.code);
+    }
+    setIsSubmitting(false);
   };
 
   const handleAddApiary = () => {
@@ -144,6 +196,20 @@ function ApiariesHome() {
 
   return (
     <View style={styles.container}>
+      <Modal
+        title={t('translations:warn')}
+        mode="question"
+        cancelText={t('translations:cancel')}
+        positiveText={t('translations:reactive')}
+        cancelFunction={() => setShowModal(false)}
+        positiveAction={() => handleToActiveApiary()}
+        description={`${t('translations:reactiveApiaryDescription')} ${
+          showModal ? disabledApiaries[disabledApiaryIndex].name : ''
+        }`}
+        showModal={showModal}
+        isSubmitting={isSubmitting}
+      />
+
       <Header title={t('translations:apiaries')} onGoBack={handleHome} />
       <ScrollView
         contentContainerStyle={styles.scrollView}
@@ -202,8 +268,17 @@ function ApiariesHome() {
             )}
 
             {searchText === '' ? (
-              apiaries.length > 0 ? (
-                apiaries.map((apiary, index) => handleApiaries(apiary, index))
+              apiariesCounter > 0 ? (
+                <>
+                  {apiaries.length > 0 &&
+                    apiaries.map((apiary, index) =>
+                      handleApiaries(apiary, index),
+                    )}
+                  {disabledApiaries.length > 0 &&
+                    disabledApiaries.map((apiary, index) =>
+                      handleApiaries(apiary, index),
+                    )}
+                </>
               ) : (
                 <ExpensiveNote hasData={false} mode="apiary" />
               )

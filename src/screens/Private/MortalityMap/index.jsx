@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
@@ -18,6 +19,7 @@ import Geolocation from 'react-native-geolocation-service';
 import { Title1 } from '@components/typography';
 import { Modal, useToast } from '@components';
 import firestore from '@react-native-firebase/firestore';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 function MortalityMap() {
   const { t } = useTranslation();
@@ -26,9 +28,11 @@ function MortalityMap() {
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState('');
   const [apiaries, setApiaries] = useState([]);
+  const [mortalityApiaries, setMortalityApiaries] = useState([]);
   const toast = useToast();
   const [refreshing, setRefreshing] = useState(false);
   const [userLocalization, setUserLocalization] = useState({});
+  const netInfo = useNetInfo();
 
   const styles = StyleSheet.create({
     container: {
@@ -46,6 +50,35 @@ function MortalityMap() {
     },
   });
 
+  const deleteMortality = (item) => {
+    try {
+      firestore().collection(`mortalityData`).doc(item.code).delete();
+      console.log('Mortalidade deletada');
+    } catch (error) {}
+  };
+
+  const checkMortalityDate = () => {
+    apiaries.map((item) => {
+      const inicialDate = new Date(item.createdAt);
+      const actualDate = new Date();
+      setMortalityApiaries([]);
+      const diffDays = parseInt(
+        (actualDate.getTime() - inicialDate.getTime()) / (1000 * 60 * 60 * 24),
+        10,
+      );
+
+      if (diffDays > 365) {
+        const hasInternet = netInfo.isConnected;
+        if (hasInternet) {
+          deleteMortality(item);
+        }
+      } else {
+        setMortalityApiaries((oldArray) => [...oldArray, item]);
+      }
+      return null;
+    });
+  };
+
   const getData = () => {
     setRefreshing(true);
     try {
@@ -56,6 +89,7 @@ function MortalityMap() {
           docs.forEach((doc) => {
             setApiaries((oldArray) => [...oldArray, doc.data()]);
           });
+          checkMortalityDate();
         });
     } catch (error) {
       toast.error(error.code);
@@ -169,7 +203,7 @@ function MortalityMap() {
               onRegionChange={onRegionChange}
               moveOnMarkerPress={false}
             >
-              {apiaries.map((item, index) => {
+              {mortalityApiaries.map((item, index) => {
                 return (
                   <View key={index}>
                     {item.latitude !== '' && item.longitude !== '' && (
@@ -183,7 +217,7 @@ function MortalityMap() {
                         >
                           <Callout>
                             <Text style={{ color: colors.primary }}>
-                              {`${t('translations:addDate')}${item.createdAt}`}
+                              {`${t('translations:addDate')}${item.lastModify}`}
                             </Text>
                           </Callout>
                         </Marker>

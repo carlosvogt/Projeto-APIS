@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
@@ -26,6 +27,7 @@ import MapView, { Circle, Marker } from 'react-native-maps';
 import firestore from '@react-native-firebase/firestore';
 import { userUid } from '@store/auth';
 import uuid from 'react-native-uuid';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 function ApiaryHome() {
   const { t } = useTranslation();
@@ -56,6 +58,8 @@ function ApiaryHome() {
   const [isPullRefreshing, setIsPullRefreshing] = useState(false);
   const [qtdTotalPayed, setQtdTotalPayed] = useState(0);
   const [qtdTotal, setQtdTotal] = useState(0);
+  const [mortalityExists, setMortalityExists] = useState(false);
+  const netInfo = useNetInfo();
 
   const styles = StyleSheet.create({
     container: {
@@ -212,58 +216,58 @@ function ApiaryHome() {
     setIsPullRefreshing(false);
   };
 
+  const handleUpdateApiary = () => {
+    const dateTime = getDateTime();
+
+    try {
+      firestore()
+        .collection(`users/${userUuid}/apiaries`)
+        .doc(data.code)
+        .update({
+          mortality: 'false',
+          lastModify: dateTime,
+          type: 'apiary',
+          mortalityId: '',
+        });
+      data.mortality = 'false';
+      data.lastModify = dateTime;
+      data.type = 'apiary';
+      data.mortalityId = '';
+    } catch (error) {}
+  };
+
+  const checkIFMortalityExists = () => {
+    try {
+      firestore()
+        .collection('mortalityData')
+        .onSnapshot((docs) => {
+          docs.forEach((doc) => {
+            if (doc.data().code === data.code) {
+              setMortalityExists(true);
+            }
+          });
+          if (!mortalityExists) {
+            handleUpdateApiary();
+          }
+        });
+    } catch (error) {}
+  };
+
   useEffect(() => {
+    const hasInternet = netInfo.isConnected;
     getData();
+
+    if (hasInternet && data.mortality === 'true') {
+      checkIFMortalityExists();
+    }
   }, []);
 
-  const deleteNotes = () => {
+  const disableApiary = () => {
     try {
       firestore()
         .collection(`users/${userUuid}/apiaries`)
         .doc(data.code)
-        .collection('notes')
-        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
-          docs.forEach((doc) => {
-            firestore()
-              .collection(`users/${uuid}/apiaries`)
-              .doc(data.code)
-              .collection('notes')
-              .doc(doc.data().code)
-              .delete();
-          });
-        });
-    } catch (error) {
-      toast.error(error.code);
-    }
-  };
-
-  const deleteProductions = () => {
-    try {
-      firestore()
-        .collection(`users/${userUuid}/apiaries`)
-        .doc(data.code)
-        .collection('productions')
-        .onSnapshot({ includeMetadataChanges: true }, (docs) => {
-          docs.forEach((doc) => {
-            firestore()
-              .collection(`users/${uuid}/apiaries`)
-              .doc(data.code)
-              .collection('productions')
-              .doc(doc.data().code)
-              .delete();
-          });
-        });
-    } catch (error) {
-      toast.error(error.code);
-    }
-  };
-
-  const deleteApiary = () => {
-    try {
-      firestore()
-        .collection(`users/${userUuid}/apiaries`)
-        .doc(data.code)
-        .delete();
+        .update({ status: 'inactive' });
     } catch (error) {
       toast.error(error.code);
     }
@@ -271,14 +275,12 @@ function ApiaryHome() {
 
   const handlePositiveAction = async (value) => {
     setIsSubmitting(true);
-    // Apiario deletado
+
     if (modalOption === 0) {
-      setConfirmButton(t('translations:deleting'));
+      setConfirmButton(t('translations:inactivating'));
       try {
-        deleteNotes();
-        deleteProductions();
-        deleteApiary();
-        toast.success(t('translations:successApiaryDeleted'));
+        disableApiary();
+        toast.success(t('translations:successApiaryDisabled'));
         if (data.originMap === true) {
           navigation.goBack();
         } else {
@@ -436,9 +438,9 @@ function ApiaryHome() {
     setModalOption(0);
     setModalMode('question');
     setModalTitle(t('translations:warn'));
-    setDescription(t('translations:deleteApiaryDescription'));
+    setDescription(t('translations:disableApiaryDescription'));
     setCancelButton(t('translations:cancel'));
-    setConfirmButton(t('translations:delete'));
+    setConfirmButton(t('translations:disable'));
     setShowModal(true);
   };
 
@@ -507,7 +509,7 @@ function ApiaryHome() {
       onClick: handleEditApiary,
     },
     {
-      option: t('translations:deleteApiary'),
+      option: t('translations:disableApiary'),
       delete: true,
       onClick: handleDeleteApiary,
     },

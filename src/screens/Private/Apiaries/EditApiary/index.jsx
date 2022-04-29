@@ -89,7 +89,8 @@ function EditApiary() {
       const year = new Date().getFullYear();
       const newDay = day < 10 ? `0${day}` : day;
       const newMonth = month < 10 ? `0${month}` : month;
-      const createdAt = `${newDay}/${newMonth}/${year}`;
+      const lastModify = `${newDay}/${newMonth}/${year}`;
+      const createdAt = Date();
       try {
         firestore()
           .collection(`mortalityData`)
@@ -98,7 +99,8 @@ function EditApiary() {
             latitude: value.latitude || '',
             longitude: value.longitude || '',
             code: mortalityId,
-            createdAt,
+            lastModify,
+            createdAt: createdAt.toString(),
           });
       } catch (error) {
         toast.error(error.code);

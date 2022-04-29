@@ -52,7 +52,16 @@ function ExpensiveNote({
     apiaryListContainer: {
       borderWidth: darkMode ? 0 : 1,
       borderColor: colors.primary,
-      borderRadius: 10,
+      borderRadius: 12,
+      backgroundColor: colors.secondary,
+      paddingTop: 8,
+      marginBottom: 16,
+      justifyContent: 'space-between',
+    },
+    disabledApiaryListContainer: {
+      borderWidth: darkMode ? 0 : 1,
+      borderColor: colors.lightGray,
+      borderRadius: 12,
       backgroundColor: colors.secondary,
       paddingTop: 8,
       marginBottom: 16,
@@ -92,6 +101,13 @@ function ExpensiveNote({
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
       backgroundColor: colors.primary,
+    },
+    disabledSubContainer: {
+      marginTop: 8,
+      paddingLeft: 5,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+      backgroundColor: colors.lightGray,
     },
     emptyApiari: {
       paddingTop: 10,
@@ -168,6 +184,29 @@ function ExpensiveNote({
 
   return (
     <>
+      {mode === 'disabledApiary' && (
+        <View style={styles.disabledApiaryListContainer}>
+          <TouchableOpacity onPress={() => onPress()}>
+            <Title1 centered color={colors.lightGray} family="medium">
+              {`${t('translations:textApiary')} ${data.name}`}
+            </Title1>
+            {data.phone !== '' && (
+              <Title2 centered color={colors.primary}>
+                {`${t('translations:textOwnerPhone')} ${data.phone}`}
+              </Title2>
+            )}
+            <View style={styles.disabledSubContainer}>
+              <TitleHeader color={colors.secondary} family="medium" centered>
+                {`${t('translations:textCapacity')} ${data.totalPlaces}`}
+              </TitleHeader>
+              <TitleHeader color={colors.secondary} family="medium" centered>
+                {t('translations:inactivatedApiary')}
+              </TitleHeader>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {mode === 'apiary' &&
         (hasData ? (
           <View style={styles.apiaryListContainer}>
@@ -403,6 +442,7 @@ ExpensiveNote.propTypes = {
     'noteList',
     'production',
     'apiaryDescription',
+    'disabledApiary',
   ]),
 };
 

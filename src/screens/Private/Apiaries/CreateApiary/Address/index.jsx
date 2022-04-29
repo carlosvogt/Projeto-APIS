@@ -66,6 +66,7 @@ function Address() {
         .set({
           code: apiariId,
           name: params.name,
+          status: 'active',
           owner: params.owner,
           phone: params.phone || '',
           totalPlaces: params.totalPlaces,
