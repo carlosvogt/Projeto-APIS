@@ -23,8 +23,7 @@ function RecoverPassword() {
       justifyContent: 'center',
     },
     viewTitle: {
-      marginTop: 48,
-      marginBottom: 48,
+      marginVertical: '5%',
     },
     viewInstruction: {
       marginBottom: 16,

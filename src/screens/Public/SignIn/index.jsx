@@ -33,15 +33,19 @@ function SignIn() {
       justifyContent: 'center',
     },
     viewTitle: {
-      marginTop: 48,
-      marginBottom: 48,
+      marginTop: '5%',
+      marginBottom: '10%',
     },
     viewInstruction: {
-      marginBottom: 16,
+      marginBottom: '2%',
     },
     createAccount: {
       marginHorizontal: 32,
-      marginVertical: 48,
+      marginTop: '5%',
+    },
+    recoverPassword: {
+      marginTop: '5%',
+      marginBottom: '-1%',
     },
   });
 
@@ -149,6 +153,7 @@ function SignIn() {
           title={t('translations:forgotPassword')}
           onPress={() => handleForgotPassword()}
           mode="outlined"
+          style={styles.recoverPassword}
           textColor={colors.primary}
           titleFamily="light"
         />

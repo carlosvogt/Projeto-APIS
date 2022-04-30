@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { Button, Form, Steps } from '@components';
@@ -52,7 +52,12 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
         return true;
       },
     ),
-    totalPlaces: Yup.string().required(t('translations:requiredError')),
+    totalPlaces: Yup.string()
+      .required(t('translations:requiredError'))
+      .test('totalPlacesQuantity', (value) => {
+        setTotalQtd(parseInt(value, 10));
+        return true;
+      }),
     quantityFull: Yup.string()
       .required(t('translations:requiredError'))
       .test('validQuantity', t('translations:quantityError'), (value) => {
@@ -76,20 +81,11 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
   const {
     control,
     handleSubmit,
-    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
-
-  const formValues = getValues();
-
-  useEffect(() => {
-    if (formValues.totalPlaces) {
-      setTotalQtd(parseInt(formValues.totalPlaces, 10));
-    }
-  }, [formValues]);
 
   return (
     <>

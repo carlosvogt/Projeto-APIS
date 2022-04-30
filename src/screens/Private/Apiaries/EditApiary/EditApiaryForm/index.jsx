@@ -100,7 +100,12 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         return true;
       },
     ),
-    totalPlaces: Yup.string().required(t('translations:requiredError')),
+    totalPlaces: Yup.string()
+      .required(t('translations:requiredError'))
+      .test('totalPlacesQuantity', (value) => {
+        setTotalQtd(parseInt(value, 10));
+        return true;
+      }),
     quantityFull: Yup.string()
       .required(t('translations:requiredError'))
       .test('validQuantity', t('translations:quantityError'), (value) => {
@@ -186,12 +191,6 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       });
     }
   };
-
-  useEffect(() => {
-    if (formValues.totalPlaces) {
-      setTotalQtd(parseInt(formValues.totalPlaces, 10));
-    }
-  }, [formValues]);
 
   useEffect(() => {
     handleSetState(defaultState);

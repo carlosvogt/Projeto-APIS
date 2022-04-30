@@ -28,7 +28,6 @@ function MortalityMap() {
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState('');
   const [apiaries, setApiaries] = useState([]);
-  const [mortalityApiaries, setMortalityApiaries] = useState([]);
   const toast = useToast();
   const [refreshing, setRefreshing] = useState(false);
   const [userLocalization, setUserLocalization] = useState({});
@@ -53,43 +52,33 @@ function MortalityMap() {
   const deleteMortality = (item) => {
     try {
       firestore().collection(`mortalityData`).doc(item.code).delete();
-      console.log('Mortalidade deletada');
     } catch (error) {}
-  };
-
-  const checkMortalityDate = () => {
-    apiaries.map((item) => {
-      const inicialDate = new Date(item.createdAt);
-      const actualDate = new Date();
-      setMortalityApiaries([]);
-      const diffDays = parseInt(
-        (actualDate.getTime() - inicialDate.getTime()) / (1000 * 60 * 60 * 24),
-        10,
-      );
-
-      if (diffDays > 365) {
-        const hasInternet = netInfo.isConnected;
-        if (hasInternet) {
-          deleteMortality(item);
-        }
-      } else {
-        setMortalityApiaries((oldArray) => [...oldArray, item]);
-      }
-      return null;
-    });
   };
 
   const getData = () => {
     setRefreshing(true);
+    const actualDate = new Date();
+    const hasInternet = netInfo.isConnected;
     try {
       firestore()
         .collection('mortalityData')
         .onSnapshot({ includeMetadataChanges: true }, (docs) => {
           setApiaries([]);
           docs.forEach((doc) => {
-            setApiaries((oldArray) => [...oldArray, doc.data()]);
+            const inicialDate = new Date(doc.data().createdAt);
+            const diffDays = parseInt(
+              (actualDate.getTime() - inicialDate.getTime()) /
+                (1000 * 60 * 60 * 24),
+              10,
+            );
+            if (diffDays > 365) {
+              if (hasInternet) {
+                deleteMortality(doc.data());
+              }
+            } else {
+              setApiaries((oldArray) => [...oldArray, doc.data()]);
+            }
           });
-          checkMortalityDate();
         });
     } catch (error) {
       toast.error(error.code);
@@ -203,7 +192,7 @@ function MortalityMap() {
               onRegionChange={onRegionChange}
               moveOnMarkerPress={false}
             >
-              {mortalityApiaries.map((item, index) => {
+              {apiaries.map((item, index) => {
                 return (
                   <View key={index}>
                     {item.latitude !== '' && item.longitude !== '' && (

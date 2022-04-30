@@ -255,7 +255,7 @@ function ApiariesHome() {
           <ActivityIndicator size="large" color={colors.primary} />
         ) : (
           <>
-            {apiaries.length > 0 && (
+            {(apiaries.length > 0 || disabledApiaries.length > 0) && (
               <View style={{ marginBottom: 8 }}>
                 <TextInput
                   onChangeText={(text) => setSearchText(text)}

@@ -3,7 +3,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Title1, TitleHeader } from '@components/typography';
+import { Title1, Title2, TitleHeader } from '@components/typography';
 import {
   UserAvatar,
   ModalBottom,
@@ -23,6 +23,7 @@ import {
 import { useTheme } from '@theme';
 import { useNavigation } from '@react-navigation/native';
 import {
+  About,
   DarkMode,
   LightMode,
   Logout,
@@ -40,6 +41,7 @@ import { userUid } from '@store/auth';
 import { userName } from '@store/accountData';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import env from '@config/env';
 
 function HomeScreen() {
   const { t } = useTranslation();
@@ -425,13 +427,24 @@ function HomeScreen() {
           <View style={styles.container}>
             <Modal
               mode={modalMode}
-              title={t('translations:warn')}
+              title={
+                modalType === 3
+                  ? t('translations:about')
+                  : t('translations:warn')
+              }
               description={
                 modalType === 1
                   ? t('translations:checkoutBody')
-                  : t('translations:deleteBody')
+                  : modalType === 2
+                  ? t('translations:deleteBody')
+                  : t('translations:aboutDescription')
               }
-              cancelText={t('translations:cancel')}
+              descriptionBy={t('translations:by')}
+              cancelText={
+                modalType === 3
+                  ? t('translations:ok')
+                  : t('translations:cancel')
+              }
               positiveText={
                 modalType === 1
                   ? t('translations:getOut')
@@ -595,9 +608,26 @@ function HomeScreen() {
                 </Title1>
               </View>
             </TouchableOpacity>
+            <View style={styles.line} />
+
+            <TouchableOpacity
+              style={styles.touchableOpacity}
+              onPress={() => {
+                setModalMode('alert');
+                handleConfirmationModal(3);
+              }}
+            >
+              <About color={iconColor} size={30} />
+              <View style={styles.option}>
+                <Title1 family="medium">{t('translations:about')}</Title1>
+              </View>
+            </TouchableOpacity>
 
             <View style={styles.line} />
           </ScrollView>
+          <Title2 centered>{`${t(
+            'translations:version',
+          )} ${env.BRAND_APP_VERSION_NAME.toString()}`}</Title2>
         </>
       )}
     </>

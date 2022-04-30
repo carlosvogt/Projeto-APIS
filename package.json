@@ -1,6 +1,5 @@
 {
   "name": "apis",
-  "version": "0.0.1",
   "private": true,
   "scripts": {
     "android": "yarn load-brand-properties && react-native run-android",

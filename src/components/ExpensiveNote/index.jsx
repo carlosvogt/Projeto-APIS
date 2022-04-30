@@ -191,7 +191,7 @@ function ExpensiveNote({
               {`${t('translations:textApiary')} ${data.name}`}
             </Title1>
             {data.phone !== '' && (
-              <Title2 centered color={colors.primary}>
+              <Title2 centered color={colors.lightGray}>
                 {`${t('translations:textOwnerPhone')} ${data.phone}`}
               </Title2>
             )}

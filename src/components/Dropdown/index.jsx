@@ -63,12 +63,13 @@ function DropdownComponent({
         (darkMode && isFocus) || (darkMode && value) ? 'flex-start' : 'center',
     },
     inputSearchStyle: {
-      height: 40,
+      height: 50,
       borderBottomWidth: mode === 'top' ? 0 : 0.5,
       borderTopWidth: mode === 'bottom' ? 0 : 0.5,
       borderWidth: 0,
       borderColor: colors.primary,
       fontSize: 16,
+      color: colors.primary,
     },
     selectedTextStyle: {
       color: colors.primary,

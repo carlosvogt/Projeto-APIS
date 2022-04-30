@@ -143,6 +143,7 @@ function UpdatePersonalInfo() {
   };
 
   const handleUpdatePersonalInfo = async (form) => {
+    setLoading(true);
     setNewData(form);
     const hasInternet = netInfo.isConnected;
     if (form.email === auth().currentUser.email) {
@@ -152,6 +153,7 @@ function UpdatePersonalInfo() {
     } else if (form.email !== auth().currentUser.email && !hasInternet) {
       toast.error(t('translations:noInternetToContinue'));
     }
+    setLoading(false);
   };
 
   return (

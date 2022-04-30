@@ -30,6 +30,7 @@ const ModalCenter = ({
   mode,
   isSubmitting,
   defaultData,
+  descriptionBy,
 }) => {
   const { colors } = useTheme();
   const deviceWidth = Dimensions.get('window').width;
@@ -56,6 +57,11 @@ const ModalCenter = ({
       width: '100%',
       justifyContent: 'center',
       paddingBottom: 24,
+      padding: 8,
+    },
+    info: {
+      width: '100%',
+      justifyContent: 'center',
       padding: 8,
     },
     noteContainer: {
@@ -122,15 +128,20 @@ const ModalCenter = ({
               )}
               {mode === 'alert' && (
                 <>
-                  <View style={styles.question}>
-                    <Title1 color={colors.primary} family="medium">
+                  <View style={styles.info}>
+                    <Title1 centered color={colors.primary} family="medium">
                       {title}
                     </Title1>
                   </View>
                   <View style={styles.question}>
-                    <Title2 color={colors.primary} family="medium">
+                    <Title2 centered color={colors.primary} family="medium">
                       {description}
                     </Title2>
+                    <View style={{ marginTop: 10 }}>
+                      <Title2 centered color={colors.primary} family="medium">
+                        {descriptionBy}
+                      </Title2>
+                    </View>
                   </View>
                   <View style={styles.confirmView}>
                     <Button
