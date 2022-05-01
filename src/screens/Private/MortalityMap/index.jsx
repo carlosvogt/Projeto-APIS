@@ -19,7 +19,6 @@ import Geolocation from 'react-native-geolocation-service';
 import { Title1 } from '@components/typography';
 import { Modal, useToast } from '@components';
 import firestore from '@react-native-firebase/firestore';
-import { useNetInfo } from '@react-native-community/netinfo';
 
 function MortalityMap() {
   const { t } = useTranslation();
@@ -31,7 +30,6 @@ function MortalityMap() {
   const toast = useToast();
   const [refreshing, setRefreshing] = useState(false);
   const [userLocalization, setUserLocalization] = useState({});
-  const netInfo = useNetInfo();
 
   const styles = StyleSheet.create({
     container: {
@@ -58,7 +56,6 @@ function MortalityMap() {
   const getData = () => {
     setRefreshing(true);
     const actualDate = new Date();
-    const hasInternet = netInfo.isConnected;
     try {
       firestore()
         .collection('mortalityData')
@@ -71,10 +68,8 @@ function MortalityMap() {
                 (1000 * 60 * 60 * 24),
               10,
             );
-            if (diffDays > 365) {
-              if (hasInternet) {
-                deleteMortality(doc.data());
-              }
+            if (diffDays >= 365) {
+              deleteMortality(doc.data());
             } else {
               setApiaries((oldArray) => [...oldArray, doc.data()]);
             }

@@ -148,6 +148,8 @@
   "validating" : "Validando",
   "validate" : "Validar",
   "confirmUser" : "Informe sua senha para confirmar sua identidade",
+  "mortalityDescriptionPlaceholder" : "Digite aqui possíveis causadores da mortalidade",
+  "mortalityDescription" : "Descrição da mortalidade",
   "suggestionsHeader" : "Sugestões",
   "suggestionsInstruction" : "Informe sua sugestão!",
   "subject" : "Assunto",
@@ -236,5 +238,5 @@
   ">20>=30" : ">20% e <=30%",
   ">30>=40" : ">30% e <=40%",
   ">40" : ">40%",
-  "mortalityInfo" : "Atenção! Ao informar mortalidade o apiário passa a ser público e visível a todos os usuários do aplicativo."
+  "mortalityInfo" : "Atenção! Ao informar mortalidade o apiário passa a ser público e visível a todos os usuários do aplicativo, este registro será excluído ao completar 1 ano."
 }

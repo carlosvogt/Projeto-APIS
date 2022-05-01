@@ -27,7 +27,6 @@ import MapView, { Circle, Marker } from 'react-native-maps';
 import firestore from '@react-native-firebase/firestore';
 import { userUid } from '@store/auth';
 import uuid from 'react-native-uuid';
-import { useNetInfo } from '@react-native-community/netinfo';
 
 function ApiaryHome() {
   const { t } = useTranslation();
@@ -58,8 +57,14 @@ function ApiaryHome() {
   const [isPullRefreshing, setIsPullRefreshing] = useState(false);
   const [qtdTotalPayed, setQtdTotalPayed] = useState(0);
   const [qtdTotal, setQtdTotal] = useState(0);
-  const [mortalityExists, setMortalityExists] = useState(false);
-  const netInfo = useNetInfo();
+  const [updatedData, setUpdatedData] = useState(data);
+  const [mortalityExists, setMortalityExists] = useState([]);
+  const [mortalityNeedBeDeleted, setMortalityNeedBeDeleted] = useState(false);
+  const [checkMortality, setCheckMortality] = useState(false);
+
+  useEffect(() => {
+    setUpdatedData(data);
+  }, [params]);
 
   const styles = StyleSheet.create({
     container: {
@@ -165,7 +170,7 @@ function ApiaryHome() {
     try {
       firestore()
         .collection(`users/${userUuid}/apiaries`)
-        .doc(data.code)
+        .doc(updatedData.code)
         .collection('notes')
         .orderBy('lastModify', 'desc')
         .onSnapshot({ includeMetadataChanges: true }, (docs) => {
@@ -183,7 +188,7 @@ function ApiaryHome() {
     try {
       firestore()
         .collection(`users/${userUuid}/apiaries`)
-        .doc(data.code)
+        .doc(updatedData.code)
         .collection('productions')
         .orderBy('lastModify', 'desc')
         .onSnapshot({ includeMetadataChanges: true }, (docs) => {
@@ -218,23 +223,43 @@ function ApiaryHome() {
 
   const handleUpdateApiary = () => {
     const dateTime = getDateTime();
-
     try {
       firestore()
         .collection(`users/${userUuid}/apiaries`)
-        .doc(data.code)
+        .doc(updatedData.code)
         .update({
           mortality: 'false',
           lastModify: dateTime,
           type: 'apiary',
           mortalityId: '',
+          mortalityDescription: '',
         });
-      data.mortality = 'false';
-      data.lastModify = dateTime;
-      data.type = 'apiary';
-      data.mortalityId = '';
+      updatedData.mortality = 'false';
+      updatedData.lastModify = dateTime;
+      updatedData.type = 'apiary';
+      updatedData.mortalityId = '';
+      updatedData.mortalityDescription = '';
+      updatedData.reload = true;
+      getData();
     } catch (error) {}
   };
+
+  useEffect(() => {
+    if (mortalityNeedBeDeleted) {
+      handleUpdateApiary();
+    }
+  }, [mortalityNeedBeDeleted]);
+
+  useEffect(() => {
+    if (checkMortality) {
+      const teste = mortalityExists.includes(true);
+      if (teste === false) {
+        setMortalityNeedBeDeleted(true);
+      } else {
+        setMortalityNeedBeDeleted(false);
+      }
+    }
+  }, [checkMortality, mortalityExists]);
 
   const checkIFMortalityExists = () => {
     try {
@@ -242,22 +267,20 @@ function ApiaryHome() {
         .collection('mortalityData')
         .onSnapshot((docs) => {
           docs.forEach((doc) => {
-            if (doc.data().code === data.code) {
-              setMortalityExists(true);
+            if (doc.data().code === updatedData.mortalityId) {
+              setMortalityExists((oldArray) => [...oldArray, true]);
+            } else {
+              setMortalityExists((oldArray) => [...oldArray, false]);
             }
           });
-          if (!mortalityExists) {
-            handleUpdateApiary();
-          }
+          setCheckMortality(true);
         });
     } catch (error) {}
   };
 
   useEffect(() => {
-    const hasInternet = netInfo.isConnected;
     getData();
-
-    if (hasInternet && data.mortality === 'true') {
+    if (updatedData.mortality === 'true') {
       checkIFMortalityExists();
     }
   }, []);
@@ -266,7 +289,7 @@ function ApiaryHome() {
     try {
       firestore()
         .collection(`users/${userUuid}/apiaries`)
-        .doc(data.code)
+        .doc(updatedData.code)
         .update({ status: 'inactive' });
     } catch (error) {
       toast.error(error.code);
@@ -281,7 +304,7 @@ function ApiaryHome() {
       try {
         disableApiary();
         toast.success(t('translations:successApiaryDisabled'));
-        if (data.originMap === true) {
+        if (updatedData.originMap === true) {
           navigation.goBack();
         } else {
           navigation.navigate('PrivateNavigator', {
@@ -301,7 +324,7 @@ function ApiaryHome() {
       try {
         firestore()
           .collection(`users/${userUuid}/apiaries`)
-          .doc(data.code)
+          .doc(updatedData.code)
           .collection('notes')
           .doc(selectedNoteCode)
           .update({
@@ -318,7 +341,7 @@ function ApiaryHome() {
       try {
         firestore()
           .collection(`users/${userUuid}/apiaries`)
-          .doc(data.code)
+          .doc(updatedData.code)
           .collection('notes')
           .doc(selectedNoteCode)
           .delete();
@@ -332,7 +355,7 @@ function ApiaryHome() {
       try {
         firestore()
           .collection(`users/${userUuid}/apiaries`)
-          .doc(data.code)
+          .doc(updatedData.code)
           .collection('productions')
           .doc(selectedProductionCode)
           .update({
@@ -352,7 +375,7 @@ function ApiaryHome() {
       try {
         firestore()
           .collection(`users/${userUuid}/apiaries`)
-          .doc(data.code)
+          .doc(updatedData.code)
           .collection('productions')
           .doc(selectedProductionCode)
           .delete();
@@ -368,7 +391,7 @@ function ApiaryHome() {
       try {
         firestore()
           .collection(`users/${userUuid}/apiaries`)
-          .doc(data.code)
+          .doc(updatedData.code)
           .collection('notes')
           .doc(noteId)
           .set({
@@ -390,7 +413,7 @@ function ApiaryHome() {
       try {
         firestore()
           .collection(`users/${userUuid}/apiaries`)
-          .doc(data.code)
+          .doc(updatedData.code)
           .collection('productions')
           .doc(productionId)
           .set({
@@ -431,7 +454,7 @@ function ApiaryHome() {
   };
 
   const handleEditApiary = () => {
-    navigation.navigate('EditApiary', data);
+    navigation.navigate('EditApiary', updatedData);
   };
 
   const handleDeleteApiary = () => {
@@ -582,18 +605,18 @@ function ApiaryHome() {
   }, []);
 
   const handleHome = () => {
-    if (data.originMap === true) {
+    if (updatedData.originMap === true) {
       navigation.navigate('PrivateNavigator', {
         screen: 'ApiariesMapScreen',
         params: {
-          reload: data.reload,
+          reload: updatedData.reload,
         },
       });
     } else {
       navigation.navigate('PrivateNavigator', {
         screen: 'ApiariesHome',
         params: {
-          reload: data.reload,
+          reload: updatedData.reload,
         },
       });
     }
@@ -639,7 +662,7 @@ function ApiaryHome() {
       >
         <View style={styles.infoContainer}>
           <ExpensiveNote
-            data={data}
+            data={updatedData}
             modalOptions={apiaryOptions}
             mode="apiaryDescription"
           />
@@ -737,7 +760,7 @@ function ApiaryHome() {
               )}
             </View>
 
-            {data.latitude !== '' && (
+            {updatedData.latitude !== '' && (
               <View>
                 {permission ? (
                   <View style={styles.containerMap}>
@@ -745,8 +768,8 @@ function ApiaryHome() {
                       style={styles.map}
                       showsUserLocation
                       initialRegion={{
-                        latitude: parseFloat(data.latitude),
-                        longitude: parseFloat(data.longitude),
+                        latitude: parseFloat(updatedData.latitude),
+                        longitude: parseFloat(updatedData.longitude),
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                       }}
@@ -754,11 +777,11 @@ function ApiaryHome() {
                       <View>
                         <Marker
                           coordinate={{
-                            latitude: parseFloat(data.latitude),
-                            longitude: parseFloat(data.longitude),
+                            latitude: parseFloat(updatedData.latitude),
+                            longitude: parseFloat(updatedData.longitude),
                           }}
                           pinColor={
-                            data.type === 'apiary'
+                            updatedData.type === 'apiary'
                               ? colors.primary
                               : data.type === 'home'
                               ? colors.success
@@ -767,17 +790,17 @@ function ApiaryHome() {
                         />
                         <Circle
                           center={{
-                            latitude: parseFloat(data.latitude),
-                            longitude: parseFloat(data.longitude),
+                            latitude: parseFloat(updatedData.latitude),
+                            longitude: parseFloat(updatedData.longitude),
                           }}
                           radius={1500}
                           fillColor={
-                            data.type === 'apiary'
+                            updatedData.type === 'apiary'
                               ? colors.primaryLight
                               : colors.errorLight
                           }
                           strokeColor={
-                            data.type === 'apiary'
+                            updatedData.type === 'apiary'
                               ? colors.primary
                               : colors.error
                           }

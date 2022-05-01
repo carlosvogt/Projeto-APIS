@@ -140,6 +140,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
     mortality: Yup.string(),
     city: Yup.string().required(t('translations:requiredError')),
     state: Yup.string().required(t('translations:requiredError')),
+    mortalityDescription: Yup.string(),
   });
 
   const {
@@ -165,6 +166,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       mortality: defaultData?.mortality || '',
       city: defaultData?.city || '',
       state: defaultData?.state || '',
+      mortalityDescription: defaultData?.mortalityDescription || '',
     },
   });
 
@@ -383,11 +385,23 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         defaultValue={defaultMortality}
       />
       {formValues.mortality === 'true' && (
-        <View style={styles.marginButton}>
-          <Title2 color={colors.error}>
-            {t('translations:mortalityInfo')}
-          </Title2>
-        </View>
+        <>
+          <View style={styles.marginButton}>
+            <Title2 color={colors.error}>
+              {t('translations:mortalityInfo')}
+            </Title2>
+          </View>
+          <Form.TextInput
+            name="mortalityDescription"
+            label={t('translations:mortalityDescription')}
+            placeholder={t('translations:mortalityDescriptionPlaceholder')}
+            errorMessage={errors.mortalityDescription?.message}
+            control={control}
+            multiline
+            height={300}
+            clearButtonMode="disabled"
+          />
+        </>
       )}
 
       <View style={styles.viewTitle}>

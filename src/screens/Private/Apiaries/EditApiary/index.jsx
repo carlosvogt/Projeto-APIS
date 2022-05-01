@@ -75,6 +75,7 @@ function EditApiary() {
       city: value.city,
       state: value.state,
       mortality: value.mortality || 'false',
+      mortalityDescription: value.mortalityDescription || '',
       quantityEmpty: (
         parseInt(value.totalPlaces, 10) - parseInt(value.quantityFull, 10)
       ).toString(),
