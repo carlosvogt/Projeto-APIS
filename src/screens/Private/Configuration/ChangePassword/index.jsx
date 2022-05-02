@@ -34,8 +34,8 @@ function ChangePassword() {
     },
   });
 
-  const handleSignOut = () => {
-    AsyncStorage.removeItem('auth');
+  const handleSignOut = async () => {
+    await AsyncStorage.removeItem('auth');
     dispatch({
       type: 'SIGN_OUT',
     });

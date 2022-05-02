@@ -116,7 +116,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
     mode: 'onChange',
     defaultValues: {
       name: userInfo.name,
-      email: auth().currentUser.email,
+      email: auth()?.currentUser?.email || '',
       phone: userInfo.phone,
       zipCode: userInfo.zipCode,
       coordinates: userInfo.coordinates,

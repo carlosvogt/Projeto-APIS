@@ -111,7 +111,7 @@ const ModalCenter = ({
                         title={cancelText}
                         onPress={cancelFunction}
                         mode="outlined"
-                        textColor="red"
+                        textColor={colors.error}
                         titleFamily="medium"
                       />
                     </View>

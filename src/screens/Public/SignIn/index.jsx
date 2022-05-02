@@ -61,7 +61,7 @@ function SignIn() {
   const handleCreateAccount = () => {
     const hasInternet = netInfo.isConnected;
     if (hasInternet) {
-      navigation.navigate('CreateAccountPersonalInfo');
+      navigation.navigate('TermsOfUse');
     } else {
       toast.error(t('translations:noInternet'));
     }

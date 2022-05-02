@@ -89,7 +89,6 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
       <Form.PasswordInput
         inputRef={password}
         name="password"
-        keyboardType="numeric"
         returnKeyType="next"
         label={t('translations:requiredPassword')}
         placeholder={t('translations:passwordPlaceholder')}
@@ -100,7 +99,6 @@ function PersonalInfoForm({ onSubmit, isSubmitting }) {
       <Form.PasswordInput
         inputRef={confirmPassword}
         name="confirmPassword"
-        keyboardType="numeric"
         returnKeyType="done"
         label={t('translations:requiredConfirmPassword')}
         placeholder={t('translations:confirmPasswordPlaceholder')}

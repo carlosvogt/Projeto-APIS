@@ -193,7 +193,7 @@ function CalendarDialog({ visible, onDismiss, onPress }) {
                       title={t('translations:cancel')}
                       onPress={onDismiss}
                       mode="outlined"
-                      textColor="red"
+                      textColor={colors.error}
                       titleFamily="medium"
                     />
                   </View>

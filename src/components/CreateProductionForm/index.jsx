@@ -201,7 +201,7 @@ function CreateProductionForm({
             title={t('translations:cancel')}
             onPress={cancelFunction}
             mode="outlined"
-            textColor="red"
+            textColor={colors.error}
             titleFamily="medium"
           />
         </View>

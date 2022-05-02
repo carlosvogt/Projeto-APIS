@@ -66,8 +66,8 @@ function Address() {
         .collection(`users/${userCredencial.user.uid}/accountData`)
         .doc(userCredencial.user.uid)
         .set({
-          name: params.name,
-          phone: params.phone,
+          name: params.form.name,
+          phone: params.form.phone,
           zipCode: form.zipCode || '',
           coordinates: form.coordinates || '',
           latitude: form.latitude || '',
@@ -75,6 +75,10 @@ function Address() {
           city: form.city,
           state: form.state,
           type: 'home',
+          termsOfUse: {
+            accepted: params.params.accepted,
+            acceptedAt: params.params.acceptedAt,
+          },
           lastModify: dateTime,
           createdAt: createdAt.toString(),
         });
@@ -93,8 +97,8 @@ function Address() {
       setLoading(true);
       try {
         const userData = await auth().createUserWithEmailAndPassword(
-          params.email,
-          params.password,
+          params.form.email,
+          params.form.password,
         );
         await userData.user.sendEmailVerification();
         await handleCreateAccountData(form, userData);

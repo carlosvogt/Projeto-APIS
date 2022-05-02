@@ -4,7 +4,7 @@ import { Header } from '@components/layout';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTheme } from '@theme';
 import PersonalInfoForm from './PersonalInfoForm';
 
@@ -12,6 +12,9 @@ function PersonalInfo() {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { colors } = useTheme();
+  const params = useRoute();
+  const { ...data } = params.params;
+
   const styles = StyleSheet.create({
     scrollView: {
       flexGrow: 1,
@@ -27,7 +30,8 @@ function PersonalInfo() {
   });
 
   const handlePersonalInfo = (form) => {
-    navigation.navigate('CreateAccountAddress', form);
+    data.form = form;
+    navigation.navigate('CreateAccountAddress', data);
   };
 
   return (
