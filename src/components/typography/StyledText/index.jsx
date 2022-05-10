@@ -15,6 +15,7 @@ function StyledText({
   color,
   centered,
   underlined,
+  justify,
   ...rest
 }) {
   const { colors, fonts } = useTheme();
@@ -36,6 +37,9 @@ function StyledText({
 
   if (centered) {
     textStyles.push({ textAlign: 'center' });
+  }
+  if (justify) {
+    textStyles.push({ textAlign: 'justify' });
   }
 
   return (
@@ -59,6 +63,7 @@ StyledText.propTypes = {
   ]),
   color: PropTypes.string,
   centered: PropTypes.bool,
+  justify: PropTypes.bool,
   underlined: PropTypes.bool,
 };
 
@@ -71,6 +76,7 @@ StyledText.defaultProps = {
   textTransform: 'none',
   color: undefined,
   centered: false,
+  justify: false,
   underlined: false,
 };
 

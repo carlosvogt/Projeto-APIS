@@ -25,6 +25,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
   About,
   DarkMode,
+  Document,
   LightMode,
   Logout,
   Password,
@@ -108,7 +109,7 @@ function HomeScreen() {
     },
     headerView: { paddingRight: 16 },
     touchableOpacity: {
-      paddingVertical: 16,
+      paddingVertical: 12,
       flexDirection: 'row',
       alignItems: 'center',
     },
@@ -592,6 +593,33 @@ function HomeScreen() {
             <TouchableOpacity
               style={styles.touchableOpacity}
               onPress={() => {
+                setModalMode('alert');
+                handleConfirmationModal(3);
+              }}
+            >
+              <About color={iconColor} size={30} />
+              <View style={styles.option}>
+                <Title1 family="medium">{t('translations:about')}</Title1>
+              </View>
+            </TouchableOpacity>
+
+            <View style={styles.line} />
+            <TouchableOpacity
+              style={styles.touchableOpacity}
+              onPress={() => {
+                navigation.navigate('UserTermsOfUse');
+              }}
+            >
+              <Document color={iconColor} size={30} />
+              <View style={styles.option}>
+                <Title1 family="medium">{t('termsOfUse:title')}</Title1>
+              </View>
+            </TouchableOpacity>
+
+            <View style={styles.line} />
+            <TouchableOpacity
+              style={styles.touchableOpacity}
+              onPress={() => {
                 const hasInternet = netInfo.isConnected;
                 if (hasInternet) {
                   setModalMode('question');
@@ -606,20 +634,6 @@ function HomeScreen() {
                 <Title1 color={colors.error} family="medium">
                   {t('translations:deleteAccount')}
                 </Title1>
-              </View>
-            </TouchableOpacity>
-            <View style={styles.line} />
-
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => {
-                setModalMode('alert');
-                handleConfirmationModal(3);
-              }}
-            >
-              <About color={iconColor} size={30} />
-              <View style={styles.option}>
-                <Title1 family="medium">{t('translations:about')}</Title1>
               </View>
             </TouchableOpacity>
 

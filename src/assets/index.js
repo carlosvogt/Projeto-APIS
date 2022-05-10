@@ -18,3 +18,4 @@ export { default as VisibilityOff } from './VisibilityOff';
 export { default as VisibilityOn } from './VisibilityOn';
 export { default as Refresh } from './Refresh';
 export { default as About } from './About';
+export { default as Document } from './Document';

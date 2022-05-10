@@ -4,6 +4,7 @@ import Profile from './Profile';
 import UpdatePersonalInfo from './UpdatePersonalInfo';
 import ChangePassword from './ChangePassword';
 import Suggestions from './Suggestions';
+import UserTermsOfUse from './UserTermsOfUse';
 
 function ProfileNavigator() {
   const Stack = createStackNavigator();
@@ -34,6 +35,13 @@ function ProfileNavigator() {
       <Stack.Screen
         name="UpdatePersonalInfo"
         component={UpdatePersonalInfo}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="UserTermsOfUse"
+        component={UserTermsOfUse}
         options={{
           headerShown: false,
         }}

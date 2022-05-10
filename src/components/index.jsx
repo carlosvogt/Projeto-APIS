@@ -18,6 +18,7 @@ export { default as ExpensiveNote } from './ExpensiveNote';
 export { default as UserAvatar } from './Avatar';
 export { default as Camera } from './Camera';
 export { default as LoginForm } from './LoginForm';
+export { default as TermsOfUse } from './TermsOfUse';
 
 export {
   HelperText,

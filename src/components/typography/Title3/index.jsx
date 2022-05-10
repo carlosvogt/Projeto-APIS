@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from '@theme';
 import StyledText from '../StyledText';
 
-function Title3({ underlined, color, children, ...rest }) {
+function Title3({ underlined, color, children, justify, ...rest }) {
   const { colors } = useTheme();
 
   return (
@@ -14,6 +14,7 @@ function Title3({ underlined, color, children, ...rest }) {
       fontSize={16}
       color={color || colors.text}
       underlined={underlined}
+      justify={justify}
     >
       {children}
     </StyledText>
