@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "load-brand-properties": "node ./scripts/load-brand-properties.js",
     "android:releaseAPK": "yarn load-brand-properties && cd android && ./gradlew assembleRelease",
+    "android:releaseAAB-APK": "yarn load-brand-properties && cd android && ./gradlew bundleRelease",
     "prepare-release": "yarn load-brand-properties "
   },
   "dependencies": {
