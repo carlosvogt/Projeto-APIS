@@ -134,7 +134,7 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        applicationId "com.apis"
+        applicationId "com.project.apis"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode project.env.get("BRAND_APP_VERSION_CODE").toInteger()

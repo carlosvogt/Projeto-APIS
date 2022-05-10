@@ -1,4 +1,4 @@
-package com.apis;
+package com.project.apis;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;

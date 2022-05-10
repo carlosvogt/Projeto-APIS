@@ -377,7 +377,7 @@ function HomeScreen() {
 
   const handleShare = async () => {
     await Share.share({
-      message: 'https://play.google.com/store/apps/details?id=com.apis',
+      message: 'https://play.google.com/store/apps/details?id=com.project.apis',
     });
   };
 
