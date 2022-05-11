@@ -10,7 +10,6 @@ import {
   NavBackButton,
   ToggleButton,
   Modal,
-  Camera,
   useToast,
 } from '@components';
 import {
@@ -54,8 +53,6 @@ function HomeScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [modalType, setModalType] = useState(null);
-  const [takePicture, setTakePicture] = useState(false);
-  const types = ['selfie'];
   const [response, setResponse] = useState(null);
   const [reloadImage, setReloadImage] = useState(true);
   const [userImage, setUserImage] = useState(null);
@@ -125,11 +122,6 @@ function HomeScreen() {
     },
   });
 
-  const handleTakePicture = () => {
-    setShowModalDrawer(false);
-    setTakePicture(true);
-  };
-
   const handleChoosePicture = () => {
     setShowModalDrawer(false);
     ImagePicker.launchImageLibrary(
@@ -151,10 +143,6 @@ function HomeScreen() {
   };
 
   const data = [
-    {
-      option: t('translations:takePicture'),
-      onClick: () => handleTakePicture(),
-    },
     {
       option: t('translations:selectPicture'),
       onClick: () => handleChoosePicture(),
@@ -381,11 +369,6 @@ function HomeScreen() {
     });
   };
 
-  function handleOnBackTakePhoto() {
-    setShowModalDrawer(false);
-    setTakePicture(false);
-  }
-
   const loadPhoto = async () => {
     if (response || photo) {
       const perfil = await AsyncStorage.getItem(JSON.stringify(username));
@@ -412,238 +395,213 @@ function HomeScreen() {
 
   return (
     <>
-      {takePicture ? (
-        <Camera
-          photos={(image) => {
-            setPhoto(image);
-            handleOnBackTakePhoto();
-          }}
-          types={types}
-          onBack={handleOnBackTakePhoto}
-          hideOverlay
-          header={t('translations:takeSelfie')}
+      <View style={styles.container}>
+        <Modal
+          mode={modalMode}
+          title={
+            modalType === 3 ? t('translations:about') : t('translations:warn')
+          }
+          description={
+            modalType === 1
+              ? t('translations:checkoutBody')
+              : modalType === 2
+              ? t('translations:deleteBody')
+              : t('translations:aboutDescription')
+          }
+          descriptionBy={t('translations:by')}
+          cancelText={
+            modalType === 3 ? t('translations:ok') : t('translations:cancel')
+          }
+          positiveText={
+            modalType === 1
+              ? t('translations:getOut')
+              : modalType === 2 && !isSubmitting
+              ? t('translations:delete')
+              : modalType === 2 && isSubmitting
+              ? t('translations:deleting')
+              : t('translations:validate')
+          }
+          cancelFunction={() => dismissConfirmationModal()}
+          positiveAction={(value) => handleModalConfirmation(value)}
+          showModal={showConfirmationModal}
+          isSubmitting={isSubmitting}
         />
-      ) : (
-        <>
-          <View style={styles.container}>
-            <Modal
-              mode={modalMode}
-              title={
-                modalType === 3
-                  ? t('translations:about')
-                  : t('translations:warn')
-              }
-              description={
-                modalType === 1
-                  ? t('translations:checkoutBody')
-                  : modalType === 2
-                  ? t('translations:deleteBody')
-                  : t('translations:aboutDescription')
-              }
-              descriptionBy={t('translations:by')}
-              cancelText={
-                modalType === 3
-                  ? t('translations:ok')
-                  : t('translations:cancel')
-              }
-              positiveText={
-                modalType === 1
-                  ? t('translations:getOut')
-                  : modalType === 2 && !isSubmitting
-                  ? t('translations:delete')
-                  : modalType === 2 && isSubmitting
-                  ? t('translations:deleting')
-                  : t('translations:validate')
-              }
-              cancelFunction={() => dismissConfirmationModal()}
-              positiveAction={(value) => handleModalConfirmation(value)}
-              showModal={showConfirmationModal}
-              isSubmitting={isSubmitting}
-            />
 
-            <ModalBottom
-              showModal={showModalDrawer}
-              onPressOut={() => setShowModalDrawer(false)}
-            >
-              {data?.map((item) => {
-                return (
-                  <TouchableOpacity
-                    key={item.option}
-                    style={styles.modalItem}
-                    onPress={item.onClick}
-                  >
-                    <Title1 family="medium" color={colors.primary}>
-                      {item.option}
-                    </Title1>
-                  </TouchableOpacity>
-                );
-              })}
-            </ModalBottom>
-          </View>
-          <View style={styles.header}>
-            <View style={styles.headerContainer}>
-              <View style={styles.headerView}>
-                <NavBackButton />
-              </View>
-              <TitleHeader>
-                {t('translations:configurationsHeader')}
-              </TitleHeader>
-            </View>
-
-            <View style={styles.picture}>
-              <TouchableOpacity onPress={() => setShowModalDrawer(true)}>
-                <UserAvatar image={userImage} name={username} size={60} />
+        <ModalBottom
+          showModal={showModalDrawer}
+          onPressOut={() => setShowModalDrawer(false)}
+        >
+          {data?.map((item) => {
+            return (
+              <TouchableOpacity
+                key={item.option}
+                style={styles.modalItem}
+                onPress={item.onClick}
+              >
+                <Title1 family="medium" color={colors.primary}>
+                  {item.option}
+                </Title1>
               </TouchableOpacity>
+            );
+          })}
+        </ModalBottom>
+      </View>
+      <View style={styles.header}>
+        <View style={styles.headerContainer}>
+          <View style={styles.headerView}>
+            <NavBackButton />
+          </View>
+          <TitleHeader>{t('translations:configurationsHeader')}</TitleHeader>
+        </View>
+
+        <View style={styles.picture}>
+          <TouchableOpacity onPress={() => setShowModalDrawer(true)}>
+            <UserAvatar image={userImage} name={username} size={60} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.line} />
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          onPress={() => handlePersonalInfo()}
+        >
+          <Person color={iconColor} size={30} />
+          <View style={styles.option}>
+            <Title1 family="medium">{t('translations:personalInfo')}</Title1>
+          </View>
+        </TouchableOpacity>
+
+        <View style={styles.line} />
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          onPress={() => {
+            const hasInternet = netInfo.isConnected;
+            if (hasInternet) {
+              handlePassword();
+            } else {
+              toast.error(t('translations:noInternet'));
+            }
+          }}
+        >
+          <Password color={iconColor} size={30} />
+          <View style={styles.option}>
+            <Title1 family="medium">{t('translations:changePassword')}</Title1>
+          </View>
+        </TouchableOpacity>
+
+        <View style={styles.line} />
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          onPress={() => handleShare()}
+        >
+          <ShareIcon color={iconColor} size={30} />
+          <View style={styles.option}>
+            <Title1 family="medium">{t('translations:share')}</Title1>
+          </View>
+        </TouchableOpacity>
+
+        <View style={styles.line} />
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          onPress={() => handleSuggestions()}
+        >
+          <Send color={iconColor} size={30} />
+          <View style={styles.option}>
+            <Title1 family="medium">{t('translations:suggestions')}</Title1>
+          </View>
+        </TouchableOpacity>
+
+        <View style={styles.line} />
+        <View style={styles.darkModeContainer}>
+          <View style={styles.darkMode}>
+            {darkMode && <LightMode color={colors.secondary} size={30} />}
+            {!darkMode && <DarkMode color={colors.primary} size={30} />}
+            <View style={styles.option}>
+              <Title1 family="medium">
+                {darkMode
+                  ? t('translations:lightMode')
+                  : t('translations:darkMode')}
+              </Title1>
             </View>
           </View>
+          <ToggleButton
+            isEnabled={darkMode}
+            setIsEnabled={(value) => setSelectedMode(value)}
+          />
+        </View>
 
-          <ScrollView
-            contentContainerStyle={styles.scrollView}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.line} />
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => handlePersonalInfo()}
-            >
-              <Person color={iconColor} size={30} />
-              <View style={styles.option}>
-                <Title1 family="medium">
-                  {t('translations:personalInfo')}
-                </Title1>
-              </View>
-            </TouchableOpacity>
+        <View style={styles.line} />
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          onPress={() => {
+            setModalMode('alert');
+            handleConfirmationModal(3);
+          }}
+        >
+          <About color={iconColor} size={30} />
+          <View style={styles.option}>
+            <Title1 family="medium">{t('translations:about')}</Title1>
+          </View>
+        </TouchableOpacity>
 
-            <View style={styles.line} />
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => {
-                const hasInternet = netInfo.isConnected;
-                if (hasInternet) {
-                  handlePassword();
-                } else {
-                  toast.error(t('translations:noInternet'));
-                }
-              }}
-            >
-              <Password color={iconColor} size={30} />
-              <View style={styles.option}>
-                <Title1 family="medium">
-                  {t('translations:changePassword')}
-                </Title1>
-              </View>
-            </TouchableOpacity>
+        <View style={styles.line} />
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          onPress={() => {
+            navigation.navigate('UserTermsOfUse');
+          }}
+        >
+          <Document color={iconColor} size={30} />
+          <View style={styles.option}>
+            <Title1 family="medium">{t('termsOfUse:title')}</Title1>
+          </View>
+        </TouchableOpacity>
 
-            <View style={styles.line} />
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => handleShare()}
-            >
-              <ShareIcon color={iconColor} size={30} />
-              <View style={styles.option}>
-                <Title1 family="medium">{t('translations:share')}</Title1>
-              </View>
-            </TouchableOpacity>
+        <View style={styles.line} />
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          onPress={() => {
+            setModalMode('question');
+            handleConfirmationModal(1);
+          }}
+        >
+          <Logout color={iconColor} size={30} />
+          <View style={styles.option}>
+            <Title1 family="medium">{t('translations:checkout')}</Title1>
+          </View>
+        </TouchableOpacity>
 
-            <View style={styles.line} />
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => handleSuggestions()}
-            >
-              <Send color={iconColor} size={30} />
-              <View style={styles.option}>
-                <Title1 family="medium">{t('translations:suggestions')}</Title1>
-              </View>
-            </TouchableOpacity>
+        <View style={styles.line} />
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          onPress={() => {
+            const hasInternet = netInfo.isConnected;
+            if (hasInternet) {
+              setModalMode('question');
+              handleConfirmationModal(2);
+            } else {
+              toast.error(t('translations:noInternet'));
+            }
+          }}
+        >
+          <Trash color={colors.error} size={30} />
+          <View style={styles.option}>
+            <Title1 color={colors.error} family="medium">
+              {t('translations:deleteAccount')}
+            </Title1>
+          </View>
+        </TouchableOpacity>
 
-            <View style={styles.line} />
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => {
-                setModalMode('question');
-                handleConfirmationModal(1);
-              }}
-            >
-              <Logout color={iconColor} size={30} />
-              <View style={styles.option}>
-                <Title1 family="medium">{t('translations:checkout')}</Title1>
-              </View>
-            </TouchableOpacity>
-
-            <View style={styles.line} />
-            <View style={styles.darkModeContainer}>
-              <View style={styles.darkMode}>
-                {darkMode && <LightMode color={colors.secondary} size={30} />}
-                {!darkMode && <DarkMode color={colors.primary} size={30} />}
-                <View style={styles.option}>
-                  <Title1 family="medium">
-                    {darkMode
-                      ? t('translations:lightMode')
-                      : t('translations:darkMode')}
-                  </Title1>
-                </View>
-              </View>
-              <ToggleButton
-                isEnabled={darkMode}
-                setIsEnabled={(value) => setSelectedMode(value)}
-              />
-            </View>
-
-            <View style={styles.line} />
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => {
-                setModalMode('alert');
-                handleConfirmationModal(3);
-              }}
-            >
-              <About color={iconColor} size={30} />
-              <View style={styles.option}>
-                <Title1 family="medium">{t('translations:about')}</Title1>
-              </View>
-            </TouchableOpacity>
-
-            <View style={styles.line} />
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => {
-                navigation.navigate('UserTermsOfUse');
-              }}
-            >
-              <Document color={iconColor} size={30} />
-              <View style={styles.option}>
-                <Title1 family="medium">{t('termsOfUse:title')}</Title1>
-              </View>
-            </TouchableOpacity>
-
-            <View style={styles.line} />
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => {
-                const hasInternet = netInfo.isConnected;
-                if (hasInternet) {
-                  setModalMode('question');
-                  handleConfirmationModal(2);
-                } else {
-                  toast.error(t('translations:noInternet'));
-                }
-              }}
-            >
-              <Trash color={colors.error} size={30} />
-              <View style={styles.option}>
-                <Title1 color={colors.error} family="medium">
-                  {t('translations:deleteAccount')}
-                </Title1>
-              </View>
-            </TouchableOpacity>
-
-            <View style={styles.line} />
-          </ScrollView>
-          <Title2 centered>{`${t(
-            'translations:version',
-          )} ${env.BRAND_APP_VERSION_NAME.toString()}`}</Title2>
-        </>
-      )}
+        <View style={styles.line} />
+      </ScrollView>
+      <Title2 centered>{`${t(
+        'translations:version',
+      )} ${env.BRAND_APP_VERSION_NAME.toString()}`}</Title2>
     </>
   );
 }
