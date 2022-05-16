@@ -417,6 +417,13 @@ function ExpensiveNote({
                   data.quantityFull
                 }  |  ${t('translations:textAvailable')} ${emptyPlaces}`}
               </Title2>
+              {data.estimated !== '' && (
+                <View style={{ marginTop: 16 }}>
+                  <Title2 color={colors.primary} family="medium" centered>
+                    {data.estimated}
+                  </Title2>
+                </View>
+              )}
             </View>
             <TouchableOpacity style={styles.noteListRightContainer}>
               <Menu style={styles.menu}>

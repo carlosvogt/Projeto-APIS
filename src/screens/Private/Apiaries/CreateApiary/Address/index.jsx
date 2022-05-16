@@ -82,6 +82,7 @@ function Address() {
           type: 'apiary',
           mortality: 'false',
           mortalityId: '',
+          estimated: params.estimated || '',
           quantityEmpty: (
             parseInt(params.totalPlaces, 10) - parseInt(params.quantityFull, 10)
           ).toString(),

@@ -4,7 +4,7 @@ import { Header } from '@components/layout';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTheme } from '@theme';
 import PersonalInfoForm from './PersonalInfoForm';
 
@@ -12,7 +12,7 @@ function PersonalInfo() {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { colors } = useTheme();
-
+  const { params } = useRoute();
   const styles = StyleSheet.create({
     scrollView: {
       flexGrow: 1,
@@ -28,6 +28,8 @@ function PersonalInfo() {
   });
 
   const handlePersonalInfo = (form) => {
+    const obj = form;
+    obj.estimated = params;
     navigation.navigate('CreateApiaryAddress', form);
   };
 

@@ -39,6 +39,11 @@
       "source.fixAll.eslint": true
 },
 "cSpell.words": [
-    "firestore"
+    "agua",
+    "firestore",
+    "Indicacao",
+    "Producao",
+    "seguranca",
+    "vegetacao"
 ]
   }

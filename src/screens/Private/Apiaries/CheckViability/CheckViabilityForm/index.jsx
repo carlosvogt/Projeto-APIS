@@ -19,15 +19,15 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
   const [selectedQuestionEight, setSelectedQuestionEight] = useState(false);
 
   const schema = Yup.object().shape({
-    questionOne: Yup.string().required(t('translations:requiredError')),
-    questionTwo: Yup.string().required(t('translations:requiredError')),
-    questionTree: Yup.string().required(t('translations:requiredError')),
-    questionFour: Yup.string().required(t('translations:requiredError')),
-    questionFive: Yup.string().required(t('translations:requiredError')),
-    questionSix: Yup.string().required(t('translations:requiredError')),
-    questionSeven: Yup.string().required(t('translations:requiredError')),
-    questionEight: Yup.string().required(t('translations:requiredError')),
-    questionNine: Yup.string().required(t('translations:requiredError')),
+    flora: Yup.string().required(t('translations:requiredError')),
+    agua: Yup.string().required(t('translations:requiredError')),
+    acesso: Yup.string().required(t('translations:requiredError')),
+    vegetacao: Yup.string().required(t('translations:requiredError')),
+    distancia: Yup.string().required(t('translations:requiredError')),
+    outros: Yup.string().required(t('translations:requiredError')),
+    luz: Yup.string().required(t('translations:requiredError')),
+    lavouras: Yup.string().required(t('translations:requiredError')),
+    colmeias: Yup.string().required(t('translations:requiredError')),
   });
 
   const {
@@ -74,75 +74,75 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
 
   const floraOptions = [
     {
-      label: t('translations:<=10'),
+      label: t('translations:<=10%'),
       value: t('translations:<=10'),
     },
     {
-      label: t('translations:>10>=20'),
+      label: t('translations:>10>=20%'),
       value: t('translations:>10>=20'),
     },
     {
-      label: t('translations:>20>=30'),
+      label: t('translations:>20>=30%'),
       value: t('translations:>20>=30'),
     },
     {
-      label: t('translations:>30>=40'),
+      label: t('translations:>30>=40%'),
       value: t('translations:>30>=40'),
     },
     {
-      label: t('translations:>40'),
+      label: t('translations:>40%'),
       value: t('translations:>40'),
     },
   ];
 
   const handleSetOptionOne = (value) => {
     setSelectedQuestionOne(value);
-    setValue('questionOne', value, {
+    setValue('flora', value, {
       shouldValidate: true,
     });
   };
 
   const handleSetOptionTwo = (value) => {
     setSelectedQuestionTwo(value);
-    setValue('questionTwo', value, {
+    setValue('agua', value, {
       shouldValidate: true,
     });
   };
 
   const handleSetOptionTree = (value) => {
     setSelectedQuestionTree(value);
-    setValue('questionTree', value, {
+    setValue('acesso', value, {
       shouldValidate: true,
     });
   };
 
   const handleSetOptionFour = (value) => {
     setSelectedQuestionFour(value);
-    setValue('questionFour', value, {
+    setValue('vegetacao', value, {
       shouldValidate: true,
     });
   };
   const handleSetOptionFive = (value) => {
     setSelectedQuestionFive(value);
-    setValue('questionFive', value, {
+    setValue('distancia', value, {
       shouldValidate: true,
     });
   };
   const handleSetOptionSix = (value) => {
     setSelectedQuestionSix(value);
-    setValue('questionSix', value, {
+    setValue('outros', value, {
       shouldValidate: true,
     });
   };
   const handleSetOptionSeven = (value) => {
     setSelectedQuestionSeven(value);
-    setValue('questionSeven', value, {
+    setValue('luz', value, {
       shouldValidate: true,
     });
   };
   const handleSetOptionEight = (value) => {
     setSelectedQuestionEight(value);
-    setValue('questionEight', value, {
+    setValue('lavouras', value, {
       shouldValidate: true,
     });
   };
@@ -150,92 +150,92 @@ function CheckViabilityForm({ onSubmit, isSubmitting }) {
   return (
     <>
       <Dropdown
-        name="questionOne"
+        name="flora"
         label={t('translations:questionOne')}
         value={selectedQuestionOne}
         setValue={(value) => handleSetOptionOne(value)}
         data={floraOptions}
-        error={errors.questionOne?.message}
+        error={errors.flora?.message}
         control={control}
         mode="bottom"
       />
       <Dropdown
-        name="questionTwo"
+        name="agua"
         label={t('translations:questionTwo')}
         value={selectedQuestionTwo}
         setValue={(value) => handleSetOptionTwo(value)}
         data={yesNotOptions}
-        error={errors.questionTwo?.message}
+        error={errors.agua?.message}
         control={control}
         mode="bottom"
       />
       <Dropdown
-        name="questionTree"
+        name="acesso"
         label={t('translations:questionTree')}
         value={selectedQuestionTree}
         setValue={(value) => handleSetOptionTree(value)}
         data={yesNotOptions}
-        error={errors.questionTree?.message}
+        error={errors.acesso?.message}
         control={control}
         mode="bottom"
       />
       <Dropdown
-        name="questionFour"
+        name="vegetacao"
         label={t('translations:questionFour')}
         value={selectedQuestionFour}
         setValue={(value) => handleSetOptionFour(value)}
         data={vegetation}
-        error={errors.questionFour?.message}
+        error={errors.vegetacao?.message}
         control={control}
         mode="bottom"
       />
       <Dropdown
-        name="questionFive"
+        name="distancia"
         label={t('translations:questionFive')}
         value={selectedQuestionFive}
         setValue={(value) => handleSetOptionFive(value)}
         data={distancy}
-        error={errors.questionFive?.message}
+        error={errors.distancia?.message}
         control={control}
         mode="bottom"
       />
       <Dropdown
-        name="questionSix"
+        name="outros"
         label={t('translations:questionSix')}
         value={selectedQuestionSix}
         setValue={(value) => handleSetOptionSix(value)}
         data={yesNotOptions}
-        error={errors.questionSix?.message}
+        error={errors.outros?.message}
         control={control}
         mode="bottom"
       />
       <Dropdown
-        name="questionSeven"
+        name="luz"
         label={t('translations:questionSeven')}
         value={selectedQuestionSeven}
         setValue={(value) => handleSetOptionSeven(value)}
         data={yesNotOptions}
-        error={errors.questionSeven?.message}
+        error={errors.luz?.message}
         control={control}
         mode="bottom"
       />
       <Dropdown
-        name="questionEight"
+        name="lavouras"
         label={t('translations:questionEight')}
         value={selectedQuestionEight}
         setValue={(value) => handleSetOptionEight(value)}
         data={yesNotOptions}
-        error={errors.questionEight?.message}
+        error={errors.lavouras?.message}
         control={control}
         mode="bottom"
       />
       <Form.TextInput
-        name="questionNine"
+        name="colmeias"
         keyboardType="numeric"
         returnKeyType="done"
         label={t('translations:questionNine')}
         placeholder={t('translations:questionNinePlaceholder')}
-        errorMessage={errors.questionNine?.message}
+        errorMessage={errors.colmeias?.message}
         control={control}
       />
       <Footer style={{ marginTop: 8 }}>
