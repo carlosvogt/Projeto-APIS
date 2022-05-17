@@ -36,8 +36,12 @@ function ChangePassword() {
 
   const handleSignOut = async () => {
     await AsyncStorage.removeItem('auth');
+    await AsyncStorage.removeItem('account');
     dispatch({
       type: 'SIGN_OUT',
+    });
+    dispatch({
+      type: 'CLEAN_ACCOUNT_DATA',
     });
     auth().signOut();
   };
