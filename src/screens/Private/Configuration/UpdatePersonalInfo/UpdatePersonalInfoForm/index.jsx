@@ -91,7 +91,7 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       flex: 1,
     },
     button: {
-      width: 160,
+      width: 150,
       marginTop: 16,
     },
     viewTitle: {
