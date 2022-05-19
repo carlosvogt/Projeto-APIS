@@ -131,11 +131,13 @@ function MortalityMap() {
         });
       },
       (error) => {
-        setDescription(
-          `${t('translations:code')} ${error.code} - ${error.message}`,
-        );
-        setShowModal(true);
-        setUserLocalization({});
+        if (error.code !== 3) {
+          setDescription(
+            `${t('translations:code')} ${error.code} - ${error.message}`,
+          );
+          setShowModal(true);
+          setUserLocalization({});
+        }
       },
       {
         accuracy: {
@@ -221,6 +223,15 @@ function MortalityMap() {
               })}
             </MapView>
           )}
+          <Text
+            style={{
+              color: colors.primary,
+              textAlign: 'center',
+              marginBottom: 5,
+            }}
+          >
+            {t('translations:diameter')}
+          </Text>
         </View>
       ) : (
         <View style={styles.view}>

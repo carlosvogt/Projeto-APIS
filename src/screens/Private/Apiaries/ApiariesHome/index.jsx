@@ -125,7 +125,10 @@ function ApiariesHome() {
   const handleToApiary = (index) => {
     navigation.navigate('ApiaryNavigation', {
       screen: 'ApiaryHome',
-      params: { ...apiaries[index] },
+      params:
+        editedText.length > 0
+          ? { ...editedText[index] }
+          : { ...apiaries[index] },
     });
   };
 

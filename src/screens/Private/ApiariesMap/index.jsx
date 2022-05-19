@@ -167,11 +167,13 @@ function ApiariesMapScreen() {
         });
       },
       (error) => {
-        setDescription(
-          `${t('translations:code')} ${error.code} - ${error.message}`,
-        );
-        setShowModal(true);
-        setUserLocalization({});
+        if (error.code !== 3) {
+          setDescription(
+            `${t('translations:code')} ${error.code} - ${error.message}`,
+          );
+          setShowModal(true);
+          setUserLocalization({});
+        }
       },
       {
         accuracy: {
@@ -276,6 +278,17 @@ function ApiariesMapScreen() {
               </MapView>
             )}
           </View>
+
+          <Text
+            style={{
+              color: colors.primary,
+              textAlign: 'center',
+              marginBottom: 5,
+            }}
+          >
+            {t('translations:diameter')}
+          </Text>
+
           <View style={styles.legendContainer}>
             <View style={styles.legendItem}>
               <View

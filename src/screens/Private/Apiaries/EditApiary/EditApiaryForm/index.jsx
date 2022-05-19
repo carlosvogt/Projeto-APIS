@@ -46,7 +46,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       flex: 1,
     },
     button: {
-      width: 120,
+      width: 160,
       marginTop: 16,
     },
     viewTitle: {
@@ -279,9 +279,11 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         setValue('longitude', position.coords.longitude);
       },
       (error) => {
-        toast.error(
-          `${t('translations:code')} ${error.code} - ${error.message}`,
-        );
+        if (error.code !== 3) {
+          toast.error(
+            `${t('translations:code')} ${error.code} - ${error.message}`,
+          );
+        }
       },
       {
         accuracy: {

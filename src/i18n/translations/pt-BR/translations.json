@@ -245,5 +245,6 @@
   "reject" : "Rejeitar",
   "termsDisagree" : "Atenção! A criação da conta só é possível se os termos forem aceitos.",
   "mortalityInfo" : "Atenção! Ao informar mortalidade o apiário passa a ser público e visível a todos os usuários do aplicativo, este registro será excluído ao completar 1 ano.",
-  "viabilityResponseDescription" : "Resultado da análise de viabilidade"
+  "viabilityResponseDescription" : "Resultado da análise de viabilidade",
+  "diameter" : "Diâmetro da circunferência: 3 Km"
 }
