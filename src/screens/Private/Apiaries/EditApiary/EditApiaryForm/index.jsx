@@ -46,7 +46,7 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       flex: 1,
     },
     button: {
-      width: 120,
+      width: 150,
       marginTop: 16,
     },
     viewTitle: {
@@ -245,12 +245,6 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
       return true;
     }
 
-    if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
-    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
-    }
-
     return false;
   };
 
@@ -279,9 +273,11 @@ function EditApiaryForm({ onSubmit, isSubmitting, defaultData }) {
         setValue('longitude', position.coords.longitude);
       },
       (error) => {
-        toast.error(
-          `${t('translations:code')} ${error.code} - ${error.message}`,
-        );
+        if (error.code !== 3) {
+          toast.error(
+            `${t('translations:code')} ${error.code} - ${error.message}`,
+          );
+        }
       },
       {
         accuracy: {

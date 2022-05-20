@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title1, Title2 } from '@components/typography';
-import { Modal, ExpensiveNote, useToast } from '@components';
+import { Modal, ExpensiveNote, useToast, Button } from '@components';
 import {
   ScrollView,
   StyleSheet,
@@ -17,6 +17,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   BackHandler,
+  Linking,
 } from 'react-native';
 import { Header } from '@components/layout';
 import { Add } from '@assets';
@@ -151,6 +152,7 @@ function ApiaryHome() {
       borderWidth: darkMode ? 0 : 1,
       borderColor: colors.primary,
     },
+    marginVertical: { marginVertical: 16 },
   });
 
   const getDateTime = () => {
@@ -587,12 +589,6 @@ function ApiaryHome() {
       return true;
     }
 
-    if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
-    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
-    }
-
     return false;
   };
 
@@ -813,6 +809,15 @@ function ApiaryHome() {
                     <Title1 centered color={colors.error} family="medium">
                       {t('translations:noPermission')}
                     </Title1>
+                    <View style={styles.marginVertical}>
+                      <Title2 centered color={colors.error} family="medium">
+                        {t('translations:permissionInfo')}
+                      </Title2>
+                    </View>
+                    <Button
+                      title={t('translations:configurationsHeader')}
+                      onPress={() => Linking.openSettings()}
+                    />
                   </View>
                 )}
               </View>

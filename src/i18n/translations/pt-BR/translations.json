@@ -20,6 +20,7 @@
   "success" : "Sucesso!",
   "version" : "Versão:",
   "about" : "Sobre",
+  "permissionInfo" : "Acesse as configurações para habilitar as permissões necessárias para visualização do mapa.",
   "aboutDescription" : "Aplicação desenvolvida como trabalho de conclusão do curso de Ciência da Computação da Universidade de Santa Cruz do Sul (UNISC).",
   "by" : "Desenvolvido por Carlos Rodrigo Vogt.",
   "reactive" : "Reativar",
@@ -80,7 +81,7 @@
   "creatingAccount" : "Criando conta",
   "locationDenied" : "Permissão de localização negada pelo usuário",
   "revokedPermission" : "Permissão de localização revogada pelo usuário",
-  "noPermission" : "Permissão negada!",
+  "noPermission" : "Permissão negada",
   "lat" : "Latitude:",
   "long" : "Longitude:",
   "ok" : "Ok",
@@ -245,5 +246,6 @@
   "reject" : "Rejeitar",
   "termsDisagree" : "Atenção! A criação da conta só é possível se os termos forem aceitos.",
   "mortalityInfo" : "Atenção! Ao informar mortalidade o apiário passa a ser público e visível a todos os usuários do aplicativo, este registro será excluído ao completar 1 ano.",
-  "viabilityResponseDescription" : "Resultado da análise de viabilidade"
+  "viabilityResponseDescription" : "Resultado da análise de viabilidade",
+  "diameter" : "Diâmetro da circunferência: 3 Km"
 }

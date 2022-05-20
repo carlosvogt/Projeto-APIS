@@ -10,14 +10,15 @@ import {
   Platform,
   ToastAndroid,
   Text,
+  Linking,
 } from 'react-native';
 import { useTheme } from '@theme';
 import MapView, { Callout, Circle, Marker } from 'react-native-maps';
 import { Header } from '@components/layout';
 import { useTranslation } from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
-import { Title1 } from '@components/typography';
-import { Modal, useToast } from '@components';
+import { Title1, Title2 } from '@components/typography';
+import { Modal, useToast, Button } from '@components';
 import firestore from '@react-native-firebase/firestore';
 
 function MortalityMap() {
@@ -45,6 +46,7 @@ function MortalityMap() {
       alignItems: 'center',
       flex: 1,
     },
+    marginVertical: { marginVertical: 16 },
   });
 
   const deleteMortality = (item) => {
@@ -104,12 +106,6 @@ function MortalityMap() {
       return true;
     }
 
-    if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
-    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
-    }
-
     return false;
   };
 
@@ -131,11 +127,13 @@ function MortalityMap() {
         });
       },
       (error) => {
-        setDescription(
-          `${t('translations:code')} ${error.code} - ${error.message}`,
-        );
-        setShowModal(true);
-        setUserLocalization({});
+        if (error.code !== 3) {
+          setDescription(
+            `${t('translations:code')} ${error.code} - ${error.message}`,
+          );
+          setShowModal(true);
+          setUserLocalization({});
+        }
       },
       {
         accuracy: {
@@ -221,12 +219,30 @@ function MortalityMap() {
               })}
             </MapView>
           )}
+          <Text
+            style={{
+              color: colors.primary,
+              textAlign: 'center',
+              marginBottom: 5,
+            }}
+          >
+            {t('translations:diameter')}
+          </Text>
         </View>
       ) : (
         <View style={styles.view}>
           <Title1 centered color={colors.error} family="medium">
             {t('translations:noPermission')}
           </Title1>
+          <View style={styles.marginVertical}>
+            <Title2 centered color={colors.error} family="medium">
+              {t('translations:permissionInfo')}
+            </Title2>
+          </View>
+          <Button
+            title={t('translations:configurationsHeader')}
+            onPress={() => Linking.openSettings()}
+          />
         </View>
       )}
     </>

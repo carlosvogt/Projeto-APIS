@@ -64,7 +64,7 @@ function AddressForm({ onSubmit, isSubmitting }) {
       flex: 1,
     },
     button: {
-      width: 120,
+      width: 150,
       marginTop: 16,
     },
     marginButton: { marginBottom: 8 },
@@ -144,12 +144,6 @@ function AddressForm({ onSubmit, isSubmitting }) {
       return true;
     }
 
-    if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
-    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
-    }
-
     return false;
   };
 
@@ -178,9 +172,11 @@ function AddressForm({ onSubmit, isSubmitting }) {
         setValue('longitude', position.coords.longitude);
       },
       (error) => {
-        toast.error(
-          `${t('translations:code')} ${error.code} - ${error.message}`,
-        );
+        if (error.code !== 3) {
+          toast.error(
+            `${t('translations:code')} ${error.code} - ${error.message}`,
+          );
+        }
       },
       {
         accuracy: {

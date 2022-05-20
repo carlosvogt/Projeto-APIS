@@ -47,8 +47,12 @@ function UpdatePersonalInfo() {
 
   const handleSignOut = async () => {
     await AsyncStorage.removeItem('auth');
+    await AsyncStorage.removeItem('account');
     dispatch({
       type: 'SIGN_OUT',
+    });
+    dispatch({
+      type: 'CLEAN_ACCOUNT_DATA',
     });
     auth().signOut();
   };
@@ -73,13 +77,13 @@ function UpdatePersonalInfo() {
       BackHandler.removeEventListener('hardwareBackPress', handleHome);
   });
 
-  const updateAccountData = async (form) => {
+  const updateAccountData = (form) => {
     setLoading(true);
     const dateTime = getDateTime();
     const data = form;
     data.type = 'home';
     try {
-      await firestore()
+      firestore()
         .collection(`users/${uuid}/accountData`)
         .doc(uuid)
         .update({
@@ -130,7 +134,7 @@ function UpdatePersonalInfo() {
         auth().currentUser.email,
         form.password,
       );
-      await updateAccountData(newData);
+      updateAccountData(newData);
       await updateAccountEmail();
     } catch (error) {
       if (error.code === 'auth/wrong-password') {
@@ -147,7 +151,7 @@ function UpdatePersonalInfo() {
     setNewData(form);
     const hasInternet = netInfo.isConnected;
     if (form.email === auth().currentUser.email) {
-      await updateAccountData(form);
+      updateAccountData(form);
     } else if (form.email !== auth().currentUser.email && hasInternet) {
       setShowConfirmationModal(true);
     } else if (form.email !== auth().currentUser.email && !hasInternet) {
