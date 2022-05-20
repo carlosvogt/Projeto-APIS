@@ -192,12 +192,6 @@ function UpdatePersonalInfoForm({ onSubmit, isSubmitting }) {
       return true;
     }
 
-    if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(t('translations:locationDenied'), ToastAndroid.LONG);
-    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(t('translations:revokedPermission'), ToastAndroid.LONG);
-    }
-
     return false;
   };
 
